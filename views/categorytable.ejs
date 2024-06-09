@@ -1,0 +1,48 @@
+<table class="table  datanew">
+<thead>
+<tr>
+<th>
+<label class="checkboxs">
+<input type="checkbox" id="select-all">
+<span class="checkmarks"></span>
+</label>
+</th>
+<th>Category name</th>
+
+<th>Description</th>
+<th>Created On</th>
+<th>Action</th>
+</tr>
+</thead>
+
+
+<tbody>
+ <% data.forEach((row,index) => { %>   
+<tr>
+<td>
+<label class="checkboxs">
+<input type="checkbox">
+<span class="checkmarks"></span>
+</label>
+</td>
+<td class="productimgname">
+<a href="javascript:void(0);" class="product-img">
+<img src="<%= row.category_image%>" alt="product">
+</a>
+<a href="javascript:void(0);"><%= row.category_name %></a>
+</td>
+
+<td><%= row.category_description %></td>
+<td>Admin</td>
+<td>
+<a class="me-3" href="editcategory/<%= row._id %>">
+<img src="../assets/img/icons/edit.svg" alt="img">
+</a>
+<a class="me-3 confirm-text" href="javascript:void(0);" data-id="<%= row._id %>">
+<img src="../assets/img/icons/delete.svg" alt="img">
+</a>
+</td>
+</tr>
+ <% }) %>
+</tbody>
+</table>

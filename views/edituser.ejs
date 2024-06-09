@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+<meta name="description" content="POS - Bootstrap Admin Template">
+<meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
+<meta name="author" content="Dreamguys - Bootstrap Admin Template">
+<meta name="robots" content="noindex, nofollow">
+<title>Dreams Pos admin template</title>
+
+<link rel="shortcut icon" type="image/x-icon" href="../assets/img/favicon.jpg">
+
+<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="../assets/css/animate.css">
+
+<link rel="stylesheet" href="../assets/plugins/select2/css/select2.min.css">
+
+<link rel="stylesheet" href="../assets/css/dataTables.bootstrap4.min.css">
+
+<link rel="stylesheet" href="../assets/plugins/fontawesome/css/fontawesome.min.css">
+<link rel="stylesheet" href="../assets/plugins/fontawesome/css/all.min.css">
+
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<div id="global-loader">
+<div class="whirly-loader"> </div>
+</div>
+
+<div class="main-wrapper">
+
+<%- include('dashheader') %>
+
+
+<%- include('mainsidebar') %>
+
+<div class="page-wrapper">
+<div class="content">
+<div class="page-header">
+<div class="page-title">
+<h4>User Management</h4>
+<h6>Edit/Update User</h6>
+</div>
+</div>
+
+<div class="card">
+<div class="card-body">
+<div class="row">
+<div class="col-lg-3 col-sm-6 col-12">
+<div class="form-group">
+<label>First Name</label>
+<input type="text" value="Thomas">
+</div>
+</div>
+<div class="col-lg-3 col-sm-6 col-12">
+<div class="form-group">
+<label>Last Name</label>
+<input type="text" value="">
+</div>
+</div>
+<div class="col-lg-3 col-sm-6 col-12">
+<div class="form-group">
+<label>User Name</label>
+<input type="text" value="Thomas12">
+</div>
+</div>
+<div class="col-lg-3 col-sm-6 col-12">
+<div class="form-group">
+<label>Password</label>
+<div class="pass-group">
+<input type="password" class=" pass-input" placeholder="123456">
+<span class="fas toggle-password fa-eye-slash"></span>
+</div>
+</div>
+</div>
+<div class="col-lg-3 col-sm-6 col-12">
+<div class="form-group">
+<label>Phone</label>
+<input type="text" value="+123456789">
+</div>
+</div>
+<div class="col-lg-3 col-sm-6 col-12">
+<div class="form-group">
+<label>Email</label>
+<input type="text" value="thomas@mail.com">
+</div>
+</div>
+<div class="col-lg-3 col-sm-6 col-12">
+<div class="form-group">
+<label>Role</label>
+<select class="select">
+<option>Owner</option>
+<option> </option>
+</select>
+</div>
+</div>
+<div class="col-lg-12">
+<div class="form-group">
+<label> User Image</label>
+<div class="image-upload">
+<input type="file">
+<div class="image-uploads">
+<img src="../assets/img/icons/upload.svg" alt="img">
+<h4>Drag and drop a file to upload</h4>
+</div>
+</div>
+</div>
+</div>
+<div class="col-12">
+<div class="product-list">
+<ul class="row">
+<li class="ps-0">
+<div class="productviewset">
+<div class="productviewsimg">
+<img src="../assets/img/customer/profile2.jpg" alt="img">
+</div>
+<div class="productviewscontent">
+<a href="javascript:void(0);" class="hideset"><i class="fa fa-trash-alt"></i></a>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="col-lg-12">
+<a class="btn btn-submit me-2">Update</a>
+<a href="users" class="btn btn-cancel">Cancel</a>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+
+<script src="../assets/js/jquery-3.6.0.min.js"></script>
+
+<script src="../assets/js/feather.min.js"></script>
+
+<script src="../assets/js/jquery.slimscroll.min.js"></script>
+
+<script src="../assets/js/jquery.dataTables.min.js"></script>
+<script src="../assets/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="../assets/js/bootstrap.bundle.min.js"></script>
+
+<script src="../assets/plugins/select2/js/select2.min.js"></script>
+
+<script src="../assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
+<script src="../assets/plugins/sweetalert/sweetalerts.min.js"></script>
+
+<script src="../assets/js/script.js"></script>
+<script>
+  
+$(document).ready(function() {
+  const productImageContainer = $('.productviewsimg');
+
+  // Function to handle image change when a file is selected
+  $('input[type="file"]').on('change', function(e) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const imageDataUrl = event.target.result;
+      const img = $('<img>').attr('src', imageDataUrl);
+      productImageContainer.empty().append(img);
+    };
+
+    reader.readAsDataURL(file);
+
+    // Show the product list section when an image is selected
+    $('#productListSection').show();
+  });
+
+  // Hide the default image initially
+  productImageContainer.find('img').hide();
+
+  // Show the default image when the input is cleared
+  $('input[type="file"]').on('click', function() {
+    productImageContainer.find('img').show();
+  });
+});
+
+
+  </script>
+</body>
+</html>

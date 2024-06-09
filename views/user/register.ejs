@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Kodinger">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>My Login Page &mdash; Bootstrap 4 Login Page Snippet</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/my-login.css">
+</head>
+<body class="my-login-page">
+    <section class="h-100">
+        <div class="container h-100">
+            <div class="row justify-content-md-center align-items-center h-100">
+                <div class="card-wrapper">
+                    <div class="mb-5">
+                        <img src="img/logo.png" alt="bootstrap 4 login page" class="mx-auto d-block">
+                    </div>
+                    <div class="card fat">
+                        <div class="card-body">
+                            <h4 class="card-title text-center">Register With Email</h4>
+                            <form id="forgot-password-form" method="POST" class="my-login-validation" action="register/generateOTP">
+                                <div class="form-group">
+                                    <label for="email">E-Mail Address</label>
+                                    <input id="email" type="email" class="form-control" name="userEmail" value="" required autofocus>
+                                    <div class="invalid-feedback">
+                                        Please enter a valid email address.
+                                    </div>
+                                    <div class="form-text text-muted">
+                                        By clicking "Proceed" we will send an OTP to your Email.
+                                    </div>
+                                </div>
+<% if (userSuccess) { %>
+    <div class="alert alert-success" id="userSuccessMessage">
+        <%= userSuccess %>
+    </div>
+    <script>
+        setTimeout(function() {
+            document.getElementById("userSuccessMessage").style.display = "none";
+        }, 2000);
+    </script>
+<% } %>
+
+                                <div class="form-group m-0">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        Proceed
+                                    </button>
+                                </div>
+                            </form>
+                             <form action="login" method="get" class="form-group mt-2">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        Back To Login
+                                    </button>
+                                </form>
+                            <div class="container pb-5 pt-5">
+                                <div class="row justify-content-center">
+                                    <div class="col text-center">
+                                        <h4>Sign in with Google</h4>
+                                        <p>Click the button below to sign in with your Google account.</p>
+                                        <div class="text-center pt-1 mb-5 pb-1">
+                                            <a href="/auth/google" class="btn btn-primary btn-block rounded-pill mb-3">
+                                                <i class="fab fa-google me-2"></i> Sign in with Google
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        Copyright &copy; 2017 &mdash; Your Company 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('forgot-password-form');
+            const emailInput = document.getElementById('email');
+            const successMessage = document.getElementById('userSuccessMessage');
+            
+            // Function to validate email
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(String(email).toLowerCase());
+            }
+
+            form.addEventListener('submit', function (event) {
+                const emailValue = emailInput.value;
+                if (!validateEmail(emailValue)) {
+                    emailInput.classList.add('is-invalid');
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    emailInput.classList.remove('is-invalid');
+                    emailInput.classList.add('is-valid');
+                }
+                
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+
+            
+        });
+    </script>
+</body>
+</html>

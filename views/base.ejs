@@ -1,0 +1,110 @@
+<%- include('header') %>
+    <section class="h-100 gradient-form" style="background-color: #eee;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-xl-10">
+        <div class="card rounded-3 text-black">
+          <div class="row g-0">
+            <div class="col-lg-6">
+              <div class="card-body p-md-5 mx-md-4" >
+
+                <div class="text-center mb-5">
+                  <img src="../assets/img/menfashion.png"
+                    style="width: 185px;" alt="logo">
+               
+                </div>
+
+                <form action="<%= locals.isAdmin ? '/admin/login' : '/login' %>" method="POST" >
+                  <p>Please login to your account</p>
+
+                  <div data-mdb-input-init class="form-outline mb-4">
+                    <input type="email" id="form2Example11" class="form-control" name="email"
+                      placeholder="enter your Email address" />
+                    <label class="form-label" for="form2Example11">Email Address</label>
+                  </div>
+
+                  <div data-mdb-input-init class="form-outline mb-4">
+                    <input type="password" name="password" id="form2Example22" class="form-control" placeholder="password"/>
+                    <label class="form-label" for="form2Example22" >Password</label>
+                  </div>
+ <% if (!locals.isAdmin) { %>
+                <div class="text-start">
+                  <a href="/forgot-password" class="text-muted">Forgot Password?</a>
+                </div>
+
+               
+                <% } %>
+                  <div class="text-center pt-1 mb-5 pb-1">
+                    <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Log
+                      in</button>
+                    
+                  </div>
+
+                  <div class="d-flex align-items-center justify-content-center pb-4">
+                   
+                 <!-- Error message section -->
+    <div class="error-message text-danger" id="errorMessage"><%= locals.msg %></div>
+    
+    <script>
+        
+        const errorMessage = document.getElementById('errorMessage');
+        
+        if (errorMessage) {
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 3000); // 
+        }
+    </script>
+                  </div>
+                  
+                  </div>
+
+ 
+
+                </form>
+                 <% if (!locals.isAdmin) { %>
+<div class="container pb-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6 text-center">
+        <h4>Sign in with Google</h4>
+        <p>Click the button below to sign in with your Google account.</p>
+        <div class="text-center pt-1 mb-5 pb-1">
+            <a href="/auth/google" class="btn btn-primary btn-block rounded-pill mb-3">
+                <i class="fab fa-google me-2"></i> Sign in with Google
+            </a>
+        </div>
+      </div>
+    </div>
+</div>
+<% } %>
+
+                <div class="d-flex align-items-center justify-content-center pb-4">
+                    <p class="mb-0 me-2">Don't have an account?</p>
+                     <form action="<%= locals.isAdmin ? '/admin/register' : '/register' %>" method="get">
+                <input type="submit" value="Create new" class="btn btn-outline-danger">
+
+              </form>
+
+              </div>
+              
+            </div>
+  <div class="col-lg-6 d-flex align-items-center justify-content-center position-relative" style="background-image: url('../assets/img/men.jpeg'); background-size: cover; background-position: center;">
+    <!-- Semi-transparent black overlay -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-75"></div>
+
+    <div class="text-white px-3 py-4 p-md-5 mx-md-4 text-center position-relative">
+        <h3 class="mb-4"><%= locals.access %> LOGIN PAGE</h3>
+        <!-- Your login form or content here -->
+    </div>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <%- include('footer') %>  

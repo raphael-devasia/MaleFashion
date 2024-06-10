@@ -20,14 +20,15 @@ const {
     deleteCategory,
     createNewProduct,
     deleteProduct,
+    updateProduct,
 } = require("../../controller/admin/productController")
 
 
 
 router.get("/products", getProducts)
 router.get("/addproduct", addProduct)
-router.get("/product", getSingleProduct)    
-router.get("/editproduct", editProduct)
+router.get("/product/:id", getSingleProduct)    
+router.get("/editproduct/:id", editProduct)
 router.get("/categories", getCategories)
 router.get("/editcategory/:id", editCategory)
 router.get("/addcategory", addCategory)
@@ -39,5 +40,6 @@ router.post("/editcategory/:id", updateCategory)
 router.delete("/deletecategory/:id", deleteCategory)
 router.delete("/deleteproduct/:id",deleteProduct)
 router.post("/addproduct", createNewProduct)
+router.post('/editproduct',updateProduct)
 
 module.exports = router

@@ -8,38 +8,79 @@ require("../middlewares/auth")
 //========>>>>>> ###### GET : http://localhost:5050/home ######
 
 const getHome = async (req, res) => {
+    
     try {
+         let category = await Product_category.find()
         // Check if there is a session user
+        const productVariation = await ProductImage.aggregate([
+            {
+                $lookup: {
+                    from: "product_variations",
+                    localField: "Product_variation_id",
+                    foreignField: "_id",
+                    as: "Product_variation",
+                },
+            },
+            { $unwind: "$Product_variation" },
+            {
+                $lookup: {
+                    from: "product_items",
+                    localField: "Product_variation.Product_item_id",
+                    foreignField: "_id",
+                    as: "Product_item",
+                },
+            },
+            { $unwind: "$Product_item" },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "Product_item.Product_id",
+                    foreignField: "_id",
+                    as: "Product",
+                },
+            },
+            { $unwind: "$Product" },
+            {
+                $group: {
+                    _id: "$Product.product_name",
+                    Original_price: { $first: "$Product_item.Original_price" },
+
+                    Product_variation_ids: { $first: "$_id" },
+                    images: { $push: "$Image_filename" },
+                },
+            },
+        ])
         if (!req.session.user) {
             // If no session user, redirect to the home page with default data
-            const category = await Product_category.find()
-            const productVariation = await ProductImage.find().populate({
-                path: "Product_variation_id",
-                populate: [
-                    {
-                        path: "Product_item_id",
-                        model: "Product_item",
-                        populate: [
-                            {
-                                path: "Product_id",
-                                model: "Product",
-                                populate: {
-                                    path: "product_category_id",
-                                    model: "ProductCategory",
-                                },
-                            },
-                            {
-                                path: "Colour_id",
-                                model: "Colour",
-                            },
-                        ],
-                    },
-                    {
-                        path: "Size_id",
-                        model: "SizeOption",
-                    },
-                ],
-            })
+           
+            // const productVariation = await ProductImage.find().populate({
+            //     path: "Product_variation_id",
+            //     populate: [
+            //         {
+            //             path: "Product_item_id",
+            //             model: "Product_item",
+            //             populate: [
+            //                 {
+            //                     path: "Product_id",
+            //                     model: "Product",
+            //                     populate: {
+            //                         path: "product_category_id",
+            //                         model: "ProductCategory",
+            //                     },
+            //                 },
+            //                 {
+            //                     path: "Colour_id",
+            //                     model: "Colour",
+            //                 },
+            //             ],
+            //         },
+            //         {
+            //             path: "Size_id",
+            //             model: "SizeOption",
+            //         },
+            //     ],
+            // })
+ 
 
             // Render the home page with default data
             return res.render("user/index", {
@@ -59,34 +100,34 @@ const getHome = async (req, res) => {
             user = await GoogleUser.findOne({ email: req.session.user })
         }
 
-        const category = await Product_category.find()
-        const productVariation = await ProductImage.find().populate({
-            path: "Product_variation_id",
-            populate: [
-                {
-                    path: "Product_item_id",
-                    model: "Product_item",
-                    populate: [
-                        {
-                            path: "Product_id",
-                            model: "Product",
-                            populate: {
-                                path: "product_category_id",
-                                model: "ProductCategory",
-                            },
-                        },
-                        {
-                            path: "Colour_id",
-                            model: "Colour",
-                        },
-                    ],
-                },
-                {
-                    path: "Size_id",
-                    model: "SizeOption",
-                },
-            ],
-        })
+         category = await Product_category.find()
+        // const productVariation = await ProductImage.find().populate({
+        //     path: "Product_variation_id",
+        //     populate: [
+        //         {
+        //             path: "Product_item_id",
+        //             model: "Product_item",
+        //             populate: [
+        //                 {
+        //                     path: "Product_id",
+        //                     model: "Product",
+        //                     populate: {
+        //                         path: "product_category_id",
+        //                         model: "ProductCategory",
+        //                     },
+        //                 },
+        //                 {
+        //                     path: "Colour_id",
+        //                     model: "Colour",
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             path: "Size_id",
+        //             model: "SizeOption",
+        //         },
+        //     ],
+        // })
 
         const name = user.firstName
         return res.render("user/index", {
@@ -106,7 +147,82 @@ const getProducts = async (req, res) => {
     try {
         const category = await Product_category.find()
 
-        const productVariation = await ProductImage.find().populate({
+        // const productVariation = await ProductImage.find().populate({
+        //     path: "Product_variation_id",
+        //     populate: [
+        //         {
+        //             path: "Product_item_id",
+        //             model: "Product_item",
+        //             populate: [
+        //                 {
+        //                     path: "Product_id",
+        //                     model: "Product",
+        //                     populate: {
+        //                         path: "product_category_id",
+        //                         model: "ProductCategory",
+        //                     },
+        //                 },
+        //                 {
+        //                     path: "Colour_id",
+        //                     model: "Colour",
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             path: "Size_id",
+        //             model: "SizeOption",
+        //         },
+        //     ],
+        // })
+ const productVariation = await ProductImage.aggregate([
+     {
+         $lookup: {
+             from: "product_variations",
+             localField: "Product_variation_id",
+             foreignField: "_id",
+             as: "Product_variation",
+         },
+     },
+     { $unwind: "$Product_variation" },
+     {
+         $lookup: {
+             from: "product_items",
+             localField: "Product_variation.Product_item_id",
+             foreignField: "_id",
+             as: "Product_item",
+         },
+     },
+     { $unwind: "$Product_item" },
+     {
+         $lookup: {
+             from: "products",
+             localField: "Product_item.Product_id",
+             foreignField: "_id",
+             as: "Product",
+         },
+     },
+     { $unwind: "$Product" },
+     {
+         $group: {
+             _id: "$Product.product_name",
+             Original_price: { $first: "$Product_item.Original_price" },
+             
+             Product_variation_ids: { $first: "$_id" },
+             images: { $push: "$Image_filename" },
+         },
+     },
+ ])
+        console.log(productVariation[0])
+        res.render("user/shop", { data: productVariation, category })
+    } catch (error) {}
+}
+// ========>>>> GET (Single Product)  http://localhost:5050/products/665ea76f769f2ab99547d56e  <===============
+const singleProduct = async (req,res)=>{
+    const productId= req.params.id
+    try {
+        const getSingleProduct = await ProductImage.findById(
+            productId
+        ).populate({
             path: "Product_variation_id",
             populate: [
                 {
@@ -133,32 +249,6 @@ const getProducts = async (req, res) => {
                 },
             ],
         })
-
-        
-        res.render("user/shop", { data: productVariation, category })
-    } catch (error) {}
-}
-// ========>>>> GET (Single Product)  http://localhost:5050/products/665ea76f769f2ab99547d56e  <===============
-const singleProduct = async (req,res)=>{
-    const productId= req.params.id
-    try {
-        const productVariations = await ProductVariation.find({
-            Product_item_id: { $in: product_id },
-            "Product_item.product_name": product_name,
-            Colour_name,
-            "Size_id.size": size,
-        })
-            .populate({
-                path: "Product_item_id",
-                select: "product_name",
-            })
-            .populate("Size_id", "size")
-
-        if (productVariations.length > 0) {
-            console.log("Product variation exists")
-        } else {
-            console.log("Product variation does not exist")
-        }
 
 const productImages = getSingleProduct.Image_filename
 

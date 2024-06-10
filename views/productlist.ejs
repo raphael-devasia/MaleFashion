@@ -122,10 +122,10 @@
                     <th>Product Name</th>
                     <th>SKU</th>
                     <th>Category</th>
-                    <th>Brand</th>
+                    <!-- <th>Brand</th> -->
                     <th>Price</th>
                     <th>Qty</th>
-                    <th>Created By</th>
+                    <!-- <th>Created By</th> -->
                     <th>Action</th>
                 </tr>
             </thead>
@@ -147,15 +147,15 @@
                             </td>
                             <td><%= item.Product_variation_id.Product_item_id.Product_sku %></td>
                             <td><%= item.Product_variation_id.Product_item_id.Product_id.product_category_id.category_name %></td>
-                            <td>N/D</td>
+                            <!-- <td>N/D</td> -->
                             <td><%= item.Product_variation_id.Product_item_id.Original_price %></td>
                             <td><%= item.Product_variation_id.Qty_in_stock %></td>
-                            <td>Admin</td>
+                            <!-- <td>Admin</td> -->
                             <td>
-                                <a class="me-3" href="product">
+                                <a class="me-3" href="product/<%= item._id %>">
                                     <img src="../assets/img/icons/eye.svg" alt="img">
                                 </a>
-                                <a class="me-3" href="editproduct">
+                                <a class="me-3" href="editproduct/<%= item._id %>">
                                     <img src="../assets/img/icons/edit.svg" alt="img">
                                 </a>
                                 <a class="confirm-product" href="javascript:void(0);" data-id="<%= item._id %>">

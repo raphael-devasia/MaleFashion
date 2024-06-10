@@ -167,9 +167,9 @@
 </div>
 
 </form>
-<div><% if (locals.msg &&locals.msg.length > 0) { %>
+<div><% if (msg &&locals.msg.length > 0) { %>
             <div class="alert alert-info">
-                <%locals.msg.forEach(function(message) { %>
+                <%msg.forEach(function(message) { %>
                     <p><%= message %></p>
                 <% }) %>
             </div>
@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <script src="../assets/plugins/sweetalert/sweetalerts.min.js"></script>
 <script src="../assets/js/script.js"></script>
 
-<script>
+<!-- <script>
 $(document).ready(function() {
   $.ajax({
     url: '/products',
@@ -240,7 +240,7 @@ $(document).ready(function() {
     }
   });
 });
-</script>
+</script> -->
 
 <script>
 $(document).ready(function() {

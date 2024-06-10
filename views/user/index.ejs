@@ -233,7 +233,7 @@
                 <div class="col-lg-12">
                     <ul class="filter__controls">
                         <li class="active" data-filter="*">Best Sellers</li>
-                        <li data-filter=".new-arrivals">New Arrivals</li>
+                        <!-- <li data-filter=".new-arrivals">New Arrivals</li> -->
                         <!-- <li data-filter=".hot-sales">Hot Sales</li> -->
                     </ul>
                 </div>
@@ -244,16 +244,16 @@
 
                 <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
                     <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="img/product/product-1.jpg">
+                        <div class="product__item__pic set-bg" data-setbg="<%= item.images[0][0] %>">
                             <span class="label"></span>
                             <ul class="product__hover">
                                 <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
                                 <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a></li>
-                                <li><a href="#"><img src="img/icon/search.png" alt=""></a></li>
+                                <li><a href="/products/<%= item.Product_variation_ids %>"><img src="img/icon/search.png" alt=""></a></li>
                             </ul>
                         </div>
                         <div class="product__item__text">
-                            <h6><%= item.Product_variation_id.Product_item_id.Product_id.product_name %></h6>
+                            <h6><%= item._id %></h6>
                             <a href="#" class="add-cart">+ Add To Cart</a>
                             <div class="rating">
                                 <i class="fa fa-star-o"></i>
@@ -262,11 +262,11 @@
                                 <i class="fa fa-star-o"></i>
                                 <i class="fa fa-star-o"></i>
                             </div>
-                            <h5></h5>
+                             <h5>$<%= item.Original_price %></h5>
                             <div class="product__color__select">
 
 
-    <label for="pc-1" class="active" style="background:<%= item.Product_variation_id.Product_item_id.Colour_id.Colour_name %>">
+    <label for="pc-1" class="active" style="background:<%= item._id %>">
         <input type="radio" id="pc-1">
     </label>
 

@@ -12,6 +12,7 @@ const Colours = require("../../models/colorSchema")
 const { log } = require('console')
 const { populate } = require('../../models/googleUser')
 const sharp = require("sharp")
+const mongoose = require("mongoose")
 
 
 
@@ -43,7 +44,7 @@ const productVariation = await ProductImage.find({Is_active:true}).populate({
         },
     ],
 }) 
-    console.log(productVariation)
+    
            return res.render("productlist", { data: productVariation }) 
         
     } catch (error) {
@@ -52,6 +53,81 @@ const productVariation = await ProductImage.find({Is_active:true}).populate({
     
 
 }
+
+// Update Product POST
+ const updateProduct = async (req, res) => {
+     try {
+         const id = req.body.id
+         console.log(id)
+
+         const {
+             product_name,
+             category_name,
+             size,
+             Colour_name,
+             SKU,
+             Qty_in_stock,
+             product_description,
+             price,
+         } = req.body
+
+         // Resolve the category, size, and color IDs
+         const categoryDoc = await ProductCategory.findOne({
+             category_name: category_name,
+         })
+
+         const sizeDoc = await SizeOption.findOne({ Size_name: size })
+         const colourDoc = await Colours.findOne({ Colour_name: Colour_name })
+         console.log("Query Results:", { categoryDoc, sizeDoc, colourDoc })
+         
+         // Construct the update object
+         const update = {
+             $set: {
+                 "product.name": product_name,
+                 "product.qty_in_stock": Qty_in_stock,
+                 "product.description": product_description,
+                 "product.price": price,
+             },
+         }
+
+         // Check if categoryDoc, sizeDoc, and colourDoc are not null before accessing their properties
+         if (categoryDoc) {
+             update.$set["product.category_id"] = categoryDoc._id
+         }
+         if (sizeDoc) {
+             update.$set["product_item.size_id"] = sizeDoc._id
+         }
+         if (colourDoc) {
+             update.$set["product_item.colour_id"] = colourDoc._id
+         }
+
+
+         console.log("enetrring next step")
+         console.log("STEP2:", update)
+         // Define the array filters (though it's not clear what e1 and e2 are in this context)
+         // Assuming these filters are needed for nested updates; adjust as needed.
+         const arrayFilters = [
+             { "e1.name": req.params.model },
+             { "e2._id": req.params._id },
+         ]
+
+         // Perform the update
+         const result = await ProductImage.findOneAndUpdate(
+             { _id: new mongoose.Types.ObjectId(id) },
+             update,
+             { arrayFilters, new: true }
+         )
+
+         if (!result) {
+             return res.status(404).json({ message: "Product not found" })
+         }
+
+         res.json({ message: "Product updated successfully", result })
+     } catch (error) {
+         console.error("Error updating product:", error)
+         res.status(500).json({ message: "Internal Server Error" })
+     }
+ }
 
 // Get Add Products route
 const addProduct = async (req, res) => {
@@ -102,7 +178,7 @@ const addProduct = async (req, res) => {
         const sizeOptions = await SizeOption.find()
         const colourOptions = await Colours.find()
         const msg = req.flash('info')
-        console.log(msg);
+        
 
         // Render the addproduct page with the fetched data
         res.render("addproduct", {
@@ -120,22 +196,197 @@ const addProduct = async (req, res) => {
 // Get Single Product route
 const getSingleProduct = async (req, res) => {
     const isAdmin = true
-    if (req.session.admin) {
-        const userDetails = await userCollection.find()
+    const id = req.params.id
+    
+   
 
-        return res.render("singleproduct")
-    }
-
-    res.redirect("/admin/login")
+     
+           const singleProduct = await ProductImage.aggregate([
+               {
+                   $lookup: {
+                       from: "product_variations",
+                       localField: "Product_variation_id",
+                       foreignField: "_id",
+                       as: "product_variation",
+                   },
+               },
+               {
+                   $unwind: "$product_variation",
+               },
+               {
+                   $lookup: {
+                       from: "product_items",
+                       localField: "product_variation.Product_item_id",
+                       foreignField: "_id",
+                       as: "product_item",
+                   },
+               },
+               {
+                   $unwind: "$product_item",
+               },
+               {
+                   $lookup: {
+                       from: "products",
+                       localField: "product_item.Product_id",
+                       foreignField: "_id",
+                       as: "product",
+                   },
+               },
+               {
+                   $unwind: "$product",
+               },
+               {
+                   $lookup: {
+                       from: "productcategories",
+                       localField: "product.product_category_id",
+                       foreignField: "_id",
+                       as: "category",
+                   },
+               },
+               {
+                   $unwind: "$category",
+               },
+               {
+                   $lookup: {
+                       from: "colours",
+                       localField: "product_item.Colour_id",
+                       foreignField: "_id",
+                       as: "colour",
+                   },
+               },
+               {
+                   $unwind: "$colour",
+               },
+               {
+                   $lookup: {
+                       from: "sizeoptions",
+                       localField: "product_variation.Size_id",
+                       foreignField: "_id",
+                       as: "size_option",
+                   },
+               },
+               {
+                   $unwind: "$size_option",
+               },
+               {
+                   $match: {
+                       _id: new mongoose.Types.ObjectId(id), // No need to create a new ObjectId instance
+                   },
+               },
+           ])
+              
+        
+     
+    console.log(singleProduct);
+    
+res.render("singleproduct", {data: singleProduct })
 }
 
 // Get Edit Product route
 const editProduct = async (req, res) => {
     const isAdmin = true
+    const id= req.params.id
+    let singleProduct;
     if (req.session.admin) {
-        const userDetails = await userCollection.find()
+        
+       
 
-        return res.render("editproduct")
+
+    try {
+        // Fetch categories, size options, and color options
+        const categories = await ProductCategory.find()
+            .populate("size_category")
+            .exec()
+        const sizeOptions = await SizeOption.find()
+        const colourOptions = await Colours.find()
+        
+        //
+        singleProduct = await ProductImage.aggregate([
+            {
+                $lookup: {
+                    from: "product_variations",
+                    localField: "Product_variation_id",
+                    foreignField: "_id",
+                    as: "product_variation",
+                },
+            },
+            {
+                $unwind: "$product_variation",
+            },
+            {
+                $lookup: {
+                    from: "product_items",
+                    localField: "product_variation.Product_item_id",
+                    foreignField: "_id",
+                    as: "product_item",
+                },
+            },
+            {
+                $unwind: "$product_item",
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "product_item.Product_id",
+                    foreignField: "_id",
+                    as: "product",
+                },
+            },
+            {
+                $unwind: "$product",
+            },
+            {
+                $lookup: {
+                    from: "productcategories",
+                    localField: "product.product_category_id",
+                    foreignField: "_id",
+                    as: "category",
+                },
+            },
+            {
+                $unwind: "$category",
+            },
+            {
+                $lookup: {
+                    from: "colours",
+                    localField: "product_item.Colour_id",
+                    foreignField: "_id",
+                    as: "colour",
+                },
+            },
+            {
+                $unwind: "$colour",
+            },
+            {
+                $lookup: {
+                    from: "sizeoptions",
+                    localField: "product_variation.Size_id",
+                    foreignField: "_id",
+                    as: "size_option",
+                },
+            },
+            {
+                $unwind: "$size_option",
+            },
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(id), // No need to create a new ObjectId instance
+                },
+            },
+        ])
+       
+
+        return res.render("editproduct", {
+            categories,
+            sizeOptions,
+            colourOptions,
+            data: singleProduct,
+        })
+    }
+     catch (err) {
+        console.log("an error");
+    }
+        
     }
 
     res.redirect("/admin/login")
@@ -341,29 +592,86 @@ const editBrand = async (req, res) => {
 
 /////create new product
 const createNewProduct = async (req, res) => {
+    // const images = req.files ? req.files.product_images : null
+    // const imageFilenames = []
+    // if (images) {
+    //     const uploadDirectory = path.join(
+    //         __dirname,
+    //         "../../public/assets/img/product"
+    //     )
+
+    //     if (Array.isArray(images)) {
+    //         for (let i = 0; i < images.length; i++) {
+    //             const image = images[i]
+    //             const imagePath = path.join(uploadDirectory, image.name)
+    //             ////cropping
+    //             await image.mv(imagePath)
+    //             imageFilenames.push("/assets/img/product/" + image.name)
+    //         }
+    //     } else {
+    //         // If a single image is uploaded
+    //         const imagePath = path.join(uploadDirectory, images.name)
+    //         await images.mv(imagePath)
+    //         imageFilenames.push("/assets/img/product/" + images.name)
+    //     }
+    // }
+
+
+    /////implemented product crop and resize
+
+
     const images = req.files ? req.files.product_images : null
     const imageFilenames = []
-    if (images) {
-        const uploadDirectory = path.join(
-            __dirname,
-            "../../public/assets/img/product"
-        )
 
-        if (Array.isArray(images)) {
-            for (let i = 0; i < images.length; i++) {
-                const image = images[i]
-                const imagePath = path.join(uploadDirectory, image.name)
-                await image.mv(imagePath)
-                imageFilenames.push("/assets/img/product/" + image.name)
+     if (images) {
+        const uploadDirectory = path.join(__dirname, "../../public/assets/img/product");
+
+        const processImage = async (image, filename) => {
+            const imagePath = path.join(uploadDirectory, filename)
+
+            // Validate image size before processing
+            const { width, height } = await sharp(image.data).metadata()
+            console.log("Image dimensions:", width, height)
+
+            const extractOptions = {
+                width: 400,
+                height: 400,
+                left: 50,
+                top: 50,
             }
-        } else {
-            // If a single image is uploaded
-            const imagePath = path.join(uploadDirectory, images.name)
-            await images.mv(imagePath)
-            imageFilenames.push("/assets/img/product/" + images.name)
+
+            if (
+                width < extractOptions.left + extractOptions.width ||
+                height < extractOptions.top + extractOptions.height
+            ) {
+                throw new Error("Extract area is out of bounds")
+            }
+
+            await sharp(image.data)
+                .resize(300, 300) // Resize to 300x300 pixels
+                .extract(extractOptions) // Crop to 400x400 pixels starting from (50, 50)
+                .toFile(imagePath)
+            return "/assets/img/product/" + filename
+        }
+
+        try {
+            if (Array.isArray(images)) {
+                for (let i = 0; i < images.length; i++) {
+                    const image = images[i];
+                    const filename = "cropped-" + image.name;
+                    const croppedImagePath = await processImage(image, filename);
+                    imageFilenames.push(croppedImagePath);
+                }
+            } else {
+                // If a single image is uploaded
+                const filename = "cropped-" + images.name;
+                const croppedImagePath = await processImage(images, filename);
+                imageFilenames.push(croppedImagePath);
+            }
+        } catch (error) {
+            return res.status(400).send({ error: 'Image processing error: ' + error.message });
         }
     }
-
 
     const {product_id,
         category_name,
@@ -379,37 +687,8 @@ const createNewProduct = async (req, res) => {
 
     try {
    
-//  const productVariations = await ProductVariation.find({
-//      _id: { $in: product_ids },
-//  }).populate([
-//      {
-//          path: "Product_item_id",
-//          model: "Product_item",
-//          populate: [
-//              {
-//                  path: "Product_id",
-//                  model: "Product",
-//                  populate: {
-//                      path: "product_category_id",
-//                      model: "ProductCategory",
-//                      populate: {
-//                          path: "size_category",
-//                          model: "Size_category",
-//                      },
-//                  },
-//              },
-//              {
-//                  path: "Colour_id",
-//                  model: "Colour",
-//              },
-//          ],
-//      },
-//      {
-//          path: "Size_id",
-//          model: "SizeOption",
-//      },
-//  ])
-const productExists = await ProductVariation.aggregate([
+//  
+const productExists = await ProductImage.aggregate([
     {
         $lookup: {
             from: "product_items",
@@ -467,7 +746,7 @@ const productExists = await ProductVariation.aggregate([
 ])
 
   
-
+console.log(productExists)
 if (productExists.length > 0 && productExists[0].productCount > 0) {
     console.log("Product already exists")
     req.flash('info',"Product Varient Exist in Database")
@@ -548,4 +827,5 @@ module.exports = {
     deleteCategory,
     createNewProduct,
     deleteProduct,
+    updateProduct,
 }

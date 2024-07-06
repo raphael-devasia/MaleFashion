@@ -26,7 +26,7 @@ const userManageRoute = require("./routes/admin/userManageRoutes")
 const userRouter = require("./routes/user/userRoutes")
 const productRouter = require('./routes/user/productRoutes')
 // Use morgan to log requests to the console
-// app.use(morgan('dev'));
+app.use(morgan('dev'));
 // Middleware to set the static page
 app.use(express.static(path.join(__dirname, "public")))
 const userStatic = express.static(path.join(__dirname, 'public', 'user'))

@@ -374,32 +374,35 @@
             <div class="row">
                 <div class="col-lg-12">
                     <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center">
+                        <ul class="pagination justify-content-center" id="pagination-container">
                             <% if (page> 1) { %>
                                 <li class="page-item">
-                                    <a class="page-link" href="?page=<%= page - 1 %>&limit=<%= limit %>" aria-label="Previous">
+                                    <a class="page-link" href="javascript:void(0)" onclick="handlePaginationClick(<%= page - 1 %>)"
+                                        aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 <% } %>
-            
+                        
                                     <% for (let i=1; i <=totalPages; i++) { %>
                                         <li class="page-item <%= i === page ? 'active' : '' %>">
-                                            <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>">
+                                            <a class="page-link" href="javascript:void(0)" onclick="handlePaginationClick(<%= i %>)">
                                                 <%= i %>
                                             </a>
                                         </li>
                                         <% } %>
-            
+                        
                                             <% if (page < totalPages) { %>
                                                 <li class="page-item">
-                                                    <a class="page-link" href="?page=<%= page + 1 %>&limit=<%= limit %>"
-                                                        aria-label="Next">
+                                                    <a class="page-link" href="javascript:void(0)"
+                                                        onclick="handlePaginationClick(<%= page + 1 %>)" aria-label="Next">
                                                         <span aria-hidden="true">&raquo;</span>
                                                     </a>
                                                 </li>
                                                 <% } %>
                         </ul>
+
+
                     </nav>
                 </div>
             </div>
@@ -502,52 +505,52 @@
     <script src="js/mixitup.min.js"></script>
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/main.js"></script>
-    <script>
+<script>
+    let productsContainer;
+    let paginationContainer;
+    let productCountDisplay;
 
-        let productsContainer;
-        let paginationContainer;
-        let productCountDisplay;
+    document.addEventListener('DOMContentLoaded', () => {
+        productsContainer = document.getElementById('products-container');
+        paginationContainer = document.getElementById('pagination-container');
+        productCountDisplay = document.querySelector('.shop__product__option__left p');
 
-        document.addEventListener('DOMContentLoaded', () => {
-            productsContainer = document.getElementById('products-container');
-            paginationContainer = document.querySelector('.product__pagination');
-            productCountDisplay = document.querySelector('.shop__product__option__left p');
+        const categoryRadios = document.querySelectorAll('.category-radio');
 
-            const categoryRadios = document.querySelectorAll('.category-radio');
-
-            categoryRadios.forEach((radio) => {
-                radio.addEventListener('change', handleCategoryChange);
-            });
-
-            
+        categoryRadios.forEach((radio) => {
+            radio.addEventListener('change', handleCategoryChange);
         });
 
-        function handleCategoryChange() {
-            const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
-            const page = 1; // Reset to first page when category changes
-            fetchProducts(selectedCategory, page);
+        // Fetch initial products and pagination
+        fetchProducts();
+    });
+
+    function handleCategoryChange() {
+        const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
+        const page = 1; // Reset to first page when category changes
+        fetchProducts(selectedCategory, page);
+    }
+
+    function handlePaginationClick(page) {
+        const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
+        fetchProducts(selectedCategory, page);
+    }
+
+    function fetchProducts(selectedCategory = '', page = 1) {
+        const limit = 5;
+        let queryString = `page=${page}&limit=${limit}`;
+
+        if (selectedCategory) {
+            queryString += `&key=${selectedCategory}`;
         }
 
-        function handlePaginationClick(page) {
-            const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
-            fetchProducts(selectedCategory, page);
-        }
+        fetch(`/filtered-category?${queryString}`)
+            .then((response) => response.json())
+            .then((data) => {
+                let templateHtml = '';
 
-        function fetchProducts(selectedCategory = '', page = 1) {
-            const limit = 5;
-            let queryString = `page=${page}&limit=${limit}`;
-
-            if (selectedCategory) {
-                queryString += `&key=${selectedCategory}`;
-            }
-
-            fetch(`/filtered-category?${queryString}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    let templateHtml = '';
-
-                    data.data.forEach((row) => {
-                        templateHtml += `
+                data.data.forEach((row) => {
+                    templateHtml += `
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
                                 <div class="product__item sale">
@@ -571,10 +574,10 @@
                                         <i class="fa fa-star-o"></i>
                                     </div>
                                     ${row.discountPercentage > 0 ?
-                                `<h6><s>${row.Original_price}</s>$</h6>
+                            `<h6><s>${row.Original_price}</s>$</h6>
                                         <h5>$${row.effectivePrice}</h5>` :
-                                `<h5>$${row.Original_price}</h5>`
-                            }
+                            `<h5>$${row.Original_price}</h5>`
+                        }
                                     <div class="product__color__select">
                                         ${row.colours.map((color, index) => `
                                             <label class="active ${color.toLowerCase()}" for="pc-${index + 4}">
@@ -586,73 +589,69 @@
                             </div>
                         </div>
                     `;
-                    });
-
-                    productsContainer.innerHTML = templateHtml;
-                    setBackgrounds();
-
-                    // Update pagination
-                    updatePagination(data.page, data.totalPages);
-                    productCountDisplay.innerHTML = `Showing ${data.start}–${data.end} of ${data.totalProducts} results`;
                 });
-        }
 
-        function setImageUrl(row) {
-            const imgPath = row.images[0][0].startsWith('/') ? row.images[0][0].substring(1) : row.images[0][0];
-            const imgUrl = `${window.location.origin}/${imgPath}`;
-            return imgUrl;
-        }
+                productsContainer.innerHTML = templateHtml;
+                setBackgrounds();
 
-        function setBackgrounds() {
-            document.querySelectorAll('.set-bg').forEach(element => {
-                const bg = element.getAttribute('data-setbg');
-                element.style.backgroundImage = `url(${bg})`;
+                // Update pagination
+                updatePagination(data.page, data.totalPages);
+                productCountDisplay.innerHTML = `Showing ${data.start}–${data.end} of ${data.totalProducts} results`;
             });
+    }
+
+    function setImageUrl(row) {
+        const imgPath = row.images[0][0].startsWith('/') ? row.images[0][0].substring(1) : row.images[0][0];
+        const imgUrl = `${window.location.origin}/${imgPath}`;
+        return imgUrl;
+    }
+
+    function setBackgrounds() {
+        document.querySelectorAll('.set-bg').forEach(element => {
+            const bg = element.getAttribute('data-setbg');
+            element.style.backgroundImage = `url(${bg})`;
+        });
+    }
+
+    function updatePagination(currentPage, totalPages) {
+        let paginationHtml = '';
+
+        if (currentPage > 1) {
+            paginationHtml += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="handlePaginationClick(${currentPage - 1})" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            `;
         }
-        function updatePagination(currentPage, totalPages) {
-            let paginationHtml = '';
 
-            if (currentPage > 1) {
-                paginationHtml += `<a href="#" onclick="handlePaginationClick(${currentPage - 1})">Previous</a>`;
-            }
-
-            for (let i = 1; i <= totalPages; i++) {
-                paginationHtml += `<a href="#" class="${i === currentPage ? 'active' : ''}" onclick="handlePaginationClick(${i})">${i}</a>`;
-            }
-
-            if (currentPage < totalPages) {
-                paginationHtml += `<a href="#" onclick="handlePaginationClick(${currentPage + 1})">Next</a>`;
-            }
-
-            paginationContainer.innerHTML = paginationHtml;
+        for (let i = 1; i <= totalPages; i++) {
+            paginationHtml += `
+                <li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="handlePaginationClick(${i})">
+                        ${i}
+                    </a>
+                </li>
+            `;
         }
 
-        function sortProducts() {
-            const sortOption = document.getElementById('sort-options').value;
-            const products = Array.from(productsContainer.children);
-
-            products.sort((a, b) => {
-                const priceA = parseFloat(a.querySelector('h5').textContent.replace('$', ''));
-                const priceB = parseFloat(b.querySelector('h5').textContent.replace('$', ''));
-                const nameA = a.querySelector('h6').textContent.toLowerCase();
-                const nameB = b.querySelector('h6').textContent.toLowerCase();
-
-                if (sortOption === 'price-asc') {
-                    return priceA - priceB;
-                } else if (sortOption === 'price-desc') {
-                    return priceB - priceA;
-                } else if (sortOption === 'name-asc') {
-                    return nameA.localeCompare(nameB);
-                } else if (sortOption === 'name-desc') {
-                    return nameB.localeCompare(nameA);
-                }
-            });
-
-            // Clear the container and re-append the sorted products
-            productsContainer.innerHTML = '';
-            products.forEach(product => productsContainer.appendChild(product));
+        if (currentPage < totalPages) {
+            paginationHtml += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="handlePaginationClick(${currentPage + 1})" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            `;
         }
-    </script>
+
+        paginationContainer.innerHTML = paginationHtml;
+    }
+</script>
+
+
+
 </body>
 
 </html>

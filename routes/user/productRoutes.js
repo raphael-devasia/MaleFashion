@@ -42,7 +42,7 @@ router.get("/addtowishlist",isAuthenticatedUser,addToWishlist)
 router.get("/wishlist",isAuthenticatedUser,getWishlist)
 router.post("/verify-coupon",isAuthenticatedUser,verifyCoupon)
 router.get("/wishlist/remove-item",isAuthenticatedUser, removeWishlistItem)
-router.get("/filtered-category", isAuthenticatedUser,getProductsFiltered)
+router.get("/filtered-category",getProductsFiltered)
 // router.get('/deletewishlist',deleteWishlist)
 
 module.exports = router

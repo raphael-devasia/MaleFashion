@@ -394,119 +394,117 @@ console.log("VARIATION2", categoryArray)
     }
 }
 const getProductsFiltered = async (req, res) => {
-    
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 5
     const skip = (page - 1) * limit
-    let selectedCategory = req.query.key 
-    
+    let selectedCategory = req.query.key
+
     console.log("selectedCategory", selectedCategory)
+    if (!selectedCategory){
+        selectedCategory ='all'
+    }
+        try {
+            const category = await Product_category.find()
+            const productVariation = await fetchProductVariations()
 
-    try {
-        const category = await Product_category.find()
+            function countCategories(products) {
+                const categoryCount = {}
+                products.forEach((product) => {
+                    const category = product.category
+                    if (categoryCount[category]) {
+                        categoryCount[category]++
+                    } else {
+                        categoryCount[category] = 1
+                    }
+                })
+                return categoryCount
+            }
 
-        const productVariation = await fetchProductVariations()
+            const categoryCount = countCategories(productVariation)
+            const categoryArray = Object.keys(categoryCount).map((key) => ({
+                key,
+                count: categoryCount[key],
+            }))
 
-        function countCategories(products) {
-            const categoryCount = {}
-
-            products.forEach((product) => {
-                const category = product.category
-                if (categoryCount[category]) {
-                    categoryCount[category]++
+            let productsToDisplay
+            if (selectedCategory) {
+                if (selectedCategory == "all") {
+                    productsToDisplay = productVariation
                 } else {
-                    categoryCount[category] = 1
-                }
-            })
-
-            return categoryCount
-        }
-
-        // Using the function
-        const categoryCount = countCategories(productVariation)
-        const categoryArray = Object.keys(categoryCount).map((key) => ({
-            key,
-            count: categoryCount[key],
-        }))
-
-        console.log("categoryArray:", categoryArray[0].key)
-
-        let productsToDisplay
-        if (selectedCategory) {
-            if (selectedCategory=='all'){
-                productsToDisplay = productVariation}
-                else{
-                     productsToDisplay = productVariation.filter((e) => {
-                     return e.category === selectedCategory
+                    productsToDisplay = productVariation.filter((e) => {
+                        return e.category === selectedCategory
                     })
                 }
-               
-        } else {
-            productsToDisplay = productVariation.filter((e) => {
-                return e.category === categoryArray[0].key
+            } else {
+                productsToDisplay = productVariation.filter((e) => {
+                    return e.category === categoryArray[0].key
+                })
+            }
+
+            const today = new Date()
+            productsToDisplay = productsToDisplay.map((product) => {
+                let discountPercentage = 0
+                const productOfferValid =
+                    product.Offer_price &&
+                    new Date(product.Offer_price.start_date) <= today &&
+                    new Date(product.Offer_price.end_date) >= today
+                const categoryOfferValid =
+                    product.category_offer &&
+                    new Date(product.category_offer.start_date) <= today &&
+                    new Date(product.category_offer.end_date) >= today
+
+                if (productOfferValid && categoryOfferValid) {
+                    discountPercentage = Math.max(
+                        product.Offer_price.offer_percentage,
+                        product.category_offer.offer_percentage
+                    )
+                } else if (productOfferValid) {
+                    discountPercentage = product.Offer_price.offer_percentage
+                } else if (categoryOfferValid) {
+                    discountPercentage = product.category_offer.offer_percentage
+                }
+
+                const discountAmount =
+                    (product.Original_price * discountPercentage) / 100
+                const effectivePrice = product.Original_price - discountAmount
+
+                return {
+                    ...product,
+                    effectivePrice: discountPercentage
+                        ? effectivePrice.toFixed(2)
+                        : product.Original_price,
+                    discountPercentage,
+                }
             })
+
+            const totalProducts = productsToDisplay.length
+            const totalPages = Math.ceil(totalProducts / limit)
+            const paginatedProducts = productsToDisplay.slice(
+                skip,
+                skip + limit
+            )
+            console.log(
+                skip + 1,
+                Math.min(skip + limit, totalProducts),
+                totalProducts
+            )
+            res.json({
+                data: paginatedProducts,
+                category,
+                categoryArray,
+                page,
+                totalPages,
+                limit,
+                totalProducts,
+                start: skip + 1,
+                end: Math.min(skip + limit, totalProducts),
+            })
+        } catch (error) {
+            console.error(error)
+            res.status(500).send("Internal Server Error")
         }
-
-        // Calculate the effective price for each product
-        const today = new Date()
-
-        productsToDisplay = productsToDisplay.map((product) => {
-            let discountPercentage = 0
-            const productOfferValid =
-                product.Offer_price &&
-                new Date(product.Offer_price.start_date) <= today &&
-                new Date(product.Offer_price.end_date) >= today
-            const categoryOfferValid =
-                product.category_offer &&
-                new Date(product.category_offer.start_date) <= today &&
-                new Date(product.category_offer.end_date) >= today
-
-            if (productOfferValid && categoryOfferValid) {
-                discountPercentage = Math.max(
-                    product.Offer_price.offer_percentage,
-                    product.category_offer.offer_percentage
-                )
-            } else if (productOfferValid) {
-                discountPercentage = product.Offer_price.offer_percentage
-            } else if (categoryOfferValid) {
-                discountPercentage = product.category_offer.offer_percentage
-            }
-
-            const discountAmount =
-                (product.Original_price * discountPercentage) / 100
-            const effectivePrice = product.Original_price - discountAmount
-
-            return {
-                ...product,
-                effectivePrice: discountPercentage
-                    ? effectivePrice.toFixed(2)
-                    : product.Original_price,
-                discountPercentage,
-            }
-        })
-
-        console.log(productsToDisplay)
-        const paginatedProducts = productsToDisplay.slice(skip, skip + limit)
-const totalProducts = paginatedProducts.length
-
-const totalPages = Math.ceil(paginatedProducts / limit)
-console.log("VARUTION FINAL", totalPages)
-         res.json({
-             data: paginatedProducts,
-             category,
-             categoryArray,
-             page,
-             totalPages,
-             limit,
-             totalProducts,
-             start: skip + 1,
-             end: Math.min(skip + limit, totalProducts),
-         })
-    } catch (error) {
-        console.error(error)
-        res.status(500).send("Internal Server Error")
-    }
 }
+
 
 
 

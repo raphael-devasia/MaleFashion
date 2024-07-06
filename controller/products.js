@@ -897,115 +897,124 @@ const getCheckout = async (req, res) => {
     let newTotalAmount = 0
     const userSession = req.session.user
     const Payment_types = await Payment_type.find()
-    
+    const length = await getCartLength(userSession)
+    if (!length || length<1){
+        res.redirect('/home')
+    }
+        if (userSession) {
+            const user = await findUserByEmail(userSession) // Assuming findUserByEmail is a function to find user details
+            if (!user) {
+                throw new Error("User details not found")
+            }
 
-    if (userSession) {
-        const user = await findUserByEmail(userSession) // Assuming findUserByEmail is a function to find user details
-        if (!user) {
-            throw new Error("User details not found")
-        }
+            const userCartTemp = await cartProducts()
 
-        const userCartTemp = await cartProducts()
-       
-        const userCart = userCartTemp.filter(
-            (e) => e.User_details && e.User_details.email === userSession
-        )
+            const userCart = userCartTemp.filter(
+                (e) => e.User_details && e.User_details.email === userSession
+            )
 
-        userCartTemp.forEach((product,i)=>{
-
- if (product.Qty > product.Product_item.Qty_in_stock) {
-     index = i
-     cartId = product._id
-     stock = product.Product_item.Qty_in_stock
-     return res.redirect(`/cart?stock=${stock}&cartId=${cartId}`)
- }
-        })
-
-        if (userCart.length > 0) {
-            cartProduct = userCart.filter((e) => e.Product_variation.Is_active)
-            totalCartAmount = await getTotalAmount(user._id)
-
-            const today = new Date()
-
-            cartProduct = cartProduct.map((product) => {
-                let discountPercentage = 0
-                const productOfferValid =
-                    product.Product_Offers &&
-                    new Date(product.Product_Offers.start_date) <= today &&
-                    new Date(product.Product_Offers.end_date) >= today
-                const categoryOfferValid =
-                    product.Product_Category_offers &&
-                    new Date(product.Product_Category_offers.start_date) <=
-                        today &&
-                    new Date(product.Product_Category_offers.end_date) >= today
-
-                if (productOfferValid && categoryOfferValid) {
-                    discountPercentage = Math.max(
-                        product.Product_Offers.offer_percentage,
-                        product.Product_Category_offers.offer_percentage
-                    )
-                } else if (productOfferValid) {
-                    discountPercentage = product.Product_Offers.offer_percentage
-                } else if (categoryOfferValid) {
-                    discountPercentage =
-                        product.Product_Category_offers.offer_percentage
-                }
-
-                const discountAmount =
-                    (product.Product.Original_price * discountPercentage) / 100
-                const effectivePrice =
-                    product.Product.Original_price - discountAmount
-
-                return {
-                    ...product,
-                    discountAmount,
-                    effectivePrice: discountPercentage
-                        ? effectivePrice
-                        : product.Product.Original_price,
-                    discountPercentage,
+            userCartTemp.forEach((product, i) => {
+                if (product.Qty > product.Product_item.Qty_in_stock) {
+                    index = i
+                    cartId = product._id
+                    stock = product.Product_item.Qty_in_stock
+                    return res.redirect(`/cart?stock=${stock}&cartId=${cartId}`)
                 }
             })
 
-            const totalOfferDiscount = cartProduct.reduce(
-                (total, product) =>
-                    total + product.discountAmount * product.Qty,
-                0
-            )
+            if (userCart.length > 0) {
+                cartProduct = userCart.filter(
+                    (e) => e.Product_variation.Is_active
+                )
+                totalCartAmount = await getTotalAmount(user._id)
 
-            // Calculate newTotalAmount without coupon code
-            newTotalAmount = cartProduct.reduce(
-                (total, product) =>
-                    total + product.effectivePrice * product.Qty,
-                0
-            )
+                const today = new Date()
 
-             couponCode = user.coupon
-            if (couponCode) {
-                const coupon = await Coupon.findOne({ coupon_code: couponCode })
-                if (coupon) {
-                    const today = new Date()
-                    const isValidCoupon =
-                        new Date(coupon.start_date) <= today &&
-                        new Date(coupon.end_date) >= today
-                    if (isValidCoupon) {
-                        couponDiscountPercentage = coupon.offer_percentage 
+                cartProduct = cartProduct.map((product) => {
+                    let discountPercentage = 0
+                    const productOfferValid =
+                        product.Product_Offers &&
+                        new Date(product.Product_Offers.start_date) <= today &&
+                        new Date(product.Product_Offers.end_date) >= today
+                    const categoryOfferValid =
+                        product.Product_Category_offers &&
+                        new Date(product.Product_Category_offers.start_date) <=
+                            today &&
+                        new Date(product.Product_Category_offers.end_date) >=
+                            today
 
-                        discountAmount =
-                            (coupon.offer_percentage / 100) * totalCartAmount
-                        newTotalAmount = newTotalAmount - discountAmount
+                    if (productOfferValid && categoryOfferValid) {
+                        discountPercentage = Math.max(
+                            product.Product_Offers.offer_percentage,
+                            product.Product_Category_offers.offer_percentage
+                        )
+                    } else if (productOfferValid) {
+                        discountPercentage =
+                            product.Product_Offers.offer_percentage
+                    } else if (categoryOfferValid) {
+                        discountPercentage =
+                            product.Product_Category_offers.offer_percentage
+                    }
+
+                    const discountAmount =
+                        (product.Product.Original_price * discountPercentage) /
+                        100
+                    const effectivePrice =
+                        product.Product.Original_price - discountAmount
+
+                    return {
+                        ...product,
+                        discountAmount,
+                        effectivePrice: discountPercentage
+                            ? effectivePrice
+                            : product.Product.Original_price,
+                        discountPercentage,
+                    }
+                })
+
+                const totalOfferDiscount = cartProduct.reduce(
+                    (total, product) =>
+                        total + product.discountAmount * product.Qty,
+                    0
+                )
+
+                // Calculate newTotalAmount without coupon code
+                newTotalAmount = cartProduct.reduce(
+                    (total, product) =>
+                        total + product.effectivePrice * product.Qty,
+                    0
+                )
+
+                couponCode = user.coupon
+                if (couponCode) {
+                    const coupon = await Coupon.findOne({
+                        coupon_code: couponCode,
+                    })
+                    if (coupon) {
+                        const today = new Date()
+                        const isValidCoupon =
+                            new Date(coupon.start_date) <= today &&
+                            new Date(coupon.end_date) >= today
+                        if (isValidCoupon) {
+                            couponDiscountPercentage = coupon.offer_percentage
+
+                            discountAmount =
+                                (coupon.offer_percentage / 100) *
+                                totalCartAmount
+                            newTotalAmount = newTotalAmount - discountAmount
+                        }
                     }
                 }
-            }
 
-            const address = user.address_id.filter((a) => a.Is_Active)
-            const shippingAddress = user.address_id.find(
-                (e) => e.Is_Shipping_default
-            )
-            const billingAddress = user.address_id.find(
-                (e) => e.Is_Billing_default
-            )
-            
-               console.log(address)
+                const address = user.address_id.filter((a) => a.Is_Active)
+                const shippingAddress = user.address_id.find(
+                    (e) => e.Is_Shipping_default
+                )
+                const billingAddress = user.address_id.find(
+                    (e) => e.Is_Billing_default
+                )
+
+                console.log(address)
                 res.render("user/checkout", {
                     user,
                     totalOfferDiscount,
@@ -1022,41 +1031,39 @@ const getCheckout = async (req, res) => {
                     session: false,
                     couponCode,
                 })
-
-           
-                
+            } else {
+                // User has no active cart items
+                res.render("user/checkout", {
+                    user,
+                    couponCode,
+                    shippingAddress: null,
+                    billingAddress: null,
+                    cartProduct: [],
+                    totalCartAmount: 0,
+                    address: [],
+                    Payment_types,
+                    discountAmount: discountAmount.toFixed(2),
+                    newTotalAmount: newTotalAmount.toFixed(2),
+                    session: false,
+                    couponDiscountPercentage:
+                        couponDiscountPercentage.toFixed(2),
+                })
+            }
         } else {
-            // User has no active cart items
+            // If user is not logged in, retrieve cart from cookies
+            let cart = req.cookies.cart ? JSON.parse(req.cookies.cart) : []
+            totalCartAmount = await getTotalAmountFromSession(cart)
+            cartProduct = await getProductsFromSession(cart)
+
             res.render("user/checkout", {
-                user,
-                couponCode,
-                shippingAddress: null,
-                billingAddress: null,
-                cartProduct: [],
-                totalCartAmount: 0,
-                address: [],
+                cartProduct,
+                totalCartAmount: totalCartAmount.toFixed(2),
+                session: true,
                 Payment_types,
                 discountAmount: discountAmount.toFixed(2),
                 newTotalAmount: newTotalAmount.toFixed(2),
-                session: false,
-                couponDiscountPercentage: couponDiscountPercentage.toFixed(2)
             })
         }
-    } else {
-        // If user is not logged in, retrieve cart from cookies
-        let cart = req.cookies.cart ? JSON.parse(req.cookies.cart) : []
-        totalCartAmount = await getTotalAmountFromSession(cart)
-        cartProduct = await getProductsFromSession(cart)
-
-        res.render("user/checkout", {
-            cartProduct,
-            totalCartAmount: totalCartAmount.toFixed(2),
-            session: true,
-            Payment_types,
-            discountAmount: discountAmount.toFixed(2),
-            newTotalAmount: newTotalAmount.toFixed(2),
-        })
-    }
 }
 
 

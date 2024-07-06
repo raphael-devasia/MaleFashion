@@ -1,0 +1,759 @@
+<html lang="zxx">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Male_Fashion Template" />
+        <meta name="keywords" content="Male_Fashion, unica, creative, html" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Male-Fashion | Template</title>
+
+        <!-- Google Font -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- Css Styles -->
+        <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+        <link
+            rel="stylesheet"
+            href="css/font-awesome.min.css"
+            type="text/css"
+        />
+        <link rel="stylesheet" href="css/elegant-icons.css" type="text/css" />
+        <link rel="stylesheet" href="css/magnific-popup.css" type="text/css" />
+        <link rel="stylesheet" href="css/nice-select.css" type="text/css" />
+        <link
+            rel="stylesheet"
+            href="css/owl.carousel.min.css"
+            type="text/css"
+        />
+        <link rel="stylesheet" href="css/slicknav.min.css" type="text/css" />
+        <link rel="stylesheet" href="css/style.css" type="text/css" />
+        <link rel="stylesheet" href="css/adress-book.css" type="text/css" />
+    </head>
+
+    <body>
+        <!-- Page Preloder -->
+        <!-- <div id="preloder">
+        <div class="loader"></div>
+    </div> -->
+        <!-- Offcanvas Menu Begin -->
+        <div class="offcanvas-menu-overlay"></div>
+        <div class="offcanvas-menu-wrapper">
+            <div class="offcanvas__option">
+                <div class="offcanvas__links">
+                    <a href="#">Sign in</a>
+                    <a href="#">FAQs</a>
+                </div>
+                <div class="offcanvas__top__hover">
+                    <span>Usd <i class="arrow_carrot-down"></i></span>
+                    <ul>
+                        <li>USD</li>
+                        <li>EUR</li>
+                        <li>USD</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="offcanvas__nav__option">
+                <a href="#" class="search-switch"
+                    ><img src="img/icon/search.png" alt=""
+                /></a>
+                <a href="#"><img src="img/icon/heart.png" alt="" /></a>
+                <a href="#"
+                    ><img src="img/icon/cart.png" alt="" /> <span>0</span></a
+                >
+                <div class="price">$0.00</div>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+            <div class="offcanvas__text">
+                <p>Free shipping, 30-day return or refund guarantee.</p>
+            </div>
+        </div>
+        <!-- Offcanvas Menu End -->
+
+        <!-- Header Section Begin -->
+        <header class="header">
+            <div class="header__top">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-7">
+                            <div class="header__top__left">
+                                <p>
+                                    Free shipping, 30-day return or refund
+                                    guarantee.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-5">
+                            <div class="header__top__right">
+                                <div class="header__top__links">
+                                    <a href="#">Sign in</a>
+                                    <a href="#">FAQs</a>
+                                </div>
+                                <div class="header__top__hover">
+                                    <span
+                                        >Usd <i class="arrow_carrot-down"></i
+                                    ></span>
+                                    <ul>
+                                        <li>USD</li>
+                                        <li>EUR</li>
+                                        <li>USD</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3">
+                        <div class="header__logo">
+                            <a href="./"><img src="img/logo.png" alt="" /></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <nav class="header__menu mobile-menu">
+                            <ul>
+                                <li><a href="./">Home</a></li>
+                                <li class="active">
+                                    <a href="products">Shop</a>
+                                </li>
+                                <% category.forEach((row, index) => { %>
+                                <li>
+                                    <a href="./products/<%= row._id %>"
+                                        ><%= row.category_name %></a
+                                    >
+                                </li>
+                                <% }) %>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="col-lg-3 col-md-3">
+                        <div class="header__nav__option">
+                            <a href="#" class="search-switch"
+                                ><img src="img/icon/search.png" alt=""
+                            /></a>
+                            <a href="#"
+                                ><img src="img/icon/heart.png" alt=""
+                            /></a>
+                            <a href="#"
+                                ><img src="img/icon/cart.png" alt="" />
+                                <span>0</span></a
+                            >
+                            <div class="price">$0.00</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="canvas__open"><i class="fa fa-bars"></i></div>
+            </div>
+        </header>
+        <!-- Header Section End -->
+
+        <!-- Breadcrumb Section Begin -->
+        <section class="breadcrumb-option">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb__text">
+                            <h4>Shop</h4>
+                            <div class="breadcrumb__links">
+                                <a href="./index.html">Home</a>
+                                <span>User</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Breadcrumb Section End -->
+        
+        <div class="container mb-4 main-container">
+            <div class="row">
+                <div class="col-lg-4 pb-5">
+                    <!-- Account Sidebar-->
+                    <div class="author-card pb-3">
+                        <div class="author-card-cover"
+                            style="background-image: url(https://bootdey.com/img/Content/flores-amarillas-wallpaper.jpeg);"><a
+                                class="btn btn-style-1 btn-white btn-sm" href="#" data-toggle="tooltip" title=""
+                                data-original-title="You currently have 290 Reward points to spend"><i
+                                    class="fa fa-award text-md"></i>&nbsp;290 points</a></div>
+                        <div class="author-card-profile">
+                            <div class="author-card-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                    alt="Daniel Adams">
+                            </div>
+                            <div class="author-card-details">
+                                <h5 class="author-card-name text-lg">Daniel Adams</h5><span class="author-card-position">Joined
+                                    February 06, 2017</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wizard">
+                        <nav class="list-group list-group-flush">
+                            <a class="list-group-item active" href="#">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div><i class="fa fa-shopping-bag mr-1 text-muted"></i>
+                                        <div class="d-inline-block font-weight-medium text-uppercase">Orders List</div>
+                                    </div><span class="badge badge-secondary">6</span>
+                                </div>
+                            </a><a class="list-group-item"
+                                href="https://www.bootdey.com/snippets/view/bs4-profile-settings-page" target="__blank"><i
+                                    class="fa fa-user text-muted"></i>Profile Settings</a><a class="list-group-item" href="#"><i
+                                    class="fa fa-map-marker text-muted"></i>Addresses</a>
+                            <a class="list-group-item" href="https://www.bootdey.com/snippets/view/bs4-wishlist-profile-page"
+                                tagert="__blank">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div><i class="fa fa-heart mr-1 text-muted"></i>
+                                        <div class="d-inline-block font-weight-medium text-uppercase">My Wishlist</div>
+                                    </div><span class="badge badge-secondary">3</span>
+                                </div>
+                            </a>
+                            <a class="list-group-item" href="#">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div><i class="fa fa-tag mr-1 text-muted"></i>
+                                        <div class="d-inline-block font-weight-medium text-uppercase">My Tickets</div>
+                                    </div><span class="badge badge-secondary">4</span>
+                                </div>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+                <!-- Orders Table-->
+                <div class="col-lg-8 pb-5">
+                    <div class="d-flex justify-content-end pb-3">
+                        <div class="form-inline">
+                            <label class="text-muted mr-3" for="order-sort">Sort Orders</label>
+                            <select class="form-control" id="order-sort">
+                                <option>All</option>
+                                <option>Delivered</option>
+                                <option>In Progress</option>
+                                <option>Delayed</option>
+                                <option>Canceled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Order #</th>
+                                    <th>Date Purchased</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><a class="navi-link" href="#order-details" data-toggle="modal">78A643CD409</a></td>
+                                    <td>August 08, 2017</td>
+                                    <td><span class="badge badge-danger m-0">Canceled</span></td>
+                                    <td><span>$760.50</span></td>
+                                </tr>
+                                <tr>
+                                    <td><a class="navi-link" href="#order-details" data-toggle="modal">34VB5540K83</a></td>
+                                    <td>July 21, 2017</td>
+                                    <td><span class="badge badge-info m-0">In Progress</span></td>
+                                    <td>$315.20</td>
+                                </tr>
+                                <tr>
+                                    <td><a class="navi-link" href="#order-details" data-toggle="modal">112P45A90V2</a></td>
+                                    <td>June 15, 2017</td>
+                                    <td><span class="badge badge-warning m-0">Delayed</span></td>
+                                    <td>$1,264.00</td>
+                                </tr>
+                                <tr>
+                                    <td><a class="navi-link" href="#order-details" data-toggle="modal">28BA67U0981</a></td>
+                                    <td>May 19, 2017</td>
+                                    <td><span class="badge badge-success m-0">Delivered</span></td>
+                                    <td>$198.35</td>
+                                </tr>
+                                <tr>
+                                    <td><a class="navi-link" href="#order-details" data-toggle="modal">502TR872W2</a></td>
+                                    <td>April 04, 2017</td>
+                                    <td><span class="badge badge-success m-0">Delivered</span></td>
+                                    <td>$2,133.90</td>
+                                </tr>
+                                <tr>
+                                    <td><a class="navi-link" href="#order-details" data-toggle="modal">47H76G09F33</a></td>
+                                    <td>March 30, 2017</td>
+                                    <td><span class="badge badge-success m-0">Delivered</span></td>
+                                    <td>$86.40</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="adress-book">
+            <!--  -->
+            <!--  -->
+            <main class="account-content-wrapper">
+                <section class="account-content">
+                    <div class="welcome-message1">
+                        <div class="welcome-md-rimel-container1">
+                            <span>Welcome! </span>
+                            <span class="md-rimel1"
+                                ><%= userdetails.firstName %></span
+                            >
+                        </div>
+                    </div>
+                    <div class="account-management-parent">
+                        <div class="account-management1">
+                            <div class="manage-account1">
+                                <div class="manage-my-account1">
+                                    Manage My Account
+                                </div>
+                                <div class="account-options1">
+                                    <div class="options1">
+                                        <div class="my-profile1">
+                                            My Profile
+                                        </div>
+                                        <div class="address-book1">
+                                            Address Book
+                                        </div>
+                                        <div
+                                            class="my-payment-options1"
+                                            id="myPaymentOptions"
+                                        >
+                                            My Payment Options
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="my-orders-group">
+                                    <div class="my-orders2">My Orders</div>
+                                    <div class="order-types1">
+                                        <div class="order-return">
+                                            <div class="my-orders3">
+                                                My Orders
+                                            </div>
+                                        </div>
+                                        <div class="order-return1">
+                                            <div class="my-returns1">
+                                                My Returns
+                                            </div>
+                                        </div>
+                                        <div class="cancellation-wish-list">
+                                            <div
+                                                class="my-cancellations-container"
+                                            >
+                                                <div class="my-cancellations1">
+                                                    My Cancellations
+                                                </div>
+                                            </div>
+                                            <div class="my-wishlist1">
+                                                My WishList
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+<% if (shippingAddress && shippingAddress.length>0) { %>
+<div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="product__item">
+                                <div class="product__item__text">
+                                    <div class="address-type">
+                                        <div class="address-heading">
+                                            <div class="address-label">
+                                                <div class="address-name">
+                                                    <div
+                                                        class="default-shipping-address"
+                                                    >
+                                                        Default Shipping Address
+                                                    </div>
+                                                </div>
+                                                <p
+                                                    class="jino-devasia-maliyekkal-container"
+                                                >
+                                                    <span class="jino-devasia"
+                                                        ><%= shippingAddress[0].Address_id.FirstName %> <%= shippingAddress[0].Address_id.LastName %></span
+                                                    >
+                                                    <span
+                                                        class="maliyekkal-house"
+                                                        ><%= shippingAddress[0].Address_id.House_number %></span
+                                                    >
+                                                    <span
+                                                        class="poolakutty-postkannur"
+                                                        ><%= shippingAddress[0].Address_id.Address_line_1 %> <%= shippingAddress[0].Address_id.Address_line_2 %></span
+                                                    >
+                                                    <span
+                                                        class="kerala-india-670650"
+                                                        ><%= shippingAddress[0].Address_id.Postal_code %> <%= shippingAddress[0].Address_id.State %> <%= shippingAddress[0].Address_id.Country %></span
+                                                    >
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button  class="button3" >
+                                            <a style="all: unset;font-size: 16px;color: white;" class="view-all-products1" href="/user/updateaddress/<%= billingAddress[0]._id %>">
+                                                Edit Address
+                                            </a>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+ 
+<% } %>
+<% if (billingAddress && billingAddress.length>0) { %>
+<div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="product__item">
+                                <div class="product__item__text">
+                                    <div class="address-type">
+                                        <div class="address-heading">
+                                            <div class="address-label">
+                                                <div class="address-name">
+                                                    <div
+                                                        class="default-shipping-address"
+                                                    >
+                                                        Default Billing Address
+                                                    </div>
+                                                </div>
+                                                <p
+                                                    class="jino-devasia-maliyekkal-container"
+                                                >
+                                                    <span class="jino-devasia"
+                                                        ><%= billingAddress[0].Address_id.FirstName %> <%= billingAddress[0].Address_id.LastName %></span
+                                                    >
+                                                    <span
+                                                        class="maliyekkal-house"
+                                                        ><%= billingAddress[0].Address_id.House_number %></span
+                                                    >
+                                                    <span
+                                                        class="poolakutty-postkannur"
+                                                        ><%= billingAddress[0].Address_id.Address_line_1 %> <%= billingAddress[0].Address_id.Address_line_2 %></span
+                                                    >
+                                                    <span
+                                                        class="kerala-india-670650"
+                                                        ><%= billingAddress[0].Address_id.Postal_code %> <%= billingAddress[0].Address_id.State %> <%= billingAddress[0].Address_id.Country %></span
+                                                    >
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button  class="button3" >
+                                            <a style="all: unset;font-size: 16px;color: white;" class="view-all-products1"  href="/user/updateaddress/<%= billingAddress[0]._id %>">
+                                                Edit Address
+                                            </a>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+ 
+<% } %>
+
+
+                        
+
+                        
+                    </div>
+                    <div class="addresses-content-wrapper">
+    <div class="addresses-content">
+        <div class="addresses-heading">
+            <div class="all-addresses">All Addresses</div>
+        </div>
+        <% if (address && address.length > 0) { %> 
+        <% address.forEach((user, index) => { %>
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="product__item">
+                <div class="product__item__text">
+                    <div class="address-item">
+                        <div class="address-details">
+                            <p class="jino-devasia-maliyekkal-container2">
+                                <span class="jino-devasia2">
+                                    <%= user.Address_id.FirstName %> <%= user.Address_id.LastName %>
+                                </span>
+                                <span class="maliyekkal-house2">
+                                    <%= user.Address_id.House_number %>
+                                </span>
+                                <span class="poolakutty-postkannur2">
+                                    <%= user.Address_id.Address_line_1 %>, <%= user.Address_id.Address_line_2 %>
+                                </span>
+                                <span class="kerala-india-6706502">
+                                    <%= user.Address_id.City %>, <%= user.Address_id.Country %>, <%= user.Address_id.Postal_code %>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="shipping-action ">
+                            <div class="shipping-button pb-2">
+                                <a href="/user/setshipping/<%= user._id %>" class="set-as-shipping">
+                                    Set as Shipping Address
+                                </a>
+                            </div>
+                            <div class="delete-edit-action">
+                                <div class="delete-edit-button">
+                                    <a  href="#" class=" delete" onclick="handleDelete('<%= user._id %>')">
+                                        Delete
+                                    </a>
+                                    <a href="/user/updateaddress/<%= user._id %>" class="edit">
+                                        Edit
+                                    </a>
+                                </div>
+                                <div class="billing-action px-2">
+                                    <div class="set-as-billing pb-2">
+                                       <a href="/user/setbilling/<%= user._id %>" class="set-as-shipping">
+                                    Set as Billing Address
+                                </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }); %> 
+        <% } else { %>
+        <p>No addresses found for the user.</p>
+        <% } %>
+    </div>
+</div>
+                    <div class="products-button">
+                        <button class="button5">
+                            <div
+                                class="view-all-products3"
+                                id="viewAllProducts2"
+                            >
+                                Add New Address
+                            </div>
+                        </button>
+                    </div>
+                </section>
+            </main>
+            <!-- Footer Section Begin -->
+            <footer class="footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="footer__about">
+                                <div class="footer__logo">
+                                    <a href="#"
+                                        ><img src="img/footer-logo.png" alt=""
+                                    /></a>
+                                </div>
+                                <p>
+                                    The customer is at the heart of our unique
+                                    business model, which includes design.
+                                </p>
+                                <a href="#"
+                                    ><img src="img/payment.png" alt=""
+                                /></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
+                            <div class="footer__widget">
+                                <h6>Shopping</h6>
+                                <ul>
+                                    <li><a href="#">Clothing Store</a></li>
+                                    <li><a href="#">Trending Shoes</a></li>
+                                    <li><a href="#">Accessories</a></li>
+                                    <li><a href="#">Sale</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-6">
+                            <div class="footer__widget">
+                                <h6>Shopping</h6>
+                                <ul>
+                                    <li><a href="#">Contact Us</a></li>
+                                    <li><a href="#">Payment Methods</a></li>
+                                    <li><a href="#">Delivary</a></li>
+                                    <li><a href="#">Return & Exchanges</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
+                            <div class="footer__widget">
+                                <h6>NewLetter</h6>
+                                <div class="footer__newslatter">
+                                    <p>
+                                        Be the first to know about new arrivals,
+                                        look books, sales & promos!
+                                    </p>
+                                    <form action="#">
+                                        <input
+                                            type="text"
+                                            placeholder="Your email"
+                                        />
+                                        <button type="submit">
+                                            <span class="icon_mail_alt"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <div class="footer__copyright__text">
+                             <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->   
+                                <p>
+                                    Copyright ©
+                                    <script>
+                                        document.write(new Date().getFullYear())
+                                    </script>
+                                    2020 All rights reserved | This template is
+                                    made with
+                                    <i
+                                        class="fa fa-heart-o"
+                                        aria-hidden="true"
+                                    ></i>
+                                    by
+                                    <a
+                                        href="https://colorlib.com"
+                                        target="_blank"
+                                        >Colorlib</a
+                                    >
+                                </p>
+                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- Footer Section End -->
+
+            <!-- Search Begin -->
+            <div class="search-model">
+                <div
+                    class="h-100 d-flex align-items-center justify-content-center"
+                >
+                    <div class="search-close-switch">+</div>
+                    <form class="search-model-form">
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="Search here....."
+                        />
+                    </form>
+                </div>
+            </div>
+            <!-- Search End -->
+        </div>
+        <!-- Js Plugins -->
+        <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery.nice-select.min.js"></script>
+        <script src="js/jquery.nicescroll.min.js"></script>
+        <script src="js/jquery.magnific-popup.min.js"></script>
+        <script src="js/jquery.countdown.min.js"></script>
+        <script src="js/jquery.slicknav.js"></script>
+        <script src="js/mixitup.min.js"></script>
+        <script src="js/owl.carousel.min.js"></script>
+        <script src="js/main.js"></script>
+
+        <script>
+            var linkContainer = document.getElementById("linkContainer")
+            if (linkContainer) {
+                linkContainer.addEventListener("click", function (e) {
+                    // Please sync "Home Page/Login" to the project
+                })
+            }
+
+            var allProductsText = document.getElementById("allProductsText")
+            if (allProductsText) {
+                allProductsText.addEventListener("click", function (e) {
+                    // Please sync "All Products" to the project
+                })
+            }
+
+            var clothingText = document.getElementById("clothingText")
+            if (clothingText) {
+                clothingText.addEventListener("click", function (e) {
+                    // Please sync "Clothing" to the project
+                })
+            }
+
+            var shoesText = document.getElementById("shoesText")
+            if (shoesText) {
+                shoesText.addEventListener("click", function (e) {
+                    // Please sync "Shoes" to the project
+                })
+            }
+
+            var accessoriesText1 = document.getElementById("accessoriesText1")
+            if (accessoriesText1) {
+                accessoriesText1.addEventListener("click", function (e) {
+                    // Please sync "Accessories" to the project
+                })
+            }
+
+            var linkContainer = document.getElementById("linkContainer")
+            if (linkContainer) {
+                linkContainer.addEventListener("click", function (e) {
+                    // Please sync "Search" to the project
+                })
+            }
+
+            var linkContainer1 = document.getElementById("linkContainer1")
+            if (linkContainer1) {
+                linkContainer1.addEventListener("click", function (e) {
+                    // Please sync "WishList" to the project
+                })
+            }
+
+            var linkContainer = document.getElementById("linkContainer")
+            if (linkContainer) {
+                linkContainer.addEventListener("click", function (e) {
+                    // Please sync "Mini Cart" to the project
+                })
+            }
+
+            var linkContainer = document.getElementById("linkContainer")
+            if (linkContainer) {
+                linkContainer.addEventListener("click", function () {
+                    window.open(
+                        "https://themewagon.github.io/malefashion/index.html"
+                    )
+                })
+            }
+
+            var myPaymentOptions = document.getElementById("myPaymentOptions")
+            if (myPaymentOptions) {
+                myPaymentOptions.addEventListener("click", function (e) {
+                    // Please sync "Digital Wallet" to the project
+                })
+            }
+
+            var viewAllProducts2 = document.getElementById("viewAllProducts2")
+            if (viewAllProducts2) {
+                viewAllProducts2.addEventListener("click", function (e) {
+                    window.location.href = "./addnewaddress"
+                })
+            }
+
+            var linkContainer = document.getElementById("linkContainer")
+            if (linkContainer) {
+                linkContainer.addEventListener("click", function () {
+                    window.open(
+                        "https://themewagon.github.io/malefashion/shopping-cart.html"
+                    )
+                })
+            }
+        </script>
+        <script>
+    function handleDelete(addressId) {
+        fetch(`/user/deleteaddres?id=${addressId}`, {
+            method: 'PUT',
+        }) .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Address deleted successfully') {
+                window.location.href = "/user/address";  // Redirect to the address page
+            } else {
+                alert('Failed to delete address');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    
+       
+    }
+    
+
+   
+</script>
+    </body>
+</html>

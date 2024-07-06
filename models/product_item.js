@@ -14,8 +14,12 @@ const Product_itemSchema = new Schema({
         required: true,
     },
     Original_price: { type: Number, required: true },
-    // Sale_price: { type: Number ,required: true },
-    Product_sku: { type: String,required: true  },
+    Offer_price_id: {
+        type: Schema.Types.ObjectId,
+        ref: "Product_offer",
+    },
+
+    Product_sku: { type: String, required: true },
 })
 
 const Product_item = mongoose.model("Product_item", Product_itemSchema)

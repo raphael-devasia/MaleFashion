@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="POS - Bootstrap Admin Template">
+    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
+    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Dreams Pos admin template</title>
+    
+    <!-- External CSS files -->
+    <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/animate.css">
+    <link rel="stylesheet" href="../assets/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="../assets/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    
+    <!-- Internal CSS for styling -->
+    <style>
+        #error-message {
+            color: red;
+            animation: flash 1s infinite;
+        }
+
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .main-container {
+            width: 35vw;
+            margin: auto;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .img-container {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .cropped-container {
+            width: 400px;
+            margin: auto;
+            text-align: center;
+            background-color: ghostwhite;
+            padding: 20px 20px;
+            display: none;
+            margin-top: 10px;
+        }
+
+        #btn-crop {
+            appearance: none;
+            background-color: #000000;
+            border: 2px solid #1A1A1A;
+            border-radius: 15px;
+            box-sizing: border-box;
+            color: #FFFFFF;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+            font-size: 16px;
+            font-weight: 600;
+            line-height: normal;
+            min-width: 0;
+            margin: 10px auto;
+            outline: none;
+            padding: 10px 12px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            width: 100px;
+            will-change: transform;
+        }
+
+        #btn-crop:disabled {
+            pointer-events: none;
+        }
+
+        #btn-crop:hover {
+            box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+            transform: translateY(-2px);
+        }
+
+        #btn-crop:active {
+            box-shadow: none;
+            transform: translateY(0);
+        }
+
+        #output {
+            margin: 0 auto;
+            max-width: 100%;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="global-loader">
+        <div class="whirly-loader"></div>
+    </div>
+
+    <div class="main-wrapper">
+        <!-- Include your header -->
+        <% include('dashheader') %>
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll">
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <!-- Sidebar menu items -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product add form -->
+        <form id="cform" action="/admin/addproduct" method="post" enctype="multipart/form-data">
+            <div class="page-wrapper">
+                <div class="content">
+                    <div class="page-header">
+                        <div class="page-title">
+                            <h4>Product Add</h4>
+                            <h6>Create new product</h6>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Product details inputs -->
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label> Product Images</label>
+                                        <div class="main-container">
+                                            <div class="img-container">
+                                                <img id="image" src="../assets/img/img-05.jpg">
+                                            </div>
+                                            <button id="btn-crop" disabled>Crop</button>
+                                            <div class="cropped-container">
+                                                <img src="" id="output">
+                                            </div>
+                                        </div>
+                                        <div class="image-upload">
+                                            <input type="file" id="product_image_input" onchange="displayThumbnails(event)" name="product_images" multiple>
+                                            <div class="image-uploads">
+                                                <img id="thumbnail" src="../assets/img/icons/upload.svg" alt="img">
+                                                <h4>Drag and drop files to upload</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Additional form fields -->
+                                <!-- Adjusted based on your specific form structure -->
+
+                                <div class="col-lg-12 justify-content-center pb-4 mx-auto">
+                                    <h6 id="error-message" class="text-center"></h6>
+                                </div>
+                                <div class="col-lg-12">
+                                    <button type="submit" class="btn btn-submit me-2 newAddProduct">Submit</button>
+                                    <a href="products" class="btn btn-cancel">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- Display success or error messages -->
+        <div>
+            <% if (msg && locals.msg.length > 0) { %>
+                <div class="alert alert-info">
+                    <% msg.forEach(function(message) { %>
+                        <p><%= message %></p>
+                    <% }) %>
+                </div>
+            <% } %>
+        </div>
+
+    </div>
+
+    <!-- External JavaScript libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs"></script>
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/feather.min.js"></script>
+    <script src="../assets/js/jquery.slimscroll.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap4.min.js"></script>
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/plugins/select2/js/select2.min.js"></script>
+    <script src="../assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
+    <script src="../assets/js/script.js"></script>
+
+    <!-- Internal JavaScript for handling image upload and cropping -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const image = document.getElementById('image');
+            const cropper = new Cropper(image, {
+                aspectRatio: 1, // Aspect ratio 1:1 for cropping
+                viewMode: 2 // Display cropped image within the container
+            });
+
+            document.querySelector('#btn-crop').addEventListener('click', function() {
+                const croppedImage = cropper.getCroppedCanvas().toDataURL("image/png");
+                document.getElementById('output').src = croppedImage;
+                document.querySelector(".cropped-container").style.display = 'block';
+                document.getElementById('btn-crop').disabled = true;
+            });
+
+            function displayThumbnails(event) {
+                const files = event.target.files;
+                const productImageContainer = document.getElementById('imageList');
+
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const imageDataUrl = event.target.result;
+                        const img = document.createElement('img');
+                        img.src = imageDataUrl;
+                        img.classList.add('uploaded-image');
+
+                        const li = document.createElement('li');
+                        li.classList.add('ps-0');
+                        li.appendChild(img);
+
+                        // Append image to container
+                        productImageContainer.appendChild(li);
+
+                        // Initialize Cropper.js for each uploaded image
+                        const cropper = new Cropper(img, {
+                            aspectRatio: 1, // Aspect ratio 1:1 for cropping
+                            viewMode: 1, // Display image in the cropped area
+                            crop(event) {
+                                console.log(event.detail.x);
+                                console.log(event.detail.y);
+                                console.log(event.detail.width);
+                                console.log(event.detail.height);
+                                console.log(event.detail.rotate);
+                                console.log(event.detail.scaleX);
+                                console.log(event.detail.scaleY);
+                            },
+                        });
+                    };
+                                    reader.readAsDataURL(file);
+                });
+            }
+
+            // Example of handling form submission using jQuery
+            $('#cform').submit(function(e) {
+                e.preventDefault(); // Prevent the form from submitting normally
+
+                // Example AJAX submission
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        // Handle success response, e.g., show success message
+                        console.log('Product added successfully!');
+                        // Example: display success message using SweetAlert2
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Product added successfully!',
+                        }).then((result) => {
+                            // Redirect to product list page on OK button click
+                            if (result.isConfirmed) {
+                                window.location.href = '/admin/products';
+                            }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response, e.g., show error message
+                        console.error('Error adding product:', error);
+                        // Example: display error message using SweetAlert2
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Failed to add product. Please try again later.',
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

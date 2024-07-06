@@ -1,0 +1,761 @@
+<html lang="zxx">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Male_Fashion Template" />
+        <meta name="keywords" content="Male_Fashion, unica, creative, html" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Male-Fashion | Template</title>
+
+        <!-- Google Font -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- Css Styles -->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css" />
+        <link
+            rel="stylesheet"
+            href="/css/font-awesome.min.css"
+            type="text/css"
+        />
+        <link rel="stylesheet" href="/css/elegant-icons.css" type="text/css" />
+        <link rel="stylesheet" href="/css/magnific-popup.css" type="text/css" />
+        <link rel="stylesheet" href="/css/nice-select.css" type="text/css" />
+        <link
+            rel="stylesheet"
+            href="/css/owl.carousel.min.css"
+            type="text/css"
+        />
+        <link rel="stylesheet" href="/css/slicknav.min.css" type="text/css" />
+        <link rel="stylesheet" href="/css/style.css" type="text/css" />
+        <link rel="stylesheet" href="/css/adress-book.css" type="text/css" />
+        <style>
+            .card {
+    box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+}
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0,0,0,.125);
+    border-radius: 1rem;
+}
+.text-reset {
+    --bs-text-opacity: 1;
+    color: inherit!important;
+}
+a {
+    color: #5465ff;
+    text-decoration: none;
+}
+        </style>
+    </head>
+
+    <body>
+        <!-- Page Preloder -->
+        <!-- <div id="preloder">
+        <div class="loader"></div>
+    </div> -->
+        <!-- Offcanvas Menu Begin -->
+        <div class="offcanvas-menu-overlay"></div>
+        <div class="offcanvas-menu-wrapper">
+            <div class="offcanvas__option">
+                <div class="offcanvas__links">
+                    <a href="#">Sign in</a>
+                    <a href="#">FAQs</a>
+                </div>
+                <div class="offcanvas__top__hover">
+                    <span>Usd <i class="arrow_carrot-down"></i></span>
+                    <ul>
+                        <li>USD</li>
+                        <li>EUR</li>
+                        <li>USD</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="offcanvas__nav__option">
+                <a href="#" class="search-switch"
+                    ><img src="img/icon/search.png" alt=""
+                /></a>
+                <a href="#"><img src="img/icon/heart.png" alt="" /></a>
+                <a href="#"
+                    ><img src="img/icon/cart.png" alt="" /> <span>0</span></a
+                >
+                <div class="price">$0.00</div>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+            <div class="offcanvas__text">
+                <p>Free shipping, 30-day return or refund guarantee.</p>
+            </div>
+        </div>
+        <!-- Offcanvas Menu End -->
+
+        <!-- Header Section Begin -->
+        <header class="header">
+            <div class="header__top">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-7">
+                            <div class="header__top__left">
+                                <p>
+                                    Free shipping, 30-day return or refund
+                                    guarantee.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-5">
+                            <div class="header__top__right">
+                                <div class="header__top__links">
+                                    <a href="#">Sign in</a>
+                                    <a href="#">FAQs</a>
+                                </div>
+                                <div class="header__top__hover">
+                                    <span
+                                        >Usd <i class="arrow_carrot-down"></i
+                                    ></span>
+                                    <ul>
+                                        <li>USD</li>
+                                        <li>EUR</li>
+                                        <li>USD</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3">
+                        <div class="header__logo">
+                            <a href="./"><img src="img/logo.png" alt="" /></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <nav class="header__menu mobile-menu">
+                            <ul>
+                                <li><a href="./">Home</a></li>
+                                <li class="active">
+                                    <a href="products">Shop</a>
+                                </li>
+                                <% category.forEach((row, index) => { %>
+                                <li>
+                                    <a href="./products/<%= row._id %>"
+                                        ><%= row.category_name %></a
+                                    >
+                                </li>
+                                <% }) %>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="col-lg-3 col-md-3">
+                        <div class="header__nav__option">
+                            <a href="#" class="search-switch"
+                                ><img src="img/icon/search.png" alt=""
+                            /></a>
+                            <a href="#"
+                                ><img src="img/icon/heart.png" alt=""
+                            /></a>
+                            <a href="#"
+                                ><img src="img/icon/cart.png" alt="" />
+                                <span>0</span></a
+                            >
+                            <div class="price">$0.00</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="canvas__open"><i class="fa fa-bars"></i></div>
+            </div>
+        </header>
+        <!-- Header Section End -->
+
+        <!-- Breadcrumb Section Begin -->
+        <section class="breadcrumb-option">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb__text">
+                            <h4>Shop</h4>
+                            <div class="breadcrumb__links">
+                                <a href="./index.html">Home</a>
+                                <span>User</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Breadcrumb Section End -->
+
+        <div class="adress-book">
+            <!--  -->
+            <!--  -->
+            <main class="account-content-wrapper">
+                <section class="account-content">
+                    <div class="welcome-message1">
+                        <div class="welcome-md-rimel-container1">
+                            <span>Welcome! </span>
+                            <span class="md-rimel1"
+                                ><%= userdetails.firstName %></span
+                            >
+                        </div>
+                    </div>
+                
+
+                    <div>               
+                        
+<div class="container-fluid">
+        <div class="account-management-parent">
+                        <div class="account-management1 ">
+                            <div class="manage-account1">
+                                <div class="manage-my-account1">
+                                    Manage My Account
+                                </div>
+                                <div class="account-options1">
+                                    <div class="options1">
+                                        <div class="my-profile1">
+                                            My Profile
+                                        </div>
+                                        <div class="address-book1">
+                                            Address Book
+                                        </div>
+                                        <div
+                                            class="my-payment-options1"
+                                            id="myPaymentOptions"
+                                        >
+                                            My Payment Options
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="my-orders-group">
+                                    <div class="my-orders2">My Orders</div>
+                                    <div class="order-types1">
+                                        <div class="order-return">
+                                            <div class="my-orders3">
+                                                My Orders
+                                            </div>
+                                        </div>
+                                        <div class="order-return1">
+                                            <div class="my-returns1">
+                                                My Returns
+                                            </div>
+                                        </div>
+                                        <div class="cancellation-wish-list">
+                                            <div
+                                                class="my-cancellations-container"
+                                            >
+                                                <div class="my-cancellations1">
+                                                    My Cancellations
+                                                </div>
+                                            </div>
+                                            <div class="my-wishlist1">
+                                                My WishList
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+<div class="container">
+    
+  <!-- Title -->
+  <div class="d-flex justify-content-between align-items-center py-3">
+    <h2 class="h5 mb-0"><a href="#" class="text-muted"></a> Order # <%=  orderDetails.Order_number  %></h2>
+  </div>
+
+  <!-- Main content -->
+  <div class="row">
+    <div class="col-lg-8">
+      <!-- Details -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="mb-3 d-flex justify-content-between">
+            <div>
+              <span class="me-3">Order Placed On: <%= (orderDetails.Order_id.Order_status.createdAt ).toLocaleDateString()  %></span>
+              <!-- <span class="me-3">#16123222</span>
+              <span class="me-3"></span> -->
+              <span class="badge rounded-pill bg-info"><%= orderDetails.Order_id.Order_status.Status %></span>
+            </div>
+            <div class="d-flex">
+              <button class="btn btn-link p-0 me-3 d-none d-lg-block btn-icon-text"><i class="bi bi-download"></i> <span class="text">Invoice</span></button>
+              <div class="dropdown">
+                <button class="btn btn-link p-0 text-muted" type="button" data-bs-toggle="dropdown">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Edit</a></li>
+                  <li><a class="dropdown-item" href="#"><i class="bi bi-printer"></i> Print</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <table class="table table-borderless">
+        <tbody>
+            <% for (let i=0; i < orderDetails.Product_item_id.length; i++) { %>
+                <tr class="<%= orderDetails.Status[i] === 'Cancelled' ? 'text-muted' : '' %>">
+                    <td>
+                        <div class="d-flex mb-2">
+                            <div class="flex-shrink-0">
+                                <img src="<%= productArray[i].Product_item.Image_filename[0] %>" alt="" width="35"
+                                    class="img-fluid">
+                            </div>
+                            <div class="flex-lg-grow-1 ms-3">
+                                <h6 class="small mb-0">
+                                    <a href="#" class="text-reset">
+                                        <%= productArray[i].Product_item.Product_variation_id.Product_item_id.Product_id.product_name
+                                            %>
+                                    </a>
+                                </h6>
+                                <span class="small">Color: <%=
+                                        productArray[i].Product_item.Product_variation_id.Product_item_id.Colour_id.Colour_name
+                                        %></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <%= orderDetails.Qty[i] %>
+                    </td>
+                    <td class="text-end">$ <%= productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price
+                            %>
+                    </td>
+                    <td>
+                        <!-- Button trigger modal -->
+                        <% if (orderDetails.Status[i]==='Cancelled' ) { %>
+                            <!-- Muted and disabled button for Cancelled status -->
+                            <button type="button" class="btn btn-secondary" disabled>Cancelled</button>
+                            <% } else if (orderDetails.Status[i]==='Processing') { %>
+                                <button type="button" class="btn btn-danger" data-id="<%= orderDetails.Product_item_id[i] %>"
+                                    data-order-id="<%= orderDetails._id %>" data-toggle="modal"
+                                    data-target="#exampleModalCenterItem">
+                                    Cancel
+                                </button>
+                                <% } else if (orderDetails.Status[i]==='Delivered') { %>
+                            <a href="/user/orders/return-delivery/<%= orderDetails.Product_item_id[i] %>?orderId=<%= orderDetails._id %>"
+                                type="button" class="btn btn-danger">
+                                Return Item
+                            </a>
+                                <% }  else if (orderDetails.Status[i]==='Returned') { %>
+                            <button type="button" class="btn btn-secondary" disabled>Returned</button>
+                                <% } else if (orderDetails.Status[i]==='Refunded') { %>
+                            <button type="button" class="btn btn-secondary" disabled>Refunded</button>
+                                <% } else if (orderDetails.Status[i]==='Shipped') { %>
+                                    <button type="button" class="btn btn-success" disabled>Shipped</button>
+                                    <a href="/user/orders/confirm-delivery/<%= orderDetails.Product_item_id[i] %>?orderId=<%= orderDetails._id %>" type="button"
+                                        class="btn btn-info">
+                                        Confirm delivery
+                                    </a>
+                                    <% } %>
+                    </td>
+                </tr>
+                <% } %>
+        </tbody>
+
+            <tfoot>
+              <tr>
+                <td colspan="2">Subtotal</td>
+                <td class="text-end">$ <%= (orderDetails.Order_id.Product_cost).toFixed(2)%></td>
+              </tr>
+              <tr>
+                <td colspan="2">Shipping</td>
+                <td class="text-end">$00.00</td>
+              </tr>
+              <tr>
+                <td colspan="2">Discount (Code:<%= orderDetails.Order_id.Coupon_code%>)</td>
+                <td class="text-danger text-end">-$<%= (orderDetails.Order_id.Coupon_discount).toFixed(2) %></td>
+              </tr>
+            <tr>
+                <td colspan="2">Sales Discount</td>
+                <td class="text-danger text-end">-$ <%= (orderDetails.Order_id.Sales_discount).toFixed(2) %> </td>
+            </tr>
+              <tr class="fw-bold">
+                <td colspan="2">TOTAL</td>
+                <td class="text-end">$<%= (orderDetails.Order_id.Order_total).toFixed(2) %></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <!-- Payment -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <h3 class="h6">Payment Method</h3>
+              <p>COD<br>
+              Total: $ <%= orderDetails.Order_id.Order_total %> <span class="badge bg-success rounded-pill">PENDING</span></p>
+
+
+
+              <!-- Button trigger modal -->
+              <% if (orderDetails.Order_id.Order_status.Status === "Paid"||orderDetails.Order_id.Order_status.Status === "Processing") { %>
+               <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter" >
+  Cancel Entire Order
+</button>
+              <% } else { %>
+<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter" disabled>
+  Cancel Entire Order
+</button>
+<% } %>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Order Cancellation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      Do you Want to cancel this order?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+         <a href="/user/orders/delete/<%= orderDetails._id %>" type="button" class="btn btn-primary" >Confirm</a>
+        
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 2 -->
+
+<div class="modal fade" id="exampleModalCenterItem" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Item Cancellation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Do you want to cancel this item?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a href="#" id="confirmCancelBtn" class="btn btn-primary">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+            </div>
+            <div class="col-lg-6">
+              <h3 class="h6">Billing address</h3>
+              <address>
+                <p><%= orderDetails.Order_id.Billing_address.FirstName %> <%= orderDetails.Order_id.Billing_address.LastName %> </p>
+               
+  <p> <%= orderDetails.Order_id.Billing_address.House_number %> ,<%= orderDetails.Order_id.Billing_address.Address_line_1%></p>
+
+  <p> <%= orderDetails.Order_id.Billing_address.Address_line_2 %>,<%= orderDetails.Order_id.Billing_address.Postal_code %> </p>
+  
+  <p><%= orderDetails.Order_id.Billing_address.State %>,<%= orderDetails.Order_id.Billing_address.Country %></p>
+  <p></p>
+              </address>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <!-- Customer Notes -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="h6">Customer Notes</h3>
+          <p>Sed enim, faucibus litora velit vestibulum habitasse. Cras lobortis cum sem aliquet mauris rutrum. Sollicitudin. Morbi, sem tellus vestibulum porttitor.</p>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <!-- Shipping information -->
+        <div class="card-body">
+          <!-- <h3 class="h6">Shipping Information</h3>
+          <strong>FedEx</strong>
+          <span><a href="#" class="text-decoration-underline" target="_blank">FF1234567890</a> <i class="bi bi-box-arrow-up-right"></i> </span> -->
+          <hr>
+          <h3 class="h6">Address</h3>
+          <address>
+                <p><%= orderDetails.Order_id.Shipping_address.FirstName %> <%= orderDetails.Order_id.Shipping_address.LastName %> </p>
+               
+  <p> <%= orderDetails.Order_id.Shipping_address.House_number %> ,<%= orderDetails.Order_id.Shipping_address.Address_line_1%></p>
+
+  <p> <%= orderDetails.Order_id.Shipping_address.Address_line_2 %>,<%= orderDetails.Order_id.Shipping_address.Postal_code %> </p>
+  
+  <p><%= orderDetails.Order_id.Shipping_address.State %>,<%= orderDetails.Order_id.Shipping_address.Country %></p>
+  <p></p>
+              </address>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+                        
+      
+            </main>
+            <!-- Footer Section Begin -->
+            <footer class="footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="footer__about">
+                                <div class="footer__logo">
+                                    <a href="#"
+                                        ><img src="img/footer-logo.png" alt=""
+                                    /></a>
+                                </div>
+                                <p>
+                                    The customer is at the heart of our unique
+                                    business model, which includes design.
+                                </p>
+                                <a href="#"
+                                    ><img src="img/payment.png" alt=""
+                                /></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
+                            <div class="footer__widget">
+                                <h6>Shopping</h6>
+                                <ul>
+                                    <li><a href="#">Clothing Store</a></li>
+                                    <li><a href="#">Trending Shoes</a></li>
+                                    <li><a href="#">Accessories</a></li>
+                                    <li><a href="#">Sale</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-6">
+                            <div class="footer__widget">
+                                <h6>Shopping</h6>
+                                <ul>
+                                    <li><a href="#">Contact Us</a></li>
+                                    <li><a href="#">Payment Methods</a></li>
+                                    <li><a href="#">Delivary</a></li>
+                                    <li><a href="#">Return & Exchanges</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
+                            <div class="footer__widget">
+                                <h6>NewLetter</h6>
+                                <div class="footer__newslatter">
+                                    <p>
+                                        Be the first to know about new arrivals,
+                                        look books, sales & promos!
+                                    </p>
+                                    <form action="#">
+                                        <input
+                                            type="text"
+                                            placeholder="Your email"
+                                        />
+                                        <button type="submit">
+                                            <span class="icon_mail_alt"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <div class="footer__copyright__text">
+                             <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->   
+                                <p>
+                                    Copyright ©
+                                    <script>
+                                        document.write(new Date().getFullYear())
+                                    </script>
+                                    2020 All rights reserved | This template is
+                                    made with
+                                    <i
+                                        class="fa fa-heart-o"
+                                        aria-hidden="true"
+                                    ></i>
+                                    by
+                                    <a
+                                        href="https://colorlib.com"
+                                        target="_blank"
+                                        >Colorlib</a
+                                    >
+                                </p>
+                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- Footer Section End -->
+
+            <!-- Search Begin -->
+            <div class="search-model">
+                <div
+                    class="h-100 d-flex align-items-center justify-content-center"
+                >
+                    <div class="search-close-switch">+</div>
+                    <form class="search-model-form">
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="Search here."
+                        />
+                    </form>
+                </div>
+            </div>
+            <!-- Search End -->
+        </div>
+        <!-- Js Plugins -->
+        <script src="/js/jquery-3.3.1.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/jquery.nice-select.min.js"></script>
+        <script src="/js/jquery.nicescroll.min.js"></script>
+        <script src="/js/jquery.magnific-popup.min.js"></script>
+        <script src="/js/jquery.countdown.min.js"></script>
+        <script src="/js/jquery.slicknav.js"></script>
+        <script src="/js/mixitup.min.js"></script>
+        <script src="/js/owl.carousel.min.js"></script>
+        <script src="/js/main.js"></script>
+        
+       - 3 -->
+    <script>
+        // Add event listener to buttons
+        document.querySelectorAll('[data-toggle="modal"][data-target="#exampleModalCenterItem"]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var productId = this.getAttribute('data-id');
+               
+                var orderId = this.getAttribute('data-order-id');
+                var confirmBtn = document.getElementById('confirmCancelBtn');
+                confirmBtn.href = '/user/orders/delete-item/' + productId + '?orderId=' + orderId;
+            });
+        });
+    </script>
+
+
+
+        <script>
+            var linkContainer = document.getElementById("linkContainer")
+            if (linkContainer) {
+                linkContainer.addEventListener("click", function (e) {
+                    // Please sync "Home Page/Login" to the project
+                })
+            }
+
+            var allProductsText = document.getElementById("allProductsText")
+            if (allProductsText) {
+                allProductsText.addEventListener("click", function (e) {
+                    // Please sync "All Products" to the project
+                })
+            }
+
+            var clothingText = document.getElementById("clothingText")
+            if (clothingText) {
+                clothingText.addEventListener("click", function (e) {
+                    // Please sync "Clothing" to the project
+                })
+            }
+
+            var shoesText = document.getElementById("shoesText")
+            if (shoesText) {
+                shoesText.addEventListener("click", function (e) {
+                    // Please sync "Shoes" to the project
+                })
+            }
+
+            var accessoriesText1 = document.getElementById("accessoriesText1")
+            if (accessoriesText1) {
+                accessoriesText1.addEventListener("click", function (e) {
+                    // Please sync "Accessories" to the project
+                })
+            }
+
+            var linkContainer = document.getElementById("linkContainer")
+            if (linkContainer) {
+                linkContainer.addEventListener("click", function (e) {
+                    // Please sync "Search" to the project
+                })
+            }
+
+            var linkContainer1 = document.getElementById("linkContainer1")
+            if (linkContainer1) {
+                linkContainer1.addEventListener("click", function (e) {
+                    // Please sync "WishList" to the project
+                })
+            }
+
+            var linkContainer = document.getElementById("linkContainer")
+            if (linkContainer) {
+                linkContainer.addEventListener("click", function (e) {
+                    // Please sync "Mini Cart" to the project
+                })
+            }
+
+            var linkContainer = document.getElementById("linkContainer")
+            if (linkContainer) {
+                linkContainer.addEventListener("click", function () {
+                    window.open(
+                        "https://themewagon.github.io/malefashion/index.html"
+                    )
+                })
+            }
+
+            var myPaymentOptions = document.getElementById("myPaymentOptions")
+            if (myPaymentOptions) {
+                myPaymentOptions.addEventListener("click", function (e) {
+                    // Please sync "Digital Wallet" to the project
+                })
+            }
+
+            var viewAllProducts2 = document.getElementById("viewAllProducts2")
+            if (viewAllProducts2) {
+                viewAllProducts2.addEventListener("click", function (e) {
+                    window.location.href = "./addnewaddress"
+                })
+            }
+
+            var linkContainer = document.getElementById("linkContainer")
+            if (linkContainer) {
+                linkContainer.addEventListener("click", function () {
+                    window.open(
+                        "https://themewagon.github.io/malefashion/shopping-cart.html"
+                    )
+                })
+            }
+        </script>
+        <script>
+    function handleDelete(addressId) {
+        fetch(`/user/deleteaddres?id=${addressId}`, {
+            method: 'PUT',
+        }) .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Address deleted successfully') {
+                window.location.href = "/user/address";  // Redirect to the address page
+            } else {
+                alert('Failed to delete address');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    
+       
+    }
+    
+
+   
+</script>
+    </body>
+</html>

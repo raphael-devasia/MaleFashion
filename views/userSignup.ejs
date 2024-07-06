@@ -12,6 +12,7 @@
                 <div class="col-md-6 mb-4">
                   <div data-mdb-input-init class="form-outline">
                     <input type="text" id="firstName" class="form-control form-control-lg" name="firstName" required />
+                    <input type="hidden" name="referral" value="<%= locals.referral %>">
                     <label class="form-label" for="firstName">First Name</label>
                     <div class="text-danger" id="nameError"></div>
                   </div>

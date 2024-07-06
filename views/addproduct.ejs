@@ -8,9 +8,12 @@
 <meta name="author" content="Dreamguys - Bootstrap Admin Template">
 <meta name="robots" content="noindex, nofollow">
 <title>Dreams Pos admin template</title>
+<link href="https://unpkg.com/cropperjs/dist/cropper.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/cropperjs"></script>
 
 <link rel="shortcut icon" type="image/x-icon" href="../assets/img/favicon.jpg">
-
+<link  href="/path/to/cropper.css" rel="stylesheet">
+<script src="/path/to/cropper.js"></script>
 <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
 <link rel="stylesheet" href="../assets/css/animate.css">
 <link rel="stylesheet" href="../assets/plugins/select2/css/select2.min.css">
@@ -18,6 +21,90 @@
 <link rel="stylesheet" href="../assets/plugins/fontawesome/css/fontawesome.min.css">
 <link rel="stylesheet" href="../assets/plugins/fontawesome/css/all.min.css">
 <link rel="stylesheet" href="../assets/css/style.css">
+<style>
+        #error-message {
+            color: red;
+            animation: flash 1s infinite;
+        }
+
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        img {
+    display: block;
+    max-width: 100%;
+}
+.main-container {
+  display: none;
+    width: 35vw;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.img-container {
+    margin-bottom: 10px;
+}
+.cropped-container {
+    width: 400px;
+    margin: auto;
+    text-align: center;
+    justify-content: center;
+    background-color: ghostwhite;
+    padding: 20px 20px;
+    display: none;
+    margin-top: 10px;
+}
+#btn-crop {
+    appearance: none;
+    background-color: #000000;
+    border: 2px solid #1A1A1A;
+    border-radius: 15px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    min-width: 0;
+    margin-left: auto;
+    margin-right: auto;
+    outline: none;
+    padding: 10px 12px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: 100px;
+    will-change: transform;
+    display: none;
+}
+#btn-crop:disabled {
+    pointer-events: none;
+}
+
+#btn-crop:hover {
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
+}
+#btn-crop:active {
+    box-shadow: none;
+    transform: translateY(0);
+}
+#output {
+    margin: 0 5px;
+    display: block;
+    max-width: 100%;
+}
+    </style>
+    <link href="https://unpkg.com/cropperjs/dist/cropper.css" rel="stylesheet">
+   
 </head>
 <body>
 <div id="global-loader">
@@ -56,7 +143,8 @@
 </div>
 </div>
 </div>
-<form action="/admin/addproduct" method="post" enctype="multipart/form-data">
+<form id="cform"  enctype="multipart/form-data">
+
 <div class="page-wrapper">
 <div class="content">
 <div class="page-header">
@@ -95,7 +183,7 @@
 <div class="form-group">
 <label>Size</label>
 <select class="select" name="size">
-<option>Choose Size</option>
+
 <% sizeOptions.forEach((row,index) => { %>   
     <option value="<%= row.Size_name %>"><%= row.Size_name %></option>
   <% }); %>
@@ -106,7 +194,7 @@
 <div class="form-group">
 <label>Colour</label>
 <select class="select" name="Colour_name">
-<option>Choose Colour</option>
+
 <% colourOptions.forEach((row,index) => { %>   
     <option value="<%= row.Colour_name %>"><%= row.Colour_name %></option>
   <% }); %>
@@ -140,15 +228,28 @@
 <div class="col-lg-12">
   <div class="form-group">
     <label> Product Images</label>
-    <div class="image-upload">
-      <input type="file" id="product_image_input" onchange="displayThumbnails(event)" name="product_images" multiple>
-      <div class="image-uploads">
+    <div class="main-container">
+    <div class="img-container">
+        <img id="image" src=""> <!-- Initial image or placeholder -->
+    </div>
+    <div class="cropped-container">
+        <img src="" id="output"> <!-- Display cropped image here -->
+    </div>
+    <button id="btn-crop" type="button">Crop</button><!-- Button for cropping -->
+</div>
+
+   <div class="image-upload">
+    <input type="file" id="product_image_input" onchange="displayThumbnails(event)" name="product_images" multiple>
+    <div class="image-uploads">
         <img id="thumbnail" src="../assets/img/icons/upload.svg" alt="img">
         <h4>Drag and drop files to upload</h4>
-      </div>
     </div>
+</div>
   </div>
 </div>
+
+
+<!-- GET IT -->
 <div class="col-12" id="productListSection" style="display: none;">
   <div class="product-list">
     <ul class="row" id="imageList">
@@ -156,9 +257,15 @@
     </ul>
   </div>
 </div>
+<div class="col-12 justify-content-center pb-4 mx-auto">
+<h6 id="error-message" class="text-center"></h6>
+</div>
 <div class="col-lg-12">
-<button type="submit" class="btn btn-submit me-2">Submit</button>
+  
+<button type="submit" class="btn btn-submit me-2 newAddProduct">Submit</button>
 <a href="products" class="btn btn-cancel">Cancel</a>
+
+
 </div>
 </div>
 </div>
@@ -175,6 +282,7 @@
             </div>
         <% } %>
 </div>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -225,64 +333,173 @@ document.addEventListener("DOMContentLoaded", function() {
 <script src="../assets/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/plugins/select2/js/select2.min.js"></script>
 <script src="../assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
-<script src="../assets/plugins/sweetalert/sweetalerts.min.js"></script>
+
 <script src="../assets/js/script.js"></script>
 
-<!-- <script>
-$(document).ready(function() {
-  $.ajax({
-    url: '/products',
-    method: 'GET',
-    success: function(data) {
-      data.forEach(product => {
-        $('#existingProducts').append(new Option(product.Product_variation_id.Product_item_id.Product_id.product_name, product._id));
-      });
-    }
-  });
-});
-</script> -->
+
 
 <script>
 $(document).ready(function() {
-  const productImageContainer = $('#imageList');
-  
-  function displayThumbnails(event) {
-    const files = event.target.files;
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const imageDataUrl = event.target.result;
-        const img = $('<img>').attr('src', imageDataUrl).addClass('uploaded-image');
-        const li = $('<li>').addClass('ps-0').append(
-          $('<div>').addClass('productviewset').append(
-            $('<div>').addClass('productviewsimg').append(img),
-            $('<div>').addClass('productviewscontent').append(
-              $('<a>').attr('href', 'javascript:void(0);').addClass('hideset').html('<i class="fa fa-trash-alt"></i>').on('click', function() {
-                $(this).closest('li').remove();
-              })
-            )
-          )
-        );
-        productImageContainer.append(li);
-      };
-      reader.readAsDataURL(file);
-    });
-    if (files.length > 0) {
-      $('#productListSection').show();
-    }
-  }
-  
-  $('#product_image_input').on('change', function(event) {
-    displayThumbnails(event);
-  });
+    const productImageContainer = $('#imageList');
+    const imageElement = document.getElementById('image');
+    let cropper;
+    let croppedImages = [];
 
-  $('#thumbnail').hide();
-  $('#product_image_input').on('click', function() {
-    if (!this.value) {
-      $('#thumbnail').show();
+    function initializeCropper(imageSrc) {
+        if (cropper) {
+            cropper.destroy();
+        }
+        imageElement.src = imageSrc;
+        cropper = new Cropper(imageElement, {
+            aspectRatio: 1,
+            viewMode: 1,
+        });
+        $('.main-container').show(); // Show the main container
+        $('#btn-crop').show(); // Show the main container
+
     }
-  });
+
+    function displayImage(event) {
+        const files = event.target.files;
+        if (files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                initializeCropper(e.target.result);
+            };
+            reader.readAsDataURL(files[0]);
+        }
+    }
+
+    $('#product_image_input').on('change', function(event) {
+        displayImage(event);
+    });
+
+    $('#btn-crop').on('click', function() {
+        if (cropper) {
+            const croppedCanvas = cropper.getCroppedCanvas({
+                width: 300,
+                height: 300,
+            });
+            const croppedImage = croppedCanvas.toDataURL("image/png");
+            croppedImages.push(croppedImage);
+
+            const imgElement = $('<img>').attr('src', croppedImage).addClass('uploaded-image');
+            const liElement = $('<li>').addClass('ps-0').append(
+                $('<div>').addClass('productviewset').append(
+                    $('<div>').addClass('productviewsimg').append(imgElement),
+                    $('<div>').addClass('productviewscontent').append(
+                        $('<a>').attr('href', 'javascript:void(0);').addClass('hideset').html('<i class="fa fa-trash-alt"></i>').on('click', function() {
+                            $(this).closest('li').remove();
+                            const index = croppedImages.indexOf(croppedImage);
+                            if (index > -1) {
+                                croppedImages.splice(index, 1);
+                            }
+                        })
+                    )
+                )
+            );
+
+            productImageContainer.append(liElement);
+            $('#productListSection').show();
+            cropper.reset();
+            $('.main-container').hide();
+        }
+    });
+
+    $('#thumbnail').hide();
+    $('#product_image_input').on('click', function() {
+        if (!this.value) {
+            $('#thumbnail').show();
+        }
+    });
+
+    const validationRegex = {
+        product_name: /^[a-zA-Z0-9\s\-]+$/,
+        SKU: /^(?!-)(?!.*--)[a-zA-Z0-9-]+$/,
+        Qty_in_stock: /^[1-9]\d*$/,
+        product_description: /^.+$/s,
+        price: /^(?!0(\.0{1,2})?$)\d+(\.\d{1,2})?$/
+    };
+
+    function validateForm() {
+        let errorMessage = '';
+
+        const product_name = document.querySelector('input[name="product_name"]').value.trim();
+        const SKU = document.querySelector('input[name="SKU"]').value.trim();
+        const Qty_in_stock = document.querySelector('input[name="Qty_in_stock"]').value.trim();
+        const product_description = document.querySelector('textarea[name="product_description"]').value.trim();
+        const price = document.querySelector('input[name="price"]').value.trim();
+
+        if (!product_name || !validationRegex.product_name.test(product_name)) {
+            errorMessage += 'Product Name is required and should be alphanumeric. +';
+        }
+        if (!SKU || !validationRegex.SKU.test(SKU)) {
+            errorMessage += 'SKU is required and should be alphanumeric. +';
+        }
+        if (!Qty_in_stock || !validationRegex.Qty_in_stock.test(Qty_in_stock)) {
+            errorMessage += 'Quantity in Stock is required and should be a numeric value. +';
+        }
+        if (!product_description || !validationRegex.product_description.test(product_description)) {
+            errorMessage += 'Product Description is required. ';
+        }
+        if (!price || !validationRegex.price.test(price)) {
+            errorMessage += 'Price is required and should be a valid numeric format (e.g., 10 or 10.99). +';
+        }
+        if (croppedImages.length < 3 || croppedImages.length > 5) {
+    errorMessage += 'You must upload between 3 and 5 images. +';
+}
+
+
+        if (errorMessage) {
+const messageDispaly = errorMessage.split('+')
+
+            document.getElementById('error-message').textContent = messageDispaly[0].trim();
+// Hide the messahe after 3 seconds
+setTimeout(()=>{
+ document.getElementById('error-message').textContent =""
+},3000)
+
+            return false;
+        }
+
+        return true;
+    }
+
+    document.getElementById('cform').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        if (validateForm()) {
+            document.getElementById('error-message').textContent = '';
+            const formData = new FormData(document.getElementById('cform'));
+
+            croppedImages.forEach((image, index) => {
+                formData.append(`product_images[]`, image);
+            });
+
+            fetch('/admin/addproduct', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    return response.json().then(data => {
+                        if (data.message) {
+                            document.getElementById('error-message').textContent = data.message;
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                document.getElementById('error-message').textContent = 'An error occurred. Please try again.';
+            });
+        }
+    });
 });
 </script>
+
+
+
 </body>
 </html>

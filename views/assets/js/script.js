@@ -98,4 +98,4 @@ else{app.setAttribute('data-theme','light');localStorage.setItem('theme','light'
 toggleSwitch.addEventListener('change',switchTheme,false);}
 if(window.location.hash=="#LightMode"){localStorage.setItem('theme','dark');}
 else{if(window.location.hash=="#DarkMode"){localStorage.setItem('theme','light');}}
-$('ul.tabs li').click(function(){var $this=$(this);var $theTab=$(this).attr('id');console.log($theTab);if($this.hasClass('active')){}else{$this.closest('.tabs_wrapper').find('ul.tabs li, .tabs_container .tab_content').removeClass('active');$('.tabs_container .tab_content[data-tab="'+$theTab+'"], ul.tabs li[id="'+$theTab+'"]').addClass('active');}});});
+$('ul.tabs li').click(function(){var $this=$(this);var $theTab=$(this).attr('id');console.log($theTab);if($this.hasClass('active')){}else{$this.closest('.tabs_wrapper').find('ul.tabs li, .tabs_container .tab_content').removeClass('active');$('.tabs_container .tab_content[data-tab="'+$theTab+'"], ul.tabs li[id="'+$theTab+'"]').addClass('active');}});});   

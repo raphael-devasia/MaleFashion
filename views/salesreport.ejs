@@ -1,0 +1,459 @@
+<%- include('dashboardheader') %>
+    <!-- <div id="global-loader">
+        <div class="whirly-loader"> </div>
+    </div> -->
+
+    <div class="main-wrapper">
+
+        <%- include('dashheader') %>
+
+
+            <%- include('mainsidebar') %>
+
+                <div class="page-wrapper">
+                    <div class="content">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <h4>Sales Report</h4>
+                                <h6>Manage your Sales Report</h6>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Cards for summary -->
+                                    <div class="col-lg-3 col-sm-6 col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5>Total Orders</h5>
+                                                <h6 id="total-orders">
+                                                    <%= productDetails.length %>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-6 col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5>Total Revenue</h5>
+                                                <h6 id="total-revenue">$ <%= totalRevenue.toFixed(2) %>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-6 col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5>Total Discounts</h5>
+                                                <h6 id="total-discounts">$<%= totalDiscount.toFixed(2) %>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-6 col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5>Total Coupons</h5>
+                                                <h6 id="total-coupons">$<%= couponDiscount.toFixed(2) %>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-6 col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5>Average Order Value</h5>
+                                                <h6 id="average-order-value">$<%= averageOrderValue %>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-top">
+                                    <div class="search-set">
+                                        <div class="search-path">
+                                            <a class="btn btn-filter" id="filter_search">
+                                                <img src="../assets/img/icons/filter.svg" alt="img">
+                                                <span><img src="../assets/img/icons/closes.svg" alt="img"></span>
+                                            </a>
+                                        </div>
+                                        <div class="search-input">
+                                                <a class="btn btn-searchset"><img
+                                                        src="../assets/img/icons/search-white.svg" alt="img"></a>
+                                        </div>
+                                    </div>
+                                    <div class="wordset">
+                                        <ul>
+                                            <li>
+                                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="../assets/img/icons/pdf.svg"
+                                                        alt="img"></a>
+                                            </li>
+                                            <li>
+                                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="../assets/img/icons/excel.svg"
+                                                        alt="img"></a>
+                                            </li>
+                                            <li>
+                                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="../assets/img/icons/printer.svg"
+                                                        alt="img"></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+
+                                <div class="card" id="filter_inputs">
+                                    <div class="card-body pb-0">
+                                        <div class="row">
+
+                                            <!-- <div class="col-lg-2 col-sm-6 col-12">
+                                                    <div class="form-group">
+                                                        <div class="input-groupicon">
+                                        <input type="text" placeholder="To Date" class="datetimepicker">
+                                        <div class="addonset">
+                                            <img src="../assets/img/icons/calendars.svg" alt="img">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                                            <div class="col-lg-4 col-sm-6 col-12" id="custom-date-range"
+                                                style="display: none;">
+                                                <div class="form-group">
+                                                    <div class="input-groupicon">
+                                                        <input type="text" placeholder="From Date" class="datetimepicker" id="from-date">
+                                                        <div class="addonset">
+                                                            <img src="../assets/img/icons/calendars.svg" alt="img">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-groupicon">
+                                                        <input type="text" placeholder="To Date" class="datetimepicker" id="to-date">
+                                                        <div class="addonset">
+                                                            <img src="../assets/img/icons/calendars.svg" alt="img">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-2 col-sm-6 col-12">
+                                                <div class="form-group">
+                                                    <select class="form-control" id="date-range"
+                                                        onchange="filterReports()">
+                                                        <option value="daily">Daily</option>
+                                                        <option value="weekly">Weekly</option>
+                                                        <option value="monthly">Monthly</option>
+                                                        <option value="quarterly">Quarterly</option>
+                                                        <option value="yearly">Yearly</option>
+                                                        <option value="all-time">All Time</option>
+                                                        <option value="custom-range">Custom Range</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-1 col-sm-6 col-12 ms-auto">
+                                                <div class="form-group">
+                                                    <a class="btn btn-filters ms-auto" id="search-button" onclick="filterReports()">
+                                                        <img src="../assets/img/icons/search-whites.svg" alt="img">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive ">
+                                    <div class="table-wrapper">
+                                        <table class="table datanew">
+                                            <thead>
+                                                <tr>
+
+                                                    <th>Date</th>
+                                                    <th>Order ID</th>
+                                                    <th>Customer Name</th>
+                                                    <th>State/District</th>
+                                                    <th>Payment Method</th>
+                                                    <th>Product</th>
+                                                    <th>Price</th>
+                                                    <th>Store Discount</th>
+                                                    <th>Coupon Discount</th>
+                                                    <th>Total Discount</th>
+                                                    <th>Grand Total</th>
+                                                    <th>Qty</th>
+                                                    <th>Amount Paid</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                    <% productDetails.forEach( element => { %>
+                                                        <% element.Product_name.forEach((product, index)=> { %>
+                                                        <tr>
+
+                                                            <td>
+                                                                <script>
+                                                                    document.write(moment("<%= element.status.updatedAt %>").format('MMMM Do YYYY, h:mm:ss a'));
+                                                                </script>
+                                                            </td>
+                                                            <td>
+                                                                <%= element._id %>
+                                                            </td>
+                                                            <td>
+                                                                <%= element.User.firstName %>
+                                                                    <%= element.User.lastName %>
+                                                            </td>
+                                                            <td>
+                                                                <%= element.Shop_Orders.Shipping_address.State %>
+                                                            </td>
+                                                            <td>
+                                                                <%= element.Payment_type.Value %>
+                                                            </td>
+                                                            <td>
+                                                                <%= product %>
+                                                            </td>
+                                                            <td>$<%= (element.Price[index]).toFixed(2) %>
+                                                            </td>
+                                                            <td>$<%= (element.Price[index]*element.Offer_percentage[index]/100
+                                                                    ).toFixed(2) %>
+                                                            </td>
+                                                                <td>$<%= ((element.Shop_Orders.Coupon_discount /
+                                                                        element.Shop_Orders.Product_cost) *
+                                                                        element.Price[index]).toFixed(2) %>
+                                                            </td>
+                                                                <td>$ <%= (((element.Shop_Orders.Coupon_discount /
+                                                                        element.Shop_Orders.Product_cost) *
+                                                                        element.Price[index]) + (element.Price[index] *
+                                                                        element.Offer_percentage[index] /
+                                                                        100)).toFixed(2) %>
+                                                            </td>
+                                                                <td>$<%= ((element.Price[index]) -
+                                                                        (((element.Shop_Orders.Coupon_discount /
+                                                                        element.Shop_Orders.Product_cost) *
+                                                                        element.Price[index]) + (element.Price[index] *
+                                                                        element.Offer_percentage[index] /
+                                                                        100))).toFixed(2) %>
+                                                            </td>
+                                                            <td>
+                                                                <%= element.Qty[index] %>
+                                                            </td>
+                                                                <td>$<%= (element.Qty[index] * ((element.Price[index]) -
+                                                                        (((element.Shop_Orders.Coupon_discount /
+                                                                        element.Shop_Orders.Product_cost) *
+                                                                        element.Price[index]) + (element.Price[index] *
+                                                                        element.Offer_percentage[index] /
+                                                                        100)))).toFixed(2) %>
+                                                            </td>
+                                                        </tr>
+                                                        <% }) %>
+
+                                                            <% }) %>
+
+
+
+                                                                <!-- Add more rows as needed -->
+                                            </tbody>
+                                           
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+    </div>
+
+
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+
+    <script src="../assets/js/feather.min.js"></script>
+
+    <script src="../assets/js/jquery.slimscroll.min.js"></script>
+
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap4.min.js"></script>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../assets/js/moment.min.js"></script>
+    <script src="../assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script src="../assets/plugins/select2/js/select2.min.js"></script>
+
+    <script src="../assets/js/moment.min.js"></script>
+    <script src="../assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script src="../assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
+    <script src="../assets/plugins/sweetalert/sweetalerts.min.js"></script>
+
+    <script src="../assets/js/script.js"></script>
+    <script>
+       document.addEventListener('DOMContentLoaded', () => {
+            const dateRangeSelect = document.getElementById('date-range');
+            const customDateRange = document.getElementById('custom-date-range');
+            const searchButton = document.getElementById('search-button'); // Reference to search button
+            const fromDateInput = document.getElementById('from-date');
+            const toDateInput = document.getElementById('to-date');
+
+            // Function to handle the visibility of the search button
+            function updateSearchButtonVisibility() {
+                if (dateRangeSelect.value === 'custom-range') {
+                    customDateRange.style.display = 'flex';
+                    searchButton.style.display = 'block'; // Show search button when custom range is selected
+                } else {
+                    customDateRange.style.display = 'none';
+                    searchButton.style.display = 'none'; // Hide search button when not using custom range
+                }
+            }
+
+            // Initial call to set the correct state
+            updateSearchButtonVisibility();
+
+            // Event listener for dropdown change
+            dateRangeSelect.addEventListener('change', () => {
+                updateSearchButtonVisibility();
+            });
+
+            // Event listener for search button click
+            searchButton.addEventListener('click', () => {
+                const fromDate = fromDateInput.value;
+                const toDate = toDateInput.value;
+                const dateRange = dateRangeSelect.value;
+                window.location.href = `/admin/salesreport?dateRange=${dateRange}&fromDate=${fromDate}&toDate=${toDate}`;
+            });
+        });
+            
+            function toggleDateSelectors() {
+                const dateRange = document.getElementById('date-range').value;
+                const customDateRange = document.getElementById('custom-date-range');
+                if (dateRange === 'custom-range') {
+                    customDateRange.style.display = 'flex';
+                } else {
+                    customDateRange.style.display = 'none';
+                }
+            }
+
+           $(document).ready(function () {
+                $('.datetimepicker').datetimepicker({
+                    format: 'YYYY-MM-DD',
+                    useCurrent: false
+                });
+            });
+        </script> 
+    <script>
+        function filterReports() {
+            const dateRange = document.getElementById('date-range').value;
+            let startDate, endDate;
+
+            if (dateRange === 'custom-range') {
+                startDate = new Date(document.getElementById('from-date').value);
+                endDate = new Date(document.getElementById('to-date').value);
+            } else {
+                const today = new Date();
+                switch (dateRange) {
+                    case 'daily':
+                        startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                        endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+                        break;
+                    case 'weekly':
+                        startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6);
+                        endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                        break;
+                    case 'monthly':
+                        startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                        endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                        break;
+                    case 'quarterly':
+                        const quarter = Math.floor((today.getMonth() + 3) / 3);
+                        startDate = new Date(today.getFullYear(), quarter * 3 - 3, 1);
+                        endDate = new Date(today.getFullYear(), quarter * 3 - 1, today.getDate());
+                        break;
+                    case 'yearly':
+                        startDate = new Date(today.getFullYear(), 0, 1);
+                        endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                        break;
+                    case 'all-time':
+                        startDate = new Date('1970-01-01');
+                        endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+                        break;
+                    default:
+                        startDate = new Date();
+                        endDate = new Date();
+                }
+            }
+
+            // Filter the table rows based on the selected date range
+            const rows = document.querySelectorAll('.datanew tbody tr');
+            let totalOrders = 0;
+            let totalRevenue = 0;
+            let totalStoreDiscount = 0;
+            let totalCouponDiscount = 0;
+
+
+           
+
+            rows.forEach(row => {
+                const date = new Date(row.cells[0].innerText); // Assuming the date is in the first column
+                if (date >= startDate && date < endDate) {
+                    row.style.display = '';
+                    totalOrders++;
+                    totalRevenue += parseFloat(row.cells[11].innerText.replace('$', ''));
+                    totalStoreDiscount += parseFloat(row.cells[7].innerText.replace('$', ''));
+                    totalCouponDiscount += parseFloat(row.cells[8].innerText.replace('$', ''));
+
+                    
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+           console.log('totalOrders:', totalOrders);
+            console.log('totalRevenue:', totalRevenue);
+            
+          
+            console.log('totalStoreDiscount:', totalStoreDiscount);
+            console.log('totalCouponDiscount:', totalCouponDiscount);
+           
+            // Update the total values in the footer
+            document.getElementById('total-orders').innerText = totalOrders;
+            document.getElementById('total-revenue').innerText = `$${totalRevenue.toFixed(2)}`;
+          
+            document.getElementById('total-discounts').innerText = `$${totalStoreDiscount.toFixed(2)}`;
+            document.getElementById('total-coupons').innerText = `$${totalCouponDiscount.toFixed(2)}`;
+           
+            
+        }
+
+       
+        
+
+    </script>
+    <script>
+        // Function to export table to PDF
+        function exportTableToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape' });
+
+            doc.autoTable({
+                html: '.datanew',
+                theme: 'grid',
+                headStyles: { fillColor: [22, 160, 133] }
+            });
+
+            doc.save('sales_report.pdf');
+        }
+
+        // Function to export table to Excel
+        function exportTableToExcel() {
+            const wb = XLSX.utils.table_to_book(document.querySelector('.datanew'));
+            XLSX.writeFile(wb, 'sales_report.xlsx');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('li a[title="pdf"]').addEventListener('click', exportTableToPDF);
+            document.querySelector('li a[title="excel"]').addEventListener('click', exportTableToExcel);
+        });
+    </script>
+    </body>
+
+    </html>

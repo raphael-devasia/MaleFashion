@@ -1,0 +1,325 @@
+<%- include('navigationbar') %>
+    <!-- Header Section End -->
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Shopping Cart</h4>
+                        <div class="breadcrumb__links">
+                            <a href="./index.html">Home</a>
+                            <a href="./shop.html">Shop</a>
+                            <span>Shopping Cart</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shopping Cart Section Begin -->
+    <section class="shopping-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="shopping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                           <tbody>
+  <% cartProduct.forEach(element => { %>
+    <tr id="product-<%= element._id %>" class="<%= element.Product_variation.Is_active ? '' : 'unavailable' %>">
+      <td class="product__cart__item">
+        <div class="product__cart__item__pic w-50">
+          <img class="h-25 w-25" src="<%= user ? element.Product_variation.Image_filename[0] : element.product.Image_filename[0] %>" alt="">
+        </div>
+        
+        <div class="product__cart__item__text justify-content-end">
+          <% if (!element.Product_variation.Is_active) { %>
+            <p class="text-muted">Item Unavailable</p>
+          <% } %>
+          <h6>
+            <%= user ? element.SingleProduct.product_name : element.product.Product_variation_id.Product_item_id.Product_id.product_name %>
+          </h6>
+          <h5>
+            <%= user ? element.Product.Original_price : element.product.Product_variation_id.Product_item_id.Original_price %>
+          </h5>
+        </div>
+      </td>
+      
+      <% if (element.Product_variation.Is_active) { %>
+           <td class="quantity__item">
+    <div class="quantity">
+        <div class="pro-qty">
+            <input name="quantity-input" type="text" value="<%= element.Qty %>" min="1" max="<%= element.Product_item.Qty_in_stock %>" data-product-id="<%= element._id %>" readonly>
+        </div>
+    </div>
+</td>
+          <% } else { %>
+    <td class="quantity__item">
+    <div class="quantity">
+        <div class="pro-qty">
+            <input name="quantity-input" type="text" value="0" min="0" max="0" data-product-id="<%= element._id %>" readonly>
+        </div>
+    </div>
+</td>
+          
+            <% } %> 
+     
+<% if (!element.Product_variation.Is_active) { %>
+ <td class="cart__price" data-offer-discount="0"  data-price="<%= user ? element.Product.Original_price : element.product.Product_variation_id.Product_item_id.Original_price %>">
+        $<%= user 
+          ? (element.Product.Original_price * 0) 
+          : (element.product.Product_variation_id.Product_item_id.Original_price * 0) %>
+      </td>
+<% } else { %>
+  <td class="cart__price" data-offer-discount="<%= element.discountPercentage %>" data-price="<%= user ? element.Product.Original_price : element.product.Product_variation_id.Product_item_id.Original_price %>"   >
+        $<%= user 
+          ? ((element.Product.Original_price * element.Qty).toFixed(2) )
+          : ((element.product.Product_variation_id.Product_item_id.Original_price * element.Qty).toFixed(2)) %>
+      </td>
+    <% } %>
+
+    
+      
+     <td class="cart__close">
+    <button class="rounded-circle border-0" delete-price="<%= user ? element.Product.Original_price : element.product.Product_variation_id.Product_item_id.Original_price %>" delete-offer-discount="<%= element.discountPercentage %>" onclick="deleteCart('<%= element._id %>','<%= element.Product_item._id %>','<%= element.Qty %>')">
+        <i class="fa fa-close"></i>
+    </button>
+</td> 
+
+
+    </tr>
+  <% }) %>
+</tbody>
+
+
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="continue__btn">
+                                <a href="/products">Continue Shopping</a>
+                            </div>
+                        </div>
+                        <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="continue__btn update__btn">
+                                <button class="border-0" onclick="updateCart()">
+                                    <a href="#"><i class="fa fa-spinner"></i> Update cart</a>
+
+                                </button>
+                                
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            <div class="col-lg-4">
+                <!-- <div class="cart__discount">
+                    <h6>Discount codes</h6>
+                    <form id="coupon-form">
+                        <input type="text" id="coupon-code" placeholder="Coupon code" value="<%= couponCode %>">
+                        <button type="submit">Apply</button>
+                    </form>
+                    <div id="coupon-message"></div>
+                </div> -->
+                <div class="cart__total">
+                    <h6>Cart total</h6>
+                    <ul>
+                        <li>Subtotal <span  id="sub-total">$ <%= totalCartAmount %></span></li>
+                        
+
+                       
+                        <li>Offer Discount <span  id="offer-discount">$ <%= totalOfferDiscount ? (totalOfferDiscount ).toFixed(2):"0.00" %></span></li>
+                        <li>Shipping <span>$ 0</span></li>
+                        <li>Total <span id="total-amount">$ <%= (cartProduct.length <1) ?"0.00 " : (totalCartAmount - totalOfferDiscount).toFixed(2) %></span></li>
+                    </ul>
+                    <% if (totalCartAmount <=0.00) { %>
+                    <button  class="primary-btn" hidden>Proceed to checkout</button>
+                    <% } else { %>
+                
+                    <a href="/checkout" class="primary-btn">Proceed to checkout</a>
+                    <% } %>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shopping Cart Section End -->
+
+    <!-- Footer Section Begin -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="footer__about">
+                        <div class="footer__logo">
+                            <a href="#"><img src="img/footer-logo.png" alt=""></a>
+                        </div>
+                        <p>The customer is at the heart of our unique business model, which includes design.</p>
+                        <a href="#"><img src="img/payment.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>Shopping</h6>
+                        <ul>
+                            <li><a href="#">Clothing Store</a></li>
+                            <li><a href="#">Trending Shoes</a></li>
+                            <li><a href="#">Accessories</a></li>
+                            <li><a href="#">Sale</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>Shopping</h6>
+                        <ul>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Payment Methods</a></li>
+                            <li><a href="#">Delivary</a></li>
+                            <li><a href="#">Return & Exchanges</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>NewLetter</h6>
+                        <div class="footer__newslatter">
+                            <p>Be the first to know about new arrivals, look books, sales & promos!</p>
+                            <form action="#">
+                                <input type="text" placeholder="Your email">
+                                <button type="submit"><span class="icon_mail_alt"></span></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="footer__copyright__text">
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        <p>Copyright ©
+                            <script>
+                                document.write(new Date().getFullYear());
+                            </script>2020
+                            All rights reserved | This template is made with <i class="fa fa-heart-o"
+                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                        </p>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Search Begin -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search End -->
+
+    <!-- Js Plugins -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.nice-select.min.js"></script>
+    <script src="js/jquery.nicescroll.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/mixitup.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#coupon-form').submit(function (event) {
+                event.preventDefault();
+                const couponCode = $('#coupon-code').val();
+                const userId = '<%= userdetails._id %>'; // Make sure to pass userId from server-side to your template
+
+                $.ajax({
+                    url: '/verify-coupon',
+                    method: 'POST',
+                    data: { couponCode, userId },
+                    success: function (response) {
+                        console.log(response.discountAmount); // Check if this logs the expected discount amount
+                        console.log(response.newTotalAmount);
+                        if (response.valid) {
+                            $('#coupon-message').text('Coupon applied successfully!').css('color', 'green');
+                            $('#coupon-discount').text(`$ ${response.discountAmount.toFixed(2)}`);
+                            $('#total-amount').text(`$ ${response.newTotalAmount.toFixed(2)}`);
+                        } else {
+                            $('#coupon-message').text(response.message).css('color', 'red');
+                        }
+                    },
+                    error: function (xhr) {
+                        $('#coupon-message').text('An error occurred. Please try again.').css('color', 'red');
+                    }
+                });
+            });
+        });
+    </script>
+
+<script>
+function updateCart() {
+    const inputs = document.querySelectorAll('input[name="quantity-input"]');
+    const updatedCart = [];
+
+    inputs.forEach(input => {
+        const productId = input.getAttribute('data-product-id');
+        const quantity = input.value;
+
+        updatedCart.push({ id: productId, quantity: quantity });
+    });
+
+    // Send the data to the server using fetch API
+    fetch('/updateCart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedCart)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        // Handle success, e.g., refresh the page or display a success message
+        window.location.reload(); // Reload the page to reflect changes
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Handle error, e.g., display an error message
+    });
+}
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const updateButton = document.getElementById('updateCartButton');
+        if (updateButton) {
+            updateButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                updateCart();
+            });
+        }
+    });
+</script>
+
+
+    
+</body>
+
+</html>

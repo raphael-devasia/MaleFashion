@@ -58,7 +58,12 @@
 <div class="col-lg-6 col-sm-6 col-12">
 <div class="form-group">
 <label>Size Category Name</label>
-<input type="text" name="size_category">
+<select class="select" name="size_category">
+  <% size_category.forEach((row,index) => { %>   
+    <option value="<%= row.Category_name %>"><%= row.Category_name %></option>
+  <% }); %>
+</select>
+
 </div>
 </div>
 <div class="col-lg-12">
@@ -95,10 +100,27 @@
 </ul>
 </div>
 </div>
+<div class="col-lg-12 justify-content-center">
+
+    <% if (msg&& msg.length>0) { %>
+     <h6 id="alert-message" class="text-center text-danger"><%= msg %></h6>
+     
+    <% } %>
+  
+</div>
+<div class="col-lg-12 justify-content-center">
+
+   
+     <h6 id="error-message" class="text-center text-danger"></h6>
+     
+ 
+  
+</div>
 <div class="col-lg-12">
 <button type="submit" class="btn btn-submit me-2">Submit</button>
 <a href="categories" class="btn btn-cancel">Cancel</a>
 </div>
+
 </div>
 </div>
 </div>
@@ -161,5 +183,65 @@ $(document).ready(function() {
 
 
   </script>
+<script>
+$(document).ready(function() {
+   const errorMessageElement = document.getElementById('alert-message');
+    
+    if (errorMessageElement) {
+        setTimeout(function() {
+            errorMessageElement.style.display = 'none';
+        }, 3000); // 3000 milliseconds = 3 seconds
+    }
+    // Function to validate the form fields
+    $('form').submit(function(event) {
+        var category_name = $('input[name="category_name"]').val().trim();
+        var size_category = $('select[name="size_category"]').val().trim();
+        var category_description = $('textarea[name="category_description"]').val().trim();
+        var category_image = $('input[name="category_image"]').val().trim();
+
+        const validationRegex = {
+            product_name: /^[a-zA-Z0-9\s\-]+$/,
+            product_description: /^.+$/s,
+        };
+
+        let errorMessage = '';
+
+        // Validation checks
+        if (!category_name || !validationRegex.product_name.test(category_name)) {
+            errorMessage += 'Category Name is required and should be alphanumeric. +';
+        }
+
+        if (!size_category) {
+            errorMessage += 'Size Category is required. +';
+        }
+
+        if (!category_description || !validationRegex.product_description.test(category_description)) {
+            errorMessage += 'Category Description is required. +';
+        }
+
+        if (!category_image) {
+            errorMessage += 'Category Image is required.';
+        }
+
+        // Display error message if any validation fails
+        if (errorMessage) {
+            const messageDisplay = errorMessage.split('+');
+            document.getElementById('error-message').textContent = messageDisplay[0].trim();
+
+            // Hide the message after 3 seconds
+            setTimeout(() => {
+                document.getElementById('error-message').textContent = '';
+            }, 3000);
+
+            return false; // Prevent form submission
+        }
+
+        // If all validations pass, the form will submit
+        return true;
+    });
+});
+</script>
+
+
 </body>
 </html>

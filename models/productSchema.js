@@ -19,6 +19,10 @@ const productCategorySchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Size_category",
     },
+    Offer_price_id: {
+        type: Schema.Types.ObjectId,
+        ref: "Category_offer",
+    },
     is_deleted: {
         type: Boolean,
         default: false,

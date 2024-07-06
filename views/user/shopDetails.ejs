@@ -120,8 +120,13 @@
                 <div class="col-lg-3 col-md-3">
                     <div class="header__nav__option">
                         <a href="#" class="search-switch"><img src="/img/icon/search.png" alt=""></a>
-                        <a href="#"><img src="/img/icon/heart.png" alt=""></a>
-                        <a href="#"><img src="/img/icon/cart.png" alt=""> <span>0</span></a>
+                        <a href="/wishlist"><img id="wish-icon" src="/img/icon/heart.png" alt="" style="width: 23px;"> <span id="wish-count" style="color: red;">0</span></a>
+
+
+                        <a href="/cart"><img id="cart-icon" src="/img/icon/cart.png" alt="" > <span id="cart-count" style="color: red;">0</span></a>
+                        
+
+
                         <div class="price">$0.00</div>
                     </div>
                 </div>
@@ -140,14 +145,14 @@
                     <div class="product__details__breadcrumb">
                         <a href="./index.html">Home</a>
                         <a href="./shop.html">Shop</a>
-                        <span><%= getSingleProduct.Product_variation_id.Product_item_id.Product_id.product_name %></span>
+                        <span><%= filteredProduct[0].Product.product_name%></span>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-3 col-md-3">
                     <ul class="nav nav-tabs" role="tablist">
-                        <% productImages.forEach((row, index) => { %>
+                        <% filteredProduct[0].Image_filename.forEach((row, index) => { %>
                             <li class="nav-item">
                                 <a class="nav-link <%= index === 0 ? 'active' : '' %>" data-toggle="tab" href="#tabs-<%= index %>" role="tab">
                                     <div class="product__thumb__pic set-bg" data-setbg="<%= row %>">
@@ -159,7 +164,7 @@
                 </div>
                 <div class="col-lg-6 col-md-9">
                     <div class="tab-content">
-                        <% productImages.forEach((row, index) => { %>
+                        <% filteredProduct[0].Image_filename.forEach((row, index) => { %>
                             <div class="tab-pane <%= index === 0 ? 'active' : '' %>" id="tabs-<%= index %>" role="tabpanel">
                                 <div class="product__details__pic__item">
                                     <img src="<%= row %>" alt="">
@@ -176,7 +181,7 @@
             <div class="row d-flex justify-content-center">
                 <div class="col-lg-8">
                     <div class="product__details__text">
-                        <h4><%= getSingleProduct.Product_variation_id.Product_item_id.Product_id.product_name %></h4>
+                        <h4><%= filteredProduct[0].Product.product_name %></h4>
                         <div class="rating">
                             <i class="fa fa-star"></i>
                             <i class="fa fa-star"></i>
@@ -185,89 +190,87 @@
                             <i class="fa fa-star-o"></i>
                             <span> - 5 Reviews</span>
                         </div>
-                        <h3>$<%= getSingleProduct.Product_variation_id.Product_item_id.Original_price %> <span>70.00</span></h3>
+                        <% if (filteredProduct[0].discountPercentage>0) { %>
+                        <h3>$<%= filteredProduct[0].effectivePrice %><span><%= filteredProduct[0].Product_item.Original_price %></span></h3>
+                        <% } else { %>
+                            <h3>$<%= filteredProduct[0].Product_item.Original_price %>
+                            </h3>
+                            <% }  %>
+                      
                         <p>Coat with quilted lining and an adjustable hood. Featuring long sleeves with adjustable cuff tabs, adjustable asymmetric hem with elastic side tabs and a front zip fastening with placket.</p>
-                        <div class="product__details__option">
-                            <div class="product__details__option__size">
-                                <span>Size:</span>
-                                <label for="xxl">xxl
-                                    <input type="radio" id="xxl">
-                                </label>
-                                <label class="active" for="xl">xl
-                                    <input type="radio" id="xl">
-                                </label>
-                                <label for="l">l
-                                    <input type="radio" id="l">
-                                </label>
-                                <label for="sm">s
-                                    <input type="radio" id="sm">
-                                </label>
-                            </div>
-                            <div class="product__details__option__color">
-                                <span>Color:</span>
-                                <label class="c-1" for="sp-1">
-                                    <input type="radio" id="sp-1">
-                                </label>
-                                <label class="c-2" for="sp-2">
-                                    <input type="radio" id="sp-2">
-                                </label>
-                                <label class="c-3" for="sp-3">
-                                    <input type="radio" id="sp-3">
-                                </label>
-                                <label class="c-4" for="sp-4">
-                                    <input type="radio" id="sp-4">
-                                </label>
-                                <label class="c-9" for="sp-9">
-                                    <input type="radio" id="sp-9">
-                                </label>
-                            </div>
-                        </div>
+                       <div class="product__details__option">
+    <div class="product__details__option__size">
+        <span>Size:</span>
+        <% sizesArray.sort((a, b) => a.sortOrder - b.sortOrder).forEach((size, index) => { %>
+    <% const isActive = sizeId ? size.size === sizeId : index === 0; %>
+    <label for="sp-<%= index %>" class="size-label <%= isActive ? 'active' : '' %>">
+        <%= size.size %>
+        <input type="radio" id="sp-<%= index %>" value="<%= encodeURIComponent(size.size) %>" name="size" <%= isActive ? 'checked' : '' %> onclick="sendSizeRequest()">
+    </label>
+<% }); %>
+    </div>
+
+    <div class="product__details__option__color">
+        <span>Color:</span>
+        <% uniqueColorsArray.forEach((element, index) => { %>
+            <label class="<%= element.toLowerCase() %>" for="sp-color-<%= index %>" class="color-label">
+                
+                <input type="radio" id="sp-color-<%= index %>" name="color" value="<%= encodeURIComponent(element) %>" onclick="sendGetRequest()">
+            </label>
+        <% }); %>
+    </div>
+</div>
                       <div class="product__details__cart__option">
                        <div class="product__details__text">
     <!-- Other product details -->
-    <% if ((getSingleProduct.Product_variation_id.Qty_in_stock < 10)) { %>
-        <p class="low-stock-warning flash-animation"><i class="fa fa-exclamation-triangle icon"></i> Only <%= getSingleProduct.Product_variation_id.Qty_in_stock %> Items Left in Stock. Order Quickly!</p>
+    <% if ((filteredProduct[0].Product_variation.Qty_in_stock < 10 && filteredProduct[0].Product_variation.Qty_in_stock >0)) { %>
+        <p class="low-stock-warning flash-animation"><i class="fa fa-exclamation-triangle icon"></i> Only <%= filteredProduct[0].Product_variation.Qty_in_stock %> Items Left in Stock. Order Quickly!</p>
     <% } %>
 </div>
-  <% if (!getSingleProduct.Product_variation_id.Is_active) { %>
+  <% if (!filteredProduct[0].Product_variation.Is_active) { %>
     <div class="quantity">
       <div class="pro-qty">
         <input type="text" value="0" disabled>
       </div>
     </div>
     <p class="primary-btn" style="background-color: grey;">Unavailable</p>
-  <% } else if (getSingleProduct.Product_variation_id.Qty_in_stock < 1) { %>
+  <% } else if (filteredProduct[0].Product_variation.Qty_in_stock < 1) { %>
     <div class="quantity">
       <div class="pro-qty">
         <input type="text" value="0" disabled>
       </div>
     </div>
-    <p class="primary-btn" style="background-color: grey;">Out of Stock</p>
+    <p class="primary-btn" style="background-color: grey;">Out of Stock</p> 
   <% } else { %>
     <div class="quantity">
       <div class="pro-qty">
-        <input type="text" value="1" min="1" max="<%= getSingleProduct.Product_variation_id.Qty_in_stock %>" id="quantity-input">
+        <input type="text" value="1" min="1" max="<%= filteredProduct[0].Product_variation.Qty_in_stock %>" id="quantity-input">
       </div>
     </div>
-    <a href="#" class="primary-btn">Add to Cart</a>
+    <button class="primary-btn" onclick="addToCart('<%= filteredProduct[0].Product_item._id %>','<%= filteredProduct[0]._id %>')"> Add to Cart</button>
+    
   <% } %>
 </div>
+<div class="justify-content-center pb-3">
+    <h5 id="stockError" class="text-center text-danger"></h5>
+</div>
+
                         <div class="product__details__btns__option">
-                            <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
+                            <button onclick="addToWishlist('<%= filteredProduct[0]._id %>')"><i class="fa fa-heart" ></i> add to wishlist</button>
                             <a href="#"><i class="fa fa-exchange"></i> Add To Compare</a>
                         </div>
                         <div class="product__details__last__option">
                             <h5><span>Guaranteed Safe Checkout</span></h5>
                             <img src="/img/shop-details/details-payment.png" alt="">
                             <ul>
-                                <li><span>SKU:</span><%= getSingleProduct.Product_variation_id.Product_item_id.Product_sku %></li>
-                                <li><span>Categories:</span><%= getSingleProduct.Product_variation_id.Product_item_id.Product_id.product_category_id.category_name %></li>
+                                <li><span>SKU:</span><%= filteredProduct[0].Product_item.Product_sku %></li>
+                                <li><span>Categories:</span><%= filteredProduct[0].Product_Category.category_name %></li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-lg-12">
                     <div class="product__details__tab">
                         <ul class="nav nav-tabs" role="tablist">
@@ -322,7 +325,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </section>
 
@@ -560,7 +563,28 @@
     <!-- Search End -->
 
     <!-- Js Plugins -->
-  
+ <script>
+function sendGetRequest() {
+    const productName = '<%= filteredProduct[0].Product.product_name %>';
+    const selectedColor = document.querySelector('input[name="color"]:checked').value;
+
+    const url = `/products/${encodeURIComponent(productName)}?color=${selectedColor}`;
+    window.location.href = url;
+}
+
+function sendSizeRequest() {
+    const productName = '<%= filteredProduct[0].Product.product_name %>';
+    const selectedSize = document.querySelector('input[name="size"]:checked').value;
+    const selectedColor = '<%= filteredProduct[0].Colours.Colour_name %>';
+
+    let url = `/products/${encodeURIComponent(productName)}?size=${selectedSize}&color=${selectedColor}`;
+    
+
+    window.location.href = url;
+}
+</script>
+
+
 
     <script src="/js/jquery-3.3.1.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
@@ -583,6 +607,7 @@
     });
 </script>
 
+<!--  -->
 
 
 </body>

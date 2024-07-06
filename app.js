@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const path = require("path")
 const session = require("express-session")
-
+const cookieParser = require("cookie-parser")
 const bodyParser = require("body-parser")
 const nocache = require("nocache")
 const mongoose = require("mongoose")
@@ -12,6 +12,7 @@ const collection = require("./models/schema")
 var flash = require("connect-flash")
 const fileUplaod= require('express-fileupload')
 const passport = require('passport')
+const morgan = require("morgan")
 dotenv.config()
 
 require("./middlewares/auth")
@@ -24,7 +25,8 @@ const userManageRoute = require("./routes/admin/userManageRoutes")
 //Routes User ***
 const userRouter = require("./routes/user/userRoutes")
 const productRouter = require('./routes/user/productRoutes')
-
+// Use morgan to log requests to the console
+// app.use(morgan('dev'));
 // Middleware to set the static page
 app.use(express.static(path.join(__dirname, "public")))
 const userStatic = express.static(path.join(__dirname, 'public', 'user'))
@@ -32,7 +34,7 @@ const userStatic = express.static(path.join(__dirname, 'public', 'user'))
 app.use('/', userStatic);
 
 // Middleware to parse request bodies
-
+app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 //setting the EJS view engine
@@ -44,7 +46,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
-
+app.use(cookieParser())
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());

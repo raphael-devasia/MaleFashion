@@ -37,7 +37,7 @@ const productVariationSchema = new Schema({
         ref: "SizeOption", // Reference the model name
         required: true,
     },
-    Qty_in_stock: { type: String, required: true },
+    Qty_in_stock: { type: Number, required: true },
     Is_active: { type: Boolean, required: true, default: true },
 })
 

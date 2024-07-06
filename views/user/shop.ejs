@@ -1,132 +1,4 @@
-<!DOCTYPE html>
-<html lang="zxx">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="description" content="Male_Fashion Template">
-    <meta name="keywords" content="Male_Fashion, unica, creative, html">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Male-Fashion | Template</title>
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
-        rel="stylesheet">
-
-    <!-- Css Styles -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="css/nice-select.css" type="text/css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="css/style.css" type="text/css">
-    <link href="css/style-shop.css" rel="stylesheet" type="text/css">
-</head>
-
-<body>
-    <!-- Page Preloder -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
-
-    <!-- Offcanvas Menu Begin -->
-    <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-        <div class="offcanvas__option">
-            <div class="offcanvas__links">
-                <a href="#">Sign in</a>
-                <a href="#">FAQs</a>
-            </div>
-            <div class="offcanvas__top__hover">
-                <span>Usd <i class="arrow_carrot-down"></i></span>
-                <ul>
-                    <li>USD</li>
-                    <li>EUR</li>
-                    <li>USD</li>
-                </ul>
-            </div>
-        </div>
-        <div class="offcanvas__nav__option">
-            <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
-            <a href="#"><img src="img/icon/heart.png" alt=""></a>
-            <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-            <div class="price">$0.00</div>
-        </div>
-        <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__text">
-            <p>Free shipping, 30-day return or refund guarantee.</p>
-        </div>
-    </div>
-    <!-- Offcanvas Menu End -->
-
-    <!-- Header Section Begin -->
-    <header class="header">
-        <div class="header__top">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6 col-md-7">
-                        <div class="header__top__left">
-                            <p>Free shipping, 30-day return or refund guarantee.</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-5">
-                        <div class="header__top__right">
-                            <div class="header__top__links">
-                                <a href="#">Sign in</a>
-                                <a href="#">FAQs</a>
-                            </div>
-                            <div class="header__top__hover">
-                                <span>Usd <i class="arrow_carrot-down"></i></span>
-                                <ul>
-                                    <li>USD</li>
-                                    <li>EUR</li>
-                                    <li>USD</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-3">
-                    <div class="header__logo">
-                        <a href="./"><img src="img/logo.png" alt=""></a>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <nav class="header__menu mobile-menu">
-
-
-                        <ul>
-                            <li><a href="./">Home</a></li>
-                            <li class="active"><a href="products">Shop</a></li>
-                            <% category.forEach((row, index)=> { %>
-                                <li><a href="./category/<%= row.category_name %>">
-                                        <%= row.category_name %>
-                                    </a></li>
-                                <% }) %>
-
-                        </ul>
-
-
-                    </nav>
-                </div>
-                <div class="col-lg-3 col-md-3">
-                    <div class="header__nav__option">
-                        <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
-                        <a href="#"><img src="img/icon/heart.png" alt=""></a>
-                        <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-                        <div class="price">$0.00</div>
-                    </div>
-                </div>
-            </div>
-            <div class="canvas__open"><i class="fa fa-bars"></i></div>
-        </div>
-    </header>
+<%- include('navigationbar') %>
     <!-- Header Section End -->
 
     <!-- Breadcrumb Section Begin -->
@@ -151,14 +23,16 @@
     <section class="shop spad">
         <div class="container">
             <div class="row">
+               
                 <div class="col-lg-3">
                     <div class="shop__sidebar">
                         <div class="shop__sidebar__search">
-                            <form action="#">
-                                <input type="text" placeholder="Search...">
+                            <form id="search-form" action="javascript:void(0);">
+                                <input type="text" placeholder="Search..." id="search-input">
                                 <button type="submit"><span class="icon_search"></span></button>
                             </form>
                         </div>
+
                         <div class="shop__sidebar__accordion">
                             <div class="accordion" id="accordionExample">
                                 <div class="card">
@@ -202,7 +76,7 @@
 
                                 </div>
                               
-                                <div class="card">
+                                <!-- <div class="card">
                                     <div class="card-heading">
                                         <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
                                     </div>
@@ -293,7 +167,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                
                             </div>
                         </div>
@@ -307,7 +181,7 @@
                                     <p>Showing <%= start %>–<%= end %> of <%= length %> results</p>
                                 </div>
                             </div>
-                          \
+                          
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="shop__product__option__right">
                                     <p>Sort by </p>
@@ -484,14 +358,14 @@
     <!-- Footer Section End -->
 
     <!-- Search Begin -->
-    <div class="search-model">
+    <!-- <div class="search-model">
         <div class="h-100 d-flex align-items-center justify-content-center">
             <div class="search-close-switch">+</div>
             <form class="search-model-form">
                 <input type="text" id="search-input" placeholder="Search here.....">
             </form>
         </div>
-    </div>
+    </div> -->
     <!-- Search End -->
 
     <!-- Js Plugins -->
@@ -511,6 +385,7 @@
     let productsContainer;
     let paginationContainer;
     let productCountDisplay;
+     let searchInput; // Change 1: Define searchInput globally
 
     document.addEventListener('DOMContentLoaded', () => {
         productsContainer = document.getElementById('products-container');
@@ -518,36 +393,52 @@
         productCountDisplay = document.querySelector('.shop__product__option__left p');
 
         const categoryRadios = document.querySelectorAll('.category-radio');
+        const searchForm = document.getElementById('search-form');
+         searchInput = document.getElementById('search-input');
 
         categoryRadios.forEach((radio) => {
             radio.addEventListener('change', handleCategoryChange);
         });
 
+        searchForm.addEventListener('submit', handleSearch); // Change 1: Added search form event listener
+        document.getElementById('sort-options').addEventListener('change', sortProducts); // Change 2: Added sort options event listener
+
         // Fetch initial products and pagination
-         fetchProducts('', 1, 'price-asc');
+        fetchProducts('', 1, 'price-asc');
     });
 
     function handleCategoryChange() {
         const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
         const page = 1; // Reset to first page when category changes
         const sortOption = document.getElementById('sort-options').value;
-        // Change 3: Pass sortOption to fetchProducts
-        fetchProducts(selectedCategory, page, sortOption);
+        const searchQuery = document.getElementById('search-input').value;
+        fetchProducts(selectedCategory, page, sortOption, searchQuery); // Change 3: Pass sortOption to fetchProducts
     }
 
     function handlePaginationClick(page) {
         const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
-       const sortOption = document.getElementById('sort-options').value;
-        // Change 4: Pass sortOption to fetchProducts
-        fetchProducts(selectedCategory, page, sortOption);
+        const sortOption = document.getElementById('sort-options').value;
+        const searchQuery = document.getElementById('search-input').value;
+        fetchProducts(selectedCategory, page, sortOption, searchQuery); // Change 4: Pass sortOption and searchQuery to fetchProducts
     }
 
-    function fetchProducts(selectedCategory = '', page = 1, sort = 'price-asc') {
+    function handleSearch(event) {
+        event.preventDefault(); // Change 5: Prevent form submission
+        const searchQuery = searchInput.value;
+        const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
+        const sortOption = document.getElementById('sort-options').value;
+        fetchProducts(selectedCategory, 1, sortOption, searchQuery); // Change 6: Fetch products with search query
+    }
+
+    function fetchProducts(selectedCategory = '', page = 1, sort = 'price-asc', search = '') {
         const limit = 5;
         let queryString = `page=${page}&limit=${limit}&sort=${sort}`;
 
         if (selectedCategory) {
             queryString += `&key=${selectedCategory}`;
+        }
+        if (search) {
+            queryString += `&search=${search}`; // Change 7: Corrected search parameter
         }
 
         fetch(`/filtered-category?${queryString}`)
@@ -605,13 +496,14 @@
                 productCountDisplay.innerHTML = `Showing ${data.start}–${data.end} of ${data.totalProducts} results`;
             });
     }
+
     function sortProducts() {
-            const sortOption = document.getElementById('sort-options').value;
-            const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
-            const page = 1; // Reset to first page when sorting changes
-            // Change 7: Pass sortOption to fetchProducts
-            fetchProducts(selectedCategory, page, sortOption);
-        }   
+        const sortOption = document.getElementById('sort-options').value;
+        const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
+        const page = 1; // Reset to first page when sorting changes
+        const searchQuery = document.getElementById('search-input').value; // Change 8: Get search query
+        fetchProducts(selectedCategory, page, sortOption, searchQuery); // Change 9: Pass sortOption to fetchProducts
+    }
 
     function setImageUrl(row) {
         const imgPath = row.images[0][0].startsWith('/') ? row.images[0][0].substring(1) : row.images[0][0];
@@ -662,6 +554,7 @@
         paginationContainer.innerHTML = paginationHtml;
     }
 </script>
+
 
 
 

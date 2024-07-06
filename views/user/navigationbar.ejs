@@ -45,14 +45,7 @@
 
                             <a href="#">FAQs</a>
             </div>
-            <div class="offcanvas__top__hover">
-                <span>Usd <i class="arrow_carrot-down"></i></span>
-                <ul>
-                    <li>USD</li>
-                    <li>EUR</li>
-                    <li>USD</li>
-                </ul>
-            </div>
+           
         </div>
         <div class="offcanvas__nav__option">
             <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
@@ -116,7 +109,7 @@
                         <ul>
                             <li class="active"><a href="./">Home</a></li>
                             <li><a href="products">Shop</a></li>
-                            <% data.forEach((row, index)=> { %>
+                            <% category.forEach((row, index)=> { %>
                                 <li><a href="./category/<%= row.category_name %>">
                                         <%= row.category_name %>
                                     </a></li>

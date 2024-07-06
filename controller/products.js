@@ -92,7 +92,7 @@ const getHome = async (req, res) => {
         if (!req.session.user) {
           
             return res.render("user/index", {
-                data: category,
+                 category,
                 products: productVariation,
                 name: null, // Assuming name is not available when there's no session user
             })
@@ -109,37 +109,11 @@ const getHome = async (req, res) => {
         }
 
         category = await Product_category.find()
-        // const productVariation = await ProductImage.find().populate({
-        //     path: "Product_variation_id",
-        //     populate: [
-        //         {
-        //             path: "Product_item_id",
-        //             model: "Product_item",
-        //             populate: [
-        //                 {
-        //                     path: "Product_id",
-        //                     model: "Product",
-        //                     populate: {
-        //                         path: "product_category_id",
-        //                         model: "ProductCategory",
-        //                     },
-        //                 },
-        //                 {
-        //                     path: "Colour_id",
-        //                     model: "Colour",
-        //                 },
-        //             ],
-        //         },
-        //         {
-        //             path: "Size_id",
-        //             model: "SizeOption",
-        //         },
-        //     ],
-        // })
+        
 
         const name = user.firstName
         return res.render("user/index", {
-            data: category,
+            category,
             products: productVariation,
             name,
         })
@@ -148,152 +122,7 @@ const getHome = async (req, res) => {
     }
 }
 
-//========>>>>>> ###### GET : http://localhost:5050/products ######
 
-// const getProducts = async (req, res) => {
-//     const selectedCategory = req.query.key
-
-//     try {
-//         const category = await Product_category.find()
-
-        
-//         const productVariation = await fetchProductVariations()
-
-//         function countCategories(products) {
-//             const categoryCount = {}
-
-//             products.forEach((product) => {
-//                 const category = product.category
-//                 if (categoryCount[category]) {
-//                     categoryCount[category]++
-//                 } else {
-//                     categoryCount[category] = 1
-//                 }
-//             })
-
-//             return categoryCount
-//         }
-
-//         // Using the function
-//         const categoryCount = countCategories(productVariation)
-//         const categoryArray = Object.keys(categoryCount).map((key) => ({
-//             key,
-//             count: categoryCount[key],
-//         }))
-
-//         console.log("categoryArray:", categoryArray[0].key)
-//         let productsToDisplay
-//         if (selectedCategory) {
-//             productsToDisplay = productVariation.filter((e) => {
-//                 return e.category === selectedCategory
-//             })
-//         }
-//         productsToDisplay = productVariation.filter((e) => {
-//             return e.category === categoryArray[0].key
-//         })
-// console.log(productsToDisplay)
-
-
-//         res.render("user/shop", {
-//             data: productsToDisplay,
-//             category,
-//             categoryArray,
-//         })
-//     } catch (error) {}
-// }
-// const getProducts = async (req, res) => {
-//     const selectedCategory = req.query.key
-
-//     try {
-//         const category = await Product_category.find()
-
-//         const productVariation = await fetchProductVariations()
-
-//         function countCategories(products) {
-//             const categoryCount = {}
-
-//             products.forEach((product) => {
-//                 const category = product.category
-//                 if (categoryCount[category]) {
-//                     categoryCount[category]++
-//                 } else {
-//                     categoryCount[category] = 1
-//                 }
-//             })
-
-//             return categoryCount
-//         }
-
-//         // Using the function
-//         const categoryCount = countCategories(productVariation)
-//         const categoryArray = Object.keys(categoryCount).map((key) => ({
-//             key,
-//             count: categoryCount[key],
-//         }))
-
-//         console.log("categoryArray:", categoryArray[0].key)
-
-//         let productsToDisplay
-//         if (selectedCategory) {
-//             productsToDisplay = productVariation.filter((e) => {
-//                 return e.category === selectedCategory
-//             })
-//         } else {
-//             productsToDisplay = productVariation.filter((e) => {
-//                 return e.category === categoryArray[0].key
-//             })
-//         }
-
-//         // Calculate the effective price for each product
-//         const today = new Date()
-
-//         productsToDisplay = productsToDisplay.map((product) => {
-//             let discountPercentage = 0
-//             const productOfferValid =
-//                 product.Offer_price &&
-//                 new Date(product.Offer_price.start_date) <= today &&
-//                 new Date(product.Offer_price.end_date) >= today
-//             const categoryOfferValid =
-//                 product.category_offer &&
-//                 new Date(product.category_offer.start_date) <= today &&
-//                 new Date(product.category_offer.end_date) >= today
-
-//             if (productOfferValid && categoryOfferValid) {
-//                 discountPercentage = Math.max(
-//                     product.Offer_price.offer_percentage,
-//                     product.category_offer.offer_percentage
-//                 )
-//             } else if (productOfferValid) {
-//                 discountPercentage = product.Offer_price.offer_percentage
-//             } else if (categoryOfferValid) {
-//                 discountPercentage = product.category_offer.offer_percentage
-//             }
-
-//             const discountAmount =
-//                 (product.Original_price * discountPercentage) / 100
-//             const effectivePrice = product.Original_price - discountAmount
-
-//             return {
-//                 ...product,
-//                 effectivePrice: discountPercentage
-//                     ? effectivePrice
-//                     : product.Original_price,
-//                 discountPercentage,
-//             }
-//         })
-
-//         console.log(productsToDisplay)
-
-//         res.render("user/shop", {
-//             data: productsToDisplay,
-//             category,
-//             categoryArray,
-//         })
-//     } catch (error) {
-//         console.error(error)
-//         res.status(500).send("Internal Server Error")
-//     }
-// }
 const getProducts = async (req, res) => {
   const page = parseInt(req.query.page) || 1 // Default to page 1 if not provided
   const limit = parseInt(req.query.limit) || 5 // Default to 5 products per page if not provided
@@ -367,7 +196,11 @@ console.log("VARIATION2", categoryArray)
                 discountPercentage,
             }
         })
-       
+       const user = await findUserByEmail(req.session.user)
+       let name 
+       if (user){
+        name = user.firstName
+       }
         const length = productsToDisplay.length
         // Apply pagination
         const paginatedProducts = productsToDisplay.slice(skip, skip + limit)
@@ -386,7 +219,8 @@ console.log("VARIATION2", categoryArray)
             limit,
             length,
             start,
-            end
+            end,
+            name,
         })
     } catch (error) {
         console.error(error)
@@ -399,6 +233,7 @@ const getProductsFiltered = async (req, res) => {
     const skip = (page - 1) * limit
     let selectedCategory = req.query.key
     const sortOption = req.query.sort || "price-asc"
+      const searchQuery = req.query.search || ''    
 
     console.log("selectedCategory", selectedCategory)
     if (!selectedCategory){
@@ -441,6 +276,15 @@ const getProductsFiltered = async (req, res) => {
                     return e.category === categoryArray[0].key
                 })
             }
+             if (searchQuery) {
+                 productsToDisplay = productsToDisplay.filter(
+                     (product) =>
+                         product._id &&
+                         product._id
+                             .toLowerCase()
+                             .includes(searchQuery.toLowerCase())
+                 )
+             }
 
             const today = new Date()
             productsToDisplay = productsToDisplay.map((product) => {

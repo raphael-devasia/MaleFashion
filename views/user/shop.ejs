@@ -307,17 +307,19 @@
                                     <p>Showing <%= start %>–<%= end %> of <%= length %> results</p>
                                 </div>
                             </div>
+                          \
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="shop__product__option__right">
                                     <p>Sort by </p>
                                     <select id="sort-options" onchange="sortProducts()">
-                                        <option value="price-asc">Price: Low to High</option>
+                                        <option value="price-asc" selected>Price: Low to High</option>
                                         <option value="price-desc">Price: High to Low</option>
                                         <option value="name-asc">Name: (A-Z)</option>
                                         <option value="name-desc">Name: (Z-A)</option>
                                     </select>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                     
@@ -522,23 +524,27 @@
         });
 
         // Fetch initial products and pagination
-        fetchProducts();
+         fetchProducts('', 1, 'price-asc');
     });
 
     function handleCategoryChange() {
         const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
         const page = 1; // Reset to first page when category changes
-        fetchProducts(selectedCategory, page);
+        const sortOption = document.getElementById('sort-options').value;
+        // Change 3: Pass sortOption to fetchProducts
+        fetchProducts(selectedCategory, page, sortOption);
     }
 
     function handlePaginationClick(page) {
         const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
-        fetchProducts(selectedCategory, page);
+       const sortOption = document.getElementById('sort-options').value;
+        // Change 4: Pass sortOption to fetchProducts
+        fetchProducts(selectedCategory, page, sortOption);
     }
 
-    function fetchProducts(selectedCategory = '', page = 1) {
+    function fetchProducts(selectedCategory = '', page = 1, sort = 'price-asc') {
         const limit = 5;
-        let queryString = `page=${page}&limit=${limit}`;
+        let queryString = `page=${page}&limit=${limit}&sort=${sort}`;
 
         if (selectedCategory) {
             queryString += `&key=${selectedCategory}`;
@@ -599,6 +605,13 @@
                 productCountDisplay.innerHTML = `Showing ${data.start}–${data.end} of ${data.totalProducts} results`;
             });
     }
+    function sortProducts() {
+            const sortOption = document.getElementById('sort-options').value;
+            const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
+            const page = 1; // Reset to first page when sorting changes
+            // Change 7: Pass sortOption to fetchProducts
+            fetchProducts(selectedCategory, page, sortOption);
+        }   
 
     function setImageUrl(row) {
         const imgPath = row.images[0][0].startsWith('/') ? row.images[0][0].substring(1) : row.images[0][0];

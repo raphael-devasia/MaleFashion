@@ -398,6 +398,7 @@ const getProductsFiltered = async (req, res) => {
     const limit = parseInt(req.query.limit) || 5
     const skip = (page - 1) * limit
     let selectedCategory = req.query.key
+    const sortOption = req.query.sort || "price-asc"
 
     console.log("selectedCategory", selectedCategory)
     if (!selectedCategory){
@@ -476,6 +477,19 @@ const getProductsFiltered = async (req, res) => {
                     discountPercentage,
                 }
             })
+console.log(productsToDisplay)
+                 productsToDisplay.sort((a, b) => {
+                     if (sortOption === "price-asc") {
+                         return a.effectivePrice - b.effectivePrice
+                     } else if (sortOption === "price-desc") {
+                         return b.effectivePrice - a.effectivePrice
+                     } else if (sortOption === "name-asc") {
+                         return (a._id || "").localeCompare(b._id || "")
+                     } else if (sortOption === "name-desc") {
+                         return (b._id || "").localeCompare(a._id || "")
+                     }
+                     return 0
+                 })
 
             const totalProducts = productsToDisplay.length
             const totalPages = Math.ceil(totalProducts / limit)

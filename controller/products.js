@@ -31,6 +31,11 @@ const {
     getProductsFromSession,
     fetchSingleProduct,
 } = require("../utils/database")
+const {
+    calculateTotalCartAmount,
+    getCartLength,
+    getCartDetails,
+} = require("../utils/userProductsFunctions")
 const { render } = require("ejs")
 const Product_image = require("../models/productImage")
 const Product_variation = require("../models/productVariation")
@@ -43,12 +48,36 @@ var instance = new Razorpay({
 
 require("../middlewares/auth")
 
+//  CART LENGTH FUNCTION
+// const getCartLength = async (sessionUser) => {
+//     let cartLength = 0;
+//     const usercartTemp = await cartProducts();
+
+//     const userCart = usercartTemp.filter((e) => {
+//         if (e.User_details) {
+//             return e.User_details.email === sessionUser;
+//         }
+//     });
+
+//     if (userCart.length > 0) {
+//         cartLength = userCart.length;
+//     }
+
+//     return cartLength;
+// };
+
+
+
+
+
 //========>>>>>> ###### GET : http://localhost:5050/home ######
 
 const getHome = async (req, res) => {
-    const cart = await cartProducts()
-   
+    
     try {
+
+ const { cartLength, totalCartAmount } = await getCartDetails(req.session.user)
+
         let category = await Product_category.find()
         // Check if there is a session user
         const productVariation = await ProductImage.aggregate([
@@ -92,9 +121,10 @@ const getHome = async (req, res) => {
         if (!req.session.user) {
           
             return res.render("user/index", {
-                 category,
+                category,
                 products: productVariation,
                 name: null, // Assuming name is not available when there's no session user
+                cartLength,
             })
         }
 
@@ -116,19 +146,25 @@ const getHome = async (req, res) => {
             category,
             products: productVariation,
             name,
+            cartLength,
+            totalCartAmount,
         })
     } catch (error) {
         console.log(error)
     }
 }
 
-
+//========>>>>>> ###### GET : http://localhost:5050/products ######
 const getProducts = async (req, res) => {
   const page = parseInt(req.query.page) || 1 // Default to page 1 if not provided
   const limit = parseInt(req.query.limit) || 5 // Default to 5 products per page if not provided
   const skip = (page - 1) * limit
 console.log(page, limit, skip)
     try {
+         const { cartLength, totalCartAmount } = await getCartDetails(
+             req.session.user
+         )
+       
         const category = await Product_category.find()
 
         const productVariation = await fetchProductVariations()
@@ -147,17 +183,16 @@ console.log(page, limit, skip)
 
             return categoryCount
         }
-  console.log("VARIATION1",productVariation)
+        console.log("VARIATION1", productVariation)
         // Using the function
         const categoryCount = countCategories(productVariation)
         const categoryArray = Object.keys(categoryCount).map((key) => ({
             key,
             count: categoryCount[key],
         }))
-       
-console.log("VARIATION2", categoryArray)
+
+        console.log("VARIATION2", categoryArray)
         let productsToDisplay
-      
 
         // Calculate the effective price for each product
         const today = new Date()
@@ -196,11 +231,11 @@ console.log("VARIATION2", categoryArray)
                 discountPercentage,
             }
         })
-       const user = await findUserByEmail(req.session.user)
-       let name 
-       if (user){
-        name = user.firstName
-       }
+        const user = await findUserByEmail(req.session.user)
+        let name
+        if (user) {
+            name = user.firstName
+        }
         const length = productsToDisplay.length
         // Apply pagination
         const paginatedProducts = productsToDisplay.slice(skip, skip + limit)
@@ -209,7 +244,7 @@ console.log("VARIATION2", categoryArray)
         // Calculate the current range of products being shown
         const start = skip + 1
         const end = Math.min(skip + limit, totalProducts)
- console.log("VARIATION3", totalProducts)
+        console.log("VARIATION3", totalProducts)
         res.render("user/shop", {
             data: paginatedProducts,
             category,
@@ -221,12 +256,15 @@ console.log("VARIATION2", categoryArray)
             start,
             end,
             name,
+            cartLength,
+            totalCartAmount,
         })
     } catch (error) {
         console.error(error)
         res.status(500).send("Internal Server Error")
     }
 }
+//========>>>>>> ###### GET : http://localhost:5050/products ######QUERY FILTERD
 const getProductsFiltered = async (req, res) => {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 5
@@ -321,7 +359,7 @@ const getProductsFiltered = async (req, res) => {
                     discountPercentage,
                 }
             })
-console.log(productsToDisplay)
+
                  productsToDisplay.sort((a, b) => {
                      if (sortOption === "price-asc") {
                          return a.effectivePrice - b.effectivePrice
@@ -363,48 +401,19 @@ console.log(productsToDisplay)
         }
 }
 
-
-
-
-
-//  ========>>>> GET (Single Product)  http://localhost:5050/products/665ea76f769f2ab99547d56e 
+//  ========>>>> GET (Single Product)  http://localhost:5050/products/:productId 
 const singleProduct = async (req, res) => {
-    console.log(req.session.user)
+   
     const productId = req.params.id
     const colourId = req.query.color
     const sizeId = req.query.size || null
    
 
     try {
-        // const getSingleProduct = await ProductImage.findById(
-        //     productId
-        // ).populate({
-        //     path: "Product_variation_id",
-        //     populate: [
-        //         {
-        //             path: "Product_item_id",
-        //             model: "Product_item",
-        //             populate: [
-        //                 {
-        //                     path: "Product_id",
-        //                     model: "Product",
-        //                     populate: {
-        //                         path: "product_category_id",
-        //                         model: "ProductCategory",
-        //                     },
-        //                 },
-        //                 {
-        //                     path: "Colour_id",
-        //                     model: "Colour",
-        //                 },
-        //             ],
-        //         },
-        //         {
-        //             path: "Size_id",
-        //             model: "SizeOption",
-        //         },
-        //     ],
-        // })
+         const { cartLength, totalCartAmount } = await getCartDetails(
+             req.session.user
+         )
+         const category = await Product_category.find()
         const getNew = await fetchAllProducts()
         const getSingleProduct = getNew.filter((e) => {
             console.log(
@@ -419,9 +428,9 @@ const singleProduct = async (req, res) => {
             )
         })
 
-        console.log(getSingleProduct)
+       
 
-        console.log("PRODUCT ID:", getSingleProduct)
+      
         const productImages = getSingleProduct.Image_filename
 
         const uniqueColors = new Set()
@@ -469,7 +478,7 @@ const singleProduct = async (req, res) => {
         }
         // Usage example
         const sizesArray = extractSizes(filteredProduct)
-        console.log("SIZE ARRAY")
+        
         if (sizeId) {
             filteredProduct = filteredProduct.filter((product) => {
                 return product.Sizes.Size_name === sizeId
@@ -479,7 +488,11 @@ const singleProduct = async (req, res) => {
                 return product.Sizes.Size_name === sizesArray[0].size
             })
         }
-      
+    const user = await findUserByEmail(req.session.user)
+    let name
+    if (user) {
+        name = user.firstName
+    }  
 const today = new Date()
 
 filteredProduct = filteredProduct.map((product) => {
@@ -517,7 +530,7 @@ filteredProduct = filteredProduct.map((product) => {
     }
 })
 
-  console.log("FILTERDE PRODUCTS", filteredProduct)
+  
 
         res.render("user/shopDetails", {
             getSingleProduct,
@@ -526,54 +539,16 @@ filteredProduct = filteredProduct.map((product) => {
             uniqueColorsArray,
             sizesArray,
             sizeId,
+            category,
+            name,
+            cartLength,
+            totalCartAmount,
         })
     } catch (error) {
         console.log(error)
     }
 }
-// const getAddToCart = async (req, res) => {
-//     const { product_id: Product_item_id, quantity: Qty } = req.query // Destructuring query parameters
-//     const user = req.session.user
-
-//     try {
-//         if (user) {
-//             // If user is logged in, find user details
-//             const userdetails = await findUserByEmail(user) // Assuming findUserByEmail is a function to find user details
-//             if (!userdetails) {
-//                 throw new Error("User details not found") // Handle case where user details are not found
-//             }
-
-//             // Create a new shopping cart for the user
-//             const newCart = await Shopping_cart.create({
-//                 User_id: userdetails._id,
-//             })
-
-//             // Add item to the shopping cart
-//             const cartItem = await Shopping_cart_item.create({
-//                 Product_item_id,
-//                 Cart_id: newCart._id,
-//                 Qty,
-//             })
-//             const cartLength = await (await Shopping_cart_item.find()).length
-//             console.log(cartLength)
-//             // Return a success response
-//             res.status(200).json({ message: "Item added to cart successfully" })
-//         } else {
-//             // If user is not logged in, add item to a generic cart (if applicable)
-//             const cartItem = await Shopping_cart_item.create({
-//                 Product_item_id,
-//                 Qty,
-//             })
-//             const cartLength = await (await Shopping_cart_item.find()).length
-
-//             // Return a success response
-//             res.status(200).json({ message: "Item added to cart successfully" ,cartLength})
-//         }
-//     } catch (error) {
-//         console.error("Error adding item to cart:", error)
-//         res.status(500).json({ error: "Internal server error" }) // Return an error response
-//     }
-// }
+//  ========>>>> POST (Add To Cart)  http://localhost:5050/addtocart
 const getAddToCart = async (req, res) => {
     const {
         product_id: Product_item_id,
@@ -582,7 +557,12 @@ const getAddToCart = async (req, res) => {
         
     } = req.query // Destructuring query parameters
     const user = req.session.user
+let wishlist = await Wishlist.findOne({ Product_image_id: product_image })
 
+if (wishlist) {
+    await Wishlist.findByIdAndDelete(wishlist._id)
+}
+      
     try {
         if (user) {
             // If user is logged in, find user details
@@ -598,11 +578,9 @@ const getAddToCart = async (req, res) => {
             const productVariation = await fetchSingleProduct(product_image)
             const stockAvailable =
                 productVariation.Product_variation_id.Qty_in_stock
-            console.log("PRODUCT VARIATION ++++++++++++++:", productVariation)
-            console.log("STOCK AVAILABLE ++++++++++++++:", stockAvailable)
-
+           
             if (existingCart) {
-                console.log("STEP 1:", existingCart)
+               
                 if (existingCart.Qty + parseInt(Qty) <= stockAvailable) {
                     const cartItemUpdation =
                         await Shopping_cart_item.findByIdAndUpdate(
@@ -611,7 +589,7 @@ const getAddToCart = async (req, res) => {
                             { new: true }
                         )
 
-                    console.log("STEP 2:", cartItemUpdation)
+                   
                     const usercartTemp = await cartProducts()
 
                     const userCart = usercartTemp.filter((e) => {
@@ -619,12 +597,7 @@ const getAddToCart = async (req, res) => {
                             return e.User_details.email === user
                         }
                     })
-const wishlist = await Wishlist.findOne({ Product_image_id: product_image })
-
-if (wishlist) {
-    await Wishlist.findByIdAndDelete(wishlist._id)
-}
-                    // const cartLength = await (await Shopping_cart_item.find()).length
+              // const cartLength = await (await Shopping_cart_item.find()).length
                     const cartLength = userCart.length
 
                     return res.status(200).json({
@@ -661,7 +634,7 @@ if (wishlist) {
                     return e.User_details.email === user
                 }
             })
-            console.log("The  wishlist is :", wishlist_id)
+           
 
             // const cartLength = await (await Shopping_cart_item.find()).length
             const cartLength = userCart.length
@@ -710,7 +683,7 @@ if (wishlist) {
         res.status(500).json({ error: "Internal server error" }) // Return an error response
     }
 }
-
+//  ========>>>> GET (Cart)  http://localhost:5050/cart
 
 const getCart = async (req, res) => {
     const stockUnavailability = req.query.cartId
@@ -721,12 +694,13 @@ const getCart = async (req, res) => {
         let category = await Product_category.find()
         const user = req.session.user
         let cartProduct = []
-        let totalCartAmount = 0
+        
         let userdetails
         let newTotalAmount = 0
         let discountAmount = 0
         let couponCode = ""
-
+      
+ const { cartLength } = await getCartDetails(req.session.user)
         if (user) {
             // If user is logged in, retrieve cart from database
             userdetails = await findUserByEmail(user) // Assuming findUserByEmail is a function to find user details
@@ -740,13 +714,13 @@ const getCart = async (req, res) => {
                 (e) => e.User_details && e.User_details.email === user
             )
             console.log("FINAL USERCART TEMP", usercartTemp)
-if (stockUnavailability) {
-    const updateQuantity = await Shopping_cart_item.findByIdAndUpdate(
-        stockUnavailability,
-        { $set: { Qty: stock } }
-    )
-}
-
+            if (stockUnavailability) {
+                const updateQuantity =
+                    await Shopping_cart_item.findByIdAndUpdate(
+                        stockUnavailability,
+                        { $set: { Qty: stock } }
+                    )
+            }
 
             if (userCart.length > 0) {
                 cartProduct = userCart
@@ -837,7 +811,8 @@ if (stockUnavailability) {
                 user: false,
             })
         }
-console.log("CART PRODUCT NEW : ", cartProduct)
+        const name = userdetails.firstName
+        console.log("CART PRODUCT NEW : ", cartProduct)
         res.render("user/shopping-cart", {
             totalOfferDiscount: totalOfferDiscount,
             cartProduct,
@@ -847,7 +822,9 @@ console.log("CART PRODUCT NEW : ", cartProduct)
             couponCode,
             userdetails,
             user: true,
-            data:category
+            category,
+            name,
+            cartLength,
         })
     } catch (error) {
         console.error("Error fetching cart:", error)
@@ -896,8 +873,7 @@ const deleteCart = async (req, res) => {
                 $inc: { Qty_in_stock: qtyToReduceNum },
             })
 
-            console.log("Product quantity reduced successfully.")
-            console.log("Product not found.")
+           
             return res.status(200).json({
                 message: "Product removed from cart successfully",
                 totalCartAmount,
@@ -911,225 +887,7 @@ const deleteCart = async (req, res) => {
     }
 }
 
-// const getCheckout = async (req, res) => {
-//     let cartProduct = []
-//     let totalCartAmount = 0
-//     const userSession = req.session.user
-//     let Payment_types = await Payment_type.find()
-//     let discountAmount
-//     let newTotalAmount
-    
 
-//     if (userSession) {
-//         const user = await findUserByEmail(userSession) // Assuming findUserByEmail is a function to find user details
-//         if (!user) {
-//             throw new Error("User details not found")
-//         }
-
-//         const usercartTemp = await cartProducts()
-//         console.log("USER CART TEMP:", usercartTemp)
-//         const userCart = usercartTemp.filter((e) => {
-//             if (e.User_details) {
-//                 return e.User_details.email === userSession
-//             }
-//         })
-
-//  let couponCode = userdetails.coupon
-//  const coupon = await Coupon.findOne({ coupon_code: couponCode })
-//         if (userCart) {
-
-//             discountAmount =
-//                     (coupon.offer_percentage / 100) * totalCartAmount
-//                  newTotalAmount = totalCartAmount - discountAmount
-//             cartProduct = userCart.filter((e) => {
-//                 return e.Product_variation.Is_active
-//             })
-//             totalCartAmount = await getTotalAmount(user._id)
-//         }
-
-//         console.log("CART PRODUCT:", cartProduct)
-//         //////// DATA
-//         //   const user = await findUserByEmail(userSession)
-//         const address = user.address_id.filter((a) => a.Is_Active)
-
-//         const shippingAddress = user.address_id.find((e) => {
-//             return e.Is_Shipping_default
-//         })
-//         const billingAddress = user.address_id.find((e) => {
-//             return e.Is_Billing_default
-//         })
-//         //   const cartProduct = await cartProducts()
-//         //   const totalCartAmount = await getTotalAmount()
-//         console.log("THE ADDRESS IS:", cartProduct)
-//         res.render("user/checkout", {
-//             user,
-//             shippingAddress,
-//             billingAddress,
-//             cartProduct,
-//             totalCartAmount,
-//             address,
-//             Payment_types,
-//             discountAmount,
-//     newTotalAmount,
-//             session: false,
-//         })
-//     } else {
-//         // If user is not logged in, retrieve cart from cookies
-//         let cart = req.cookies.cart ? JSON.parse(req.cookies.cart) : []
-//         cartData = cart
-
-//         totalCartAmount = await getTotalAmountFromSession(cartData)
-//         cartProduct = await getProductsFromSession(cartData)
-
-//         //  res.render("user/shopping-cart", { cartProduct, totalCartAmount })
-
-//         res.render("user/checkout", {
-//             cartProduct,
-//             totalCartAmount,
-//             session: true,
-//             Payment_types,
-//         })
-//     }
-// }
-// const getCheckout = async (req, res) => {
-//     let cartProduct = []
-//     let totalCartAmount = 0
-//     let discountAmount =0
-//     let newTotalAmount = 0
-//     const userSession = req.session.user
-//     const Payment_types = await Payment_type.find()
-
-//     if (userSession) {
-//         const user = await findUserByEmail(userSession) // Assuming findUserByEmail is a function to find user details
-//         if (!user) {
-//             throw new Error("User details not found")
-//         }
-
-//         const userCartTemp = await cartProducts()
-//         console.log("USER CART TEMP:", userCartTemp)
-//         const userCart = userCartTemp.filter(
-//             (e) => e.User_details && e.User_details.email === userSession
-//         )
-
-//         if (userCart.length > 0) {
-//             cartProduct = userCart.filter((e) => e.Product_variation.Is_active)
-//             totalCartAmount = await getTotalAmount(user._id)
-
-//             ///////Testin
-
-//             const today = new Date()
-
-//             cartProduct = userCart.map((product) => {
-//                 let discountPercentage = 0
-//                 const productOfferValid =
-//                     product.Product_Offers &&
-//                     new Date(product.Product_Offers.start_date) <= today &&
-//                     new Date(product.Product_Offers.end_date) >= today
-//                 const categoryOfferValid =
-//                     product.Product_Category_offers &&
-//                     new Date(product.Product_Category_offers.start_date) <=
-//                         today &&
-//                     new Date(product.Product_Category_offers.end_date) >= today
-
-//                 if (productOfferValid && categoryOfferValid) {
-//                     discountPercentage = Math.max(
-//                         product.Product_Offers.offer_percentage,
-//                         product.Product_Category_offers.offer_percentage
-//                     )
-//                 } else if (productOfferValid) {
-//                     discountPercentage = product.Product_Offers.offer_percentage
-//                 } else if (categoryOfferValid) {
-//                     discountPercentage =
-//                         product.Product_Category_offers.offer_percentage
-//                 }
-
-//                 const discountAmount =
-//                     (product.Product.Original_price * discountPercentage) / 100
-
-//                 const effectivePrice =
-//                     product.Product.Original_price - discountAmount
-
-//                 return {
-//                     ...product,
-//                     discountAmount,
-//                     effectivePrice: discountPercentage
-//                         ? effectivePrice
-//                         : product.Product.Original_price,
-//                     discountPercentage,
-//                 }
-//             })
-
-//             var totalOfferDiscount = cartProduct.reduce(
-//                 (total, product) =>
-//                     total + product.discountAmount * product.Qty,
-//                 0
-//             )
-            
-//             ////testing ends
-
-//             let couponCode = user.coupon
-//             if (couponCode) {
-//                 const coupon = await Coupon.findOne({ coupon_code: couponCode })
-//                 if (coupon) {
-//                     discountAmount =
-//                         (coupon.offer_percentage / 100) * totalCartAmount
-//                     newTotalAmount = totalCartAmount - discountAmount
-//                 }
-//             }
-            
-
-//             const address = user.address_id.filter((a) => a.Is_Active)
-//             const shippingAddress = user.address_id.find(
-//                 (e) => e.Is_Shipping_default
-//             )
-//             const billingAddress = user.address_id.find(
-//                 (e) => e.Is_Billing_default
-//             )
-// console.log("Testing phase newTotalAmount:", newTotalAmount)
-//             res.render("user/checkout", {
-//                 user,
-//                 totalOfferDiscount,
-//                 shippingAddress,
-//                 billingAddress,
-//                 cartProduct,
-//                 totalCartAmount,
-//                 address,
-//                 Payment_types,
-//                 discountAmount: discountAmount.toFixed(2),
-//                 newTotalAmount: newTotalAmount.toFixed(2),
-//                 session: false,
-//             })
-//         } else {
-//             // User has no active cart items
-//             res.render("user/checkout", {
-//                 user,
-//                 shippingAddress: null,
-//                 billingAddress: null,
-//                 cartProduct: [],
-//                 totalCartAmount: 0,
-//                 address: [],
-//                 Payment_types,
-//                 discountAmount: discountAmount.toFixed(2),
-//                 newTotalAmount: newTotalAmount.toFixed(2),
-//                 session: false,
-//             })
-//         }
-//     } else {
-//         // If user is not logged in, retrieve cart from cookies
-//         let cart = req.cookies.cart ? JSON.parse(req.cookies.cart) : []
-//         totalCartAmount = await getTotalAmountFromSession(cart)
-//         cartProduct = await getProductsFromSession(cart)
-
-//         res.render("user/checkout", {
-//             cartProduct,
-//             totalCartAmount: totalCartAmount.toFixed(2),
-//             session: true,
-//             Payment_types,
-//             discountAmount: discountAmount.toFixed(2),
-//             newTotalAmount: newTotalAmount.toFixed(2),
-//         })
-//     }
-// }
 const getCheckout = async (req, res) => {
     let cartProduct = []
     let totalCartAmount = 0
@@ -1148,7 +906,7 @@ const getCheckout = async (req, res) => {
         }
 
         const userCartTemp = await cartProducts()
-        console.log("USER CART TEMP:", userCartTemp)
+       
         const userCart = userCartTemp.filter(
             (e) => e.User_details && e.User_details.email === userSession
         )

@@ -24,7 +24,11 @@ const Address = require("../models/addresses")
 const User_address = require("../models/userAddress")
 const mongoose = require("mongoose")
 const Payment_type = require("../models/payment_type")
-
+const {
+    calculateTotalCartAmount,
+    getCartLength,
+    getCartDetails,
+} = require("../utils/userProductsFunctions")
 //////
 const {
     fetchProductVariations,
@@ -788,6 +792,8 @@ const userDetails = async (req, res) => {
     const isAdmin = false
     let category = await fetchCategories()
     const msg = req.flash("info")
+    const user = await collection.findOne({ email: userData })
+    const userWallet = await Wallet.findOne({ user_id: user._id })
 
     // if (req.session.user) {
     // Find user details
@@ -805,6 +811,7 @@ const userDetails = async (req, res) => {
         user: userdetails,
         msg: msg[0],
         billingAddress,
+        userWallet,
     })
     // }
 
@@ -842,6 +849,8 @@ const getAddress = async (req, res) => {
     const user = req.session.user
     let category = await fetchCategories()
     const userdetails = await findUserByEmail(user)
+    const userData = await collection.findOne({email:user})
+    const userWallet = await Wallet.findOne({ user_id: userData._id })
     const address = userdetails.address_id.filter((a) => a.Is_Active)
     const shippingAddress = userdetails.address_id.filter(
         (a) => a.Is_Shipping_default
@@ -849,7 +858,10 @@ const getAddress = async (req, res) => {
     const billingAddress = userdetails.address_id.filter(
         (a) => a.Is_Billing_default
     )
-    // console.log("the billing addes is :",billingAddress);
+     const { cartLength, totalCartAmount } = await getCartDetails(
+         req.session.user
+     )
+   
     res.render("user/adressbook", {
         category,
         address,
@@ -857,6 +869,9 @@ const getAddress = async (req, res) => {
         userdetails,
         shippingAddress,
         billingAddress,
+        totalCartAmount,
+        cartLength,
+        userWallet,
     })
 }
 //========>>>>>> ###### GET : http://localhost:5050/user/address/addnew ######
@@ -865,6 +880,8 @@ const newAddress = async (req, res) => {
     let category = await fetchCategories()
     const msg = req.flash("info")
     const user = req.session.user
+    const userData = await collection.findOne({ email: user })
+    const userWallet = await Wallet.findOne({ user_id: userData._id })
 
     // if (req.session.user) {
     const userdetails = await findUserByEmail(user)
@@ -875,6 +892,7 @@ const newAddress = async (req, res) => {
         category,
         user: userdetails,
         msg: msg[0],
+        userWallet,
     })
 }
 //========>>>>>> ###### POST : http://localhost:5050/user/addnewaddress ######
@@ -957,6 +975,8 @@ const editAddress = async (req, res) => {
     try {
         // Fetch user details
         const userdetails = await findUserByEmail(userData)
+         const user = await collection.findOne({ email: userData })
+         const userWallet = await Wallet.findOne({ user_id: user._id })
 
         // Check if userdetails contains address details
         if (
@@ -986,6 +1006,7 @@ const editAddress = async (req, res) => {
             address,
             access: "USER",
             user: userdetails,
+            userWallet,
         })
     } catch (error) {
         // Handle errors
@@ -1129,61 +1150,93 @@ const setBilling = async (req, res) => {
     }
 }
 
-const getOrders = async (req, res) => {
-    const user = req.session.user
-    if (user) {
-        let category = await fetchCategories()
-        const userdetails = await findUserByEmail(user)
+ const getOrders = async (req, res) => {
+     const user = req.session.user
+     const { page = 1 } = req.query // 1. Get page parameter from query
+     const limit = 10 // 2. Number of orders per page
+     const skip = (page - 1) * limit // 3. Calculate the number of documents to skip for pagination
 
-        const OrderDetails = await Order_line.aggregate([
-            {
-                $lookup: {
-                    from: "shop_orders",
-                    localField: "Order_id",
-                    foreignField: "_id",
-                    as: "Shop_orders",
-                },
-            },
-            { $unwind: "$Shop_orders" },
-            {
-                $lookup: {
-                    from: "order_statuses",
-                    localField: "Shop_orders.Order_status",
-                    foreignField: "_id",
-                    as: "order_statuses",
-                },
-            },
-            { $unwind: "$order_statuses" },
-        ])
-        const objectIdString = userdetails.id.toString()
-        const numericValue = objectIdString.match(/[a-fA-F0-9]{24}/)[0]
-        let orderDetail = OrderDetails.filter(
-            (e) => e.Shop_orders.User_id.toString() === numericValue
-        )
-        const orderDetails = orderDetail.sort(
-            (a, b) => b.order_statuses.createdAt - a.order_statuses.createdAt
-        )
-       
-        res.render("user/orders", { category, user: userdetails, orderDetails })
-    } else {
-        res.redirect("/home")
-    }
-}
+     if (user) {
+         let category = await fetchCategories()
+         const userdetails = await findUserByEmail(user)
+         const userdata = await collection.findOne({ email: user })
+         const userWallet = await Wallet.findOne({ user_id: userdata._id })
 
+         const OrderDetails = await Order_line.aggregate([
+             {
+                 $lookup: {
+                     from: "shop_orders",
+                     localField: "Order_id",
+                     foreignField: "_id",
+                     as: "Shop_orders",
+                 },
+             },
+             { $unwind: "$Shop_orders" },
+             {
+                 $lookup: {
+                     from: "order_statuses",
+                     localField: "Shop_orders.Order_status",
+                     foreignField: "_id",
+                     as: "order_statuses",
+                 },
+             },
+             { $unwind: "$order_statuses" },
+         ])
+         const objectIdString = userdetails.id.toString()
+         const numericValue = objectIdString.match(/[a-fA-F0-9]{24}/)[0]
+         let orderDetail = OrderDetails.filter(
+             (e) => e.Shop_orders.User_id.toString() === numericValue
+         )
+         // Sort orders by status creation date (latest first)
+         const sortedOrderDetail = orderDetail.sort(
+             (a, b) =>
+                 new Date(b.order_statuses.createdAt) -
+                 new Date(a.order_statuses.createdAt)
+         )
+
+         // Calculate totalOrders after sorting
+         const totalOrders = sortedOrderDetail.length
+
+         // Get the orders for the current page
+         const orderDetails = sortedOrderDetail.slice(skip, skip + limit)
+
+         // Calculate totalPages for pagination
+         const totalPages = Math.ceil(totalOrders / limit)
+
+         res.render("user/orders", {
+             category,
+             user: userdetails,
+             orderDetails,
+             userWallet,
+             currentPage: parseInt(page), // 5. Pass current page number to the template
+             totalPages, // 6. Pass total number of pages to the template
+         })
+     } else {
+         res.redirect("/home")
+     }
+ }
 const getOrderDetails = async (req, res) => {
     const user = req.session.user
     const id = req.params.id
     if (user) {
         let category = await fetchCategories()
         const userdetails = await findUserByEmail(user)
+        const userdata = await collection.findOne({ email: user })
+        const userWallet = await Wallet.findOne({ user_id: userdata._id })
 
         const orderDetails = await Order_line.findById(id).populate({
             path: "Order_id",
             model: "Shop_order",
-            populate: {
-                path: "Order_status",
-                model: "Order_status",
-            },
+            populate: [
+                {
+                    path: "Order_status",
+                    model: "Order_status",
+                },
+                {
+                    path: "Payment_method_id",
+                    model: "Payment_type",
+                },
+            ],
         })
 
         const lengthOfProducts = orderDetails.Product_item_id.length
@@ -1200,12 +1253,13 @@ const getOrderDetails = async (req, res) => {
             productArray.push(data)
         }
 
-        console.log("PRODUCT ARYYA:", productArray)
+        console.log("PRODUCT ARYYA:", orderDetails)
         res.render("user/orderDetails", {
             category,
             userdetails,
             orderDetails,
             productArray,
+            userWallet,
         })
     } else {
         res.redirect("/home")
@@ -1344,7 +1398,12 @@ const getWallet = async (req, res) => {
            (a, b) => b.createdAt - a.createdAt
        )
 
-        res.render("user/wallet", { category, userWallet, transactions })
+        res.render("user/wallet", {
+            category,
+            userWallet,
+            transactions,
+            userDetails,
+        })
     } else {
         res.redirect("/")
     }

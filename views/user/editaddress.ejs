@@ -23,6 +23,202 @@
     <link rel="stylesheet" href="/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="/css/style.css" type="text/css">
     <link rel="stylesheet" href="/css/adress-book.css" type="text/css">
+    <style>
+        body {
+            background: #eee;
+        }
+    
+        .main-container {
+            margin-top: 40px;
+        }
+    
+        .widget-author {
+            margin-bottom: 58px;
+        }
+    
+        .author-card {
+            position: relative;
+            padding-bottom: 48px;
+            background-color: #fff;
+            box-shadow: 0 12px 20px 1px rgba(64, 64, 64, .09);
+        }
+    
+        .author-card .author-card-cover {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    
+        .author-card .author-card-cover::after {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            content: '';
+            opacity: 0.5;
+        }
+    
+        .author-card .author-card-cover>.btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 0 10px;
+        }
+    
+        .author-card .author-card-profile {
+            display: table;
+            position: relative;
+            margin-top: -22px;
+            padding-right: 15px;
+            padding-bottom: 16px;
+            padding-left: 20px;
+            z-index: 5;
+        }
+    
+        .author-card .author-card-profile .author-card-avatar,
+        .author-card .author-card-profile .author-card-details {
+            display: table-cell;
+            vertical-align: middle;
+        }
+    
+        .author-card .author-card-profile .author-card-avatar {
+            width: 85px;
+            border-radius: 50%;
+            box-shadow: 0 8px 20px 0 rgba(0, 0, 0, .15);
+            overflow: hidden;
+        }
+    
+        .author-card .author-card-profile .author-card-avatar>img {
+            display: block;
+            width: 100%;
+        }
+    
+        .author-card .author-card-profile .author-card-details {
+            padding-top: 20px;
+            padding-left: 15px;
+        }
+    
+        .author-card .author-card-profile .author-card-name {
+            margin-bottom: 2px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    
+        .author-card .author-card-profile .author-card-position {
+            display: block;
+            color: #8c8c8c;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    
+        .author-card .author-card-info {
+            margin-bottom: 0;
+            padding: 0 25px;
+            font-size: 13px;
+        }
+    
+        .author-card .author-card-social-bar-wrap {
+            position: absolute;
+            bottom: -18px;
+            left: 0;
+            width: 100%;
+        }
+    
+        .author-card .author-card-social-bar-wrap .author-card-social-bar {
+            display: table;
+            margin: auto;
+            background-color: #fff;
+            box-shadow: 0 12px 20px 1px rgba(64, 64, 64, .11);
+        }
+    
+        .btn-style-1.btn-white {
+            background-color: #fff;
+        }
+    
+        .list-group-item i {
+            display: inline-block;
+            margin-top: -1px;
+            margin-right: 8px;
+            font-size: 1.2em;
+            vertical-align: middle;
+        }
+    
+        .mr-1,
+        .mx-1 {
+            margin-right: .25rem !important;
+        }
+    
+        .list-group-item.active:not(.disabled) {
+            border-color: #e7e7e7;
+            background: #fff;
+            color: #ac32e4;
+            cursor: default;
+            pointer-events: none;
+        }
+    
+        .list-group-flush:last-child .list-group-item:last-child {
+            border-bottom: 0;
+        }
+    
+        .list-group-flush .list-group-item {
+            border-right: 0 !important;
+            border-left: 0 !important;
+        }
+    
+        .list-group-flush .list-group-item {
+            border-right: 0;
+            border-left: 0;
+            border-radius: 0;
+        }
+    
+        .list-group-item.active {
+            z-index: 2;
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    
+        .list-group-item:last-child {
+            margin-bottom: 0;
+            border-bottom-right-radius: .25rem;
+            border-bottom-left-radius: .25rem;
+        }
+    
+        a.list-group-item,
+        .list-group-item-action {
+            color: #404040;
+            font-weight: 600;
+        }
+    
+        .list-group-item {
+            padding-top: 16px;
+            padding-bottom: 16px;
+            -webkit-transition: all .3s;
+            transition: all .3s;
+            border: 1px solid #e7e7e7 !important;
+            border-radius: 0 !important;
+            color: #404040;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+    
+        .list-group-item {
+            position: relative;
+            display: block;
+            padding: .75rem 1.25rem;
+            margin-bottom: -1px;
+            background-color: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.125);
+        }
+    </style>
 </head>
 
   <body>
@@ -148,157 +344,187 @@
         <section class="section-parent">
             <div class="profile-details">
                 <div class="profile-inner">
-                    <div class="welcome-message">
-                        <div class="welcome-md-rimel-container">
-                            <span>Welcome! </span>
-                            <span class="md-rimel"><%= user.firstName %></span>
+                   
+                    <div class="account-management">
+                    <div class="container mb-4 main-container">
+                        <div class="row">
+                            <div class="col-lg-4 pb-5">
+                                <!-- Account Sidebar-->
+                                <div class="author-card pb-3">
+                                    <div class="author-card-cover"
+                                        style="background-image: url(https://bootdey.com/img/Content/flores-amarillas-wallpaper.jpeg);"><a
+                                            class="btn btn-style-1 btn-white btn-sm" href="#" data-toggle="tooltip" title=""
+                                            data-original-title="You currently have 290 Reward points to spend"><i
+                                                class="fa fa-award text-md"></i>&nbsp;Wallet Balance: <%= (userWallet.Wallet_amount).toFixed(2) %></a>
+                                    </div>
+                                    <div class="author-card-profile">
+                                        <div class="author-card-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                alt="Daniel Adams">
+                                        </div>
+                                        <div class="author-card-details">
+                                            <h5 class="author-card-name text-lg">
+                                                <%= user.firstName %>
+                                                    <%= user.lastName %>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wizard">
+                                    <nav class="list-group list-group-flush">
+                                        <a class="list-group-item " href="/user/orders">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div><i class="fa fa-shopping-bag mr-1 text-muted"></i>
+                                                    <div class="d-inline-block font-weight-medium text-uppercase">Orders List</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="list-group-item " href="/user"><i class="fa fa-user text-muted"></i>Profile Settings</a>
+                                        <a class="list-group-item active" href="/user/address"><i class="fa fa-map-marker text-muted"></i>Addresses</a>
+                                        <a class="list-group-item" href="/wishlist">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div><i class="fa fa-heart mr-1 text-muted"></i>
+                                                    <div class="d-inline-block font-weight-medium text-uppercase">My Wishlist</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="list-group-item" href="/user/wallet">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div><i class="fa fa-tag mr-1 text-muted"></i>
+                                                    <div class="d-inline-block font-weight-medium text-uppercase">My Wallet</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </nav>
+                                </div>
+                                </div>
+                            <!-- Orders Table-->
+                            <form id="profile-form" class="edit-profile">
+                                <div class="edit-your-profile">Edit Adddress</div>
+                                <div class="profile-form">
+                                    <div class="name-fields-parent">
+                                        <div class="name-fields">
+                                            <div class="name-containers">
+                                                <div class="first-name">First Name</div>
+                                                <div class="placebox-info">
+                                                    <div class="place-to-info-box"></div>
+                                                    <input class="md" type="text" name="firstName" value="<%= address.Address_id.FirstName %>"
+                                                        required>
+                                                </div>
+                                            </div>
+                            
+                            
+                                        </div>
+                                        <div class="address-fields-parent">
+                                            <div class="address-fields">
+                                                <div class="last-name">Last Name</div>
+                                                <div class="placebox-info2">
+                                                    <div class="place-to-info-box2"></div>
+                                                    <input class="md2" name="lastName" type="text" value="<%= address.Address_id.LastName %>"
+                                                        required>
+                                                </div>
+                                            </div>
+                            
+                                        </div>
+                            
+                                    </div>
+                                    <div class="name-fields-parent">
+                                        <div class="name-fields">
+                                            <div class="name-containers">
+                                                <div class="first-name">House Number/House Name</div>
+                                                <div class="placebox-info">
+                                                    <div class="place-to-info-box"></div>
+                                                    <input class="md" type="text" name="houseNumber" value="<%= address.Address_id.House_number %>"
+                                                        required>
+                                                </div>
+                                            </div>
+                                            <div class="name-containers1">
+                                                <a class="email">Address Line 2</a>
+                                                <div class="placebox-info1">
+                                                    <div class="place-to-info-box1"></div>
+                                                    <input class="md1" value="<%= address.Address_id.Address_line_2 %>" name="addressLine2">
+                                                </div>
+                                            </div>
+                            
+                                        </div>
+                                        <div class="address-fields-parent">
+                                            <div class="address-fields">
+                                                <div class="last-name">Address line 1</div>
+                                                <div class="placebox-info2">
+                                                    <div class="place-to-info-box2"></div>
+                                                    <input class="md2" value="<%= address.Address_id.Address_line_1 %>" name="addressLine1"
+                                                        type="text" required>
+                                                </div>
+                                            </div>
+                                            <div class="address-fields1">
+                                                <div class="address">Postal Code</div>
+                                                <div class="placebox-info3">
+                                                    <div class="place-to-info-box3"></div>
+                                                    <input class="md3" value="<%= address.Address_id.Postal_code %>" name="postalCode" type="text"
+                                                        required>
+                                                    <input type="hidden" name="addressId" value="<%= address.Address_id._id %>">
+                                                </div>
+                                            </div>
+                                        </div>
+                            
+                                    </div>
+                            
+                                    <div class="form-text text-muted">
+                                    </div>
+                                    <div class="form-group m-0">
+                            
+                                    </div>
+                                </div>
+                                <div class="profile-form">
+                                    <div class="name-fields-parent">
+                                        <div class="name-fields">
+                                            <div class="name-containers">
+                                                <div class="first-name">State</div>
+                                                <div class="placebox-info">
+                                                    <div class="place-to-info-box"></div>
+                                                    <input class="md" value="<%= address.Address_id.State %>" type="text" name="state" required>
+                                                </div>
+                                            </div>
+                            
+                            
+                                        </div>
+                                        <div class="address-fields-parent">
+                                            <div class="address-fields">
+                                                <div class="last-name">country</div>
+                                                <div class="placebox-info2">
+                                                    <div class="place-to-info-box2"></div>
+                                                    <input class="md2" value="<%= address.Address_id.Country %>" name="country" type="text"
+                                                        required>
+                                                </div>
+                                            </div>
+                            
+                                        </div>
+                            
+                                    </div>
+                            
+                                    <div class="form-text text-muted">
+                                    </div>
+                                    <div class="form-group m-0">
+                            
+                                    </div>
+                                </div>
+                                <div id="error-message" class="m-auto" style="color: red;"></div>
+                                <div class="form-buttons">
+                                    <div class="button-container" id="buttonContainer">
+                                        <div class="cancel-button">
+                                            <a href="/user/address" class="cancel">Cancel</a>
+                                        </div>
+                                        <div class="form-buttons">
+                                            <button type="submit" class="button1" id="saveChangesButton">Upadate Address</button>
+                            
+                                        </div>
+                            
+                                    </div>
+                                </div>
+                            </form>
+                            
                         </div>
                     </div>
-                    <div class="account-management">
-                        <div class="manage-account">
-                            <div class="manage-my-account">Manage My Account</div>
-                            <div class="account-options">
-                                <div class="options">
-                                    <div class="my-profile">My Profile</div>
-                                    <div href="/home" class="address-book" id="addressBookText">Address Book</div>
-                                    <div class="my-payment-options" id="myPaymentOptions">My Payment Options</div>
-                                </div>
-                            </div>
-                            <div class="my-orders-parent">
-                                <div class="my-orders">My Orders</div>
-                                <div class="order-types">
-                                    <div class="my-orders-wrapper">
-                                        <div class="my-orders1">My Orders</div>
-                                    </div>
-                                    <div class="my-returns-wrapper">
-                                        <div class="my-returns">My Returns</div>
-                                    </div>
-                                    <div class="cancellation">
-                                        <div class="my-cancellations-wrapper">
-                                            <div class="my-cancellations">My Cancellations</div>
-                                        </div>
-                                        <div class="my-wishlist">My WishList</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <form id="profile-form" class="edit-profile" >
-                            <div class="edit-your-profile">Edit Adddress</div>
-                            <div class="profile-form">
-                                 <div class="name-fields-parent">
-                                    <div class="name-fields">
-                                        <div class="name-containers">
-                                            <div class="first-name">First Name</div>
-                                            <div class="placebox-info">
-                                                <div class="place-to-info-box"></div>
-                                                <input class="md"  type="text" name="firstName" value="<%= address.Address_id.FirstName %>" required>
-                                            </div>
-                                        </div>
-                                        
-                                      
-                                    </div>
-                                    <div class="address-fields-parent">
-                                        <div class="address-fields">
-                                            <div class="last-name">Last Name</div>
-                                            <div class="placebox-info2">
-                                                <div class="place-to-info-box2"></div>
-                                                <input class="md2"  name="lastName" type="text" value="<%= address.Address_id.LastName %>" required>
-                                            </div>
-                                        </div>
-                                        
-                                    </div>
-                                    
-                                </div>
-                                <div class="name-fields-parent">
-                                    <div class="name-fields">
-                                        <div class="name-containers">
-                                            <div class="first-name">House Number/House Name</div>
-                                            <div class="placebox-info">
-                                                <div class="place-to-info-box"></div>
-                                                <input class="md"  type="text" name="houseNumber" value="<%= address.Address_id.House_number %>" required>
-                                            </div>
-                                        </div>
-                                        <div class="name-containers1">
-                                            <a class="email">Address Line 2</a>
-                                            <div class="placebox-info1">
-                                                <div class="place-to-info-box1"></div>
-                                                <input class="md1" value="<%= address.Address_id.Address_line_2 %>"   name="addressLine2">
-                                            </div>
-                                        </div>
-                                      
-                                    </div>
-                                    <div class="address-fields-parent">
-                                        <div class="address-fields">
-                                            <div class="last-name">Address line 1</div>
-                                            <div class="placebox-info2">
-                                                <div class="place-to-info-box2"></div>
-                                                <input class="md2" value="<%= address.Address_id.Address_line_1 %>"   name="addressLine1" type="text" required>
-                                            </div>
-                                        </div>
-                                        <div class="address-fields1">
-                                            <div class="address">Postal Code</div>
-                                            <div class="placebox-info3">
-                                                <div class="place-to-info-box3"></div>
-                                                <input class="md3" value="<%= address.Address_id.Postal_code %>"  name="postalCode" type="text" required>
-                                                 <input type="hidden" name="addressId" value="<%= address.Address_id._id %>">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                                
-                                                   <div class="form-text text-muted">
-                                                       </div>
-                                <div class="form-group m-0">
-                                   
-                                </div>
-                            </div>
-                             <div class="profile-form">
-                                <div class="name-fields-parent">
-                                    <div class="name-fields">
-                                        <div class="name-containers">
-                                            <div class="first-name">State</div>
-                                            <div class="placebox-info">
-                                                <div class="place-to-info-box"></div>
-                                                <input class="md" value="<%= address.Address_id.State %>"  type="text" name="state" required>
-                                            </div>
-                                        </div>
-                                      
-                                      
-                                    </div>
-                                    <div class="address-fields-parent">
-                                        <div class="address-fields">
-                                            <div class="last-name">country</div>
-                                            <div class="placebox-info2">
-                                                <div class="place-to-info-box2"></div>
-                                                <input class="md2" value="<%= address.Address_id.Country %>" name="country" type="text" required>
-                                            </div>
-                                        </div>
-                                        
-                                    </div>
-                                    
-                                </div>
-                                
-                                                   <div class="form-text text-muted">
-                                                       </div>
-                                <div class="form-group m-0">
-                                   
-                                </div>
-                            </div>
-                            <div id="error-message" class="m-auto" style="color: red;"></div>
-                            <div class="form-buttons">
-                                <div class="button-container" id="buttonContainer">
-                                    <div class="cancel-button">
-                                        <a href="/user/address" class="cancel">Cancel</a>
-                                    </div>
-                                    <div class="form-buttons">
-    <button type="submit" class="button1" id="saveChangesButton">Upadate Address</button>
-    
-</div>
-
-                                </div>
-                            </div>
-                        </form>
+                       
                         <div id="passwordCriteria" class="mt-2"></div>
                         <div class="alert alert-success" id="userSuccessMessage" style="display: none;"></div>
                     </div>
@@ -401,7 +627,8 @@ document.getElementById('profile-form').addEventListener('submit', function(even
 
     // Regular expressions for validation
     const alphanumericRegex = /^[a-zA-Z0-9\s]+$/;
-    const postalCodeRegex = /^\d{5}(?:[-\s]\d{4})?$/; // US ZIP code format
+   const postalCodeRegex = /^\d{6}$/;
+
     const lettersRegex = /^[a-zA-Z\s]+$/;
 
     if (!houseNumber || !alphanumericRegex.test(houseNumber)) {

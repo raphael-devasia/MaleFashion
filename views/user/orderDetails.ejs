@@ -192,247 +192,274 @@ a {
             </div>
         </section>
         <!-- Breadcrumb Section End -->
-
-        <div class="adress-book">
-            <!--  -->
-            <!--  -->
-            <main class="account-content-wrapper">
-                <section class="account-content">
-                    <div class="welcome-message1">
-                        <div class="welcome-md-rimel-container1">
-                            <span>Welcome! </span>
-                            <span class="md-rimel1"
-                                ><%= userdetails.firstName %></span
-                            >
-                        </div>
-                    </div>
-                
-
-                    <div>               
-                        
-<div class="container-fluid">
-        <div class="account-management-parent">
-                        <div class="account-management1 ">
-                            <div class="manage-account1">
-                                <div class="manage-my-account1">
-                                    Manage My Account
-                                </div>
-                                <div class="account-options1">
-                                    <div class="options1">
-                                        <div class="my-profile1">
-                                            My Profile
-                                        </div>
-                                        <div class="address-book1">
-                                            Address Book
-                                        </div>
-                                        <div
-                                            class="my-payment-options1"
-                                            id="myPaymentOptions"
-                                        >
-                                            My Payment Options
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="my-orders-group">
-                                    <div class="my-orders2">My Orders</div>
-                                    <div class="order-types1">
-                                        <div class="order-return">
-                                            <div class="my-orders3">
-                                                My Orders
+        <main class="main">
+            <section class="section-parent">
+                <div class="profile-details">
+                    <div class="profile-inner">
+        
+                        <div class="account-management">
+                            <div class="container mb-4 main-container">
+                                <div class="row">
+                                    <div class="col-lg-4 pb-5">
+                                        <!-- Account Sidebar-->
+                                        <div class="author-card pb-3">
+                                            <div class="author-card-cover"
+                                                style="background-image: url(https://bootdey.com/img/Content/flores-amarillas-wallpaper.jpeg);">
+                                                <a class="btn btn-style-1 btn-white btn-sm" href="#" data-toggle="tooltip"
+                                                    title=""
+                                                    data-original-title="You currently have 290 Reward points to spend"><i
+                                                        class="fa fa-award text-md"></i>&nbsp;Wallet Balance: <%=
+                                                        (userWallet.Wallet_amount).toFixed(2) %></a>
                                             </div>
-                                        </div>
-                                        <div class="order-return1">
-                                            <div class="my-returns1">
-                                                My Returns
-                                            </div>
-                                        </div>
-                                        <div class="cancellation-wish-list">
-                                            <div
-                                                class="my-cancellations-container"
-                                            >
-                                                <div class="my-cancellations1">
-                                                    My Cancellations
+                                            <div class="author-card-profile">
+                                                <div class="author-card-avatar"><img
+                                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                        alt="Daniel Adams">
+                                                </div>
+                                                <div class="author-card-details">
+                                                    <h5 class="author-card-name text-lg">
+                                                        <%= userdetails.firstName %>
+                                                            <%= userdetails.lastName %>
+                                                    </h5>
                                                 </div>
                                             </div>
-                                            <div class="my-wishlist1">
-                                                My WishList
-                                            </div>
+                                        </div>
+                                        <div class="wizard">
+                                            <nav class="list-group list-group-flush">
+                                                <a class="list-group-item active" href="/user/orders">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div><i class="fa fa-shopping-bag mr-1 text-muted"></i>
+                                                            <div class="d-inline-block font-weight-medium text-uppercase">Orders
+                                                                List</div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <a class="list-group-item " href="/user"><i
+                                                        class="fa fa-user text-muted"></i>Profile Settings</a>
+                                                <a class="list-group-item " href="/user/address"><i
+                                                        class="fa fa-map-marker text-muted"></i>Addresses</a>
+                                                <a class="list-group-item" href="/wishlist">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div><i class="fa fa-heart mr-1 text-muted"></i>
+                                                            <div class="d-inline-block font-weight-medium text-uppercase">My
+                                                                Wishlist</div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <a class="list-group-item" href="/user/wallet">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div><i class="fa fa-tag mr-1 text-muted"></i>
+                                                            <div class="d-inline-block font-weight-medium text-uppercase">My
+                                                                Wallet</div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </nav>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                    <!-- Orders Table-->
+                                    <!-- Orders Table-->
+                                    <!-- Title -->
+                                    <!-- Title -->
+                                  
+                                    
+                                    <!-- Main content -->
+                                    <div class="col-lg-8 pb-5">
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <!-- Details -->
+                                                <div class="card mb-4">
+                                                    <div class="card-body">
+                                                        <div class="mb-3 d-flex justify-content-between">
+                                                            <div>
+                                                                <span class="me-3">Order Placed On: <%= (orderDetails.Order_id.Order_status.createdAt
+                                                                        ).toLocaleDateString() %></span>
+                                                                <!-- <span class="me-3">#16123222</span>
+                                                      <span class="me-3"></span> -->
+                                                                <% function getOverallStatus(statusArray) { if (statusArray.every(status=> status === 'Cancelled')) {
+                                                                    return 'Cancelled';
+                                                                    } else if (statusArray.every(status => status === 'Shipped')) {
+                                                                    return 'Shipped';
+                                                                    } else if (statusArray.every(status => status === 'Delivered')) {
+                                                                    return 'Delivered';
+                                                                    } else if (statusArray.every(status => status === 'Returned')) {
+                                                                    return 'Returned';
+                                                                    } else {
+                                                                    return 'Processing'; // Default status
+                                                                    }
+                                                                    } %>
+                                                                
+                                                                    <div class="d-flex justify-content-between align-items-center py-3">
+                                                                        <h2 class="h5 mb-0"><a href="#" class="text-muted"></a> Order # <%= orderDetails.Order_id.Order_number %>
+                                                                        </h2>
+                                                                        <span class="badge rounded-pill bg-info">
+                                                                            <%= getOverallStatus(orderDetails.Status) %>
+                                                                        </span>
+                                                                    </div>
+
+                                                            </div>
+                                                            <div class="d-flex">
+                                                                <button class="btn btn-link p-0 me-3 d-none d-lg-block btn-icon-text"><i
+                                                                        class="bi bi-download"></i> <span class="text">Invoice</span></button>
+                                                                <div class="dropdown">
+                                                                    <button class="btn btn-link p-0 text-muted" type="button" data-bs-toggle="dropdown">
+                                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                                        <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Edit</a></li>
+                                                                        <li><a class="dropdown-item" href="#"><i class="bi bi-printer"></i> Print</a></li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+<table class="table table-borderless">
+    <tbody>
+        <% for (let i=0; i < orderDetails.Product_item_id.length; i++) { %>
+            <tr class="<%= orderDetails.Status[i] === 'Cancelled' ? 'text-muted' : '' %>">
+                <td>
+                    <div class="d-flex mb-2">
+                        <div class="flex-shrink-0">
+                            <img src="<%= productArray[i].Product_item.Image_filename[0] %>" alt="" width="35"
+                                class="img-fluid">
                         </div>
-
-<div class="container">
-    
-  <!-- Title -->
-  <div class="d-flex justify-content-between align-items-center py-3">
-    <h2 class="h5 mb-0"><a href="#" class="text-muted"></a> Order # <%=  orderDetails.Order_number  %></h2>
-  </div>
-
-  <!-- Main content -->
-  <div class="row">
-    <div class="col-lg-8">
-      <!-- Details -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <div class="mb-3 d-flex justify-content-between">
-            <div>
-              <span class="me-3">Order Placed On: <%= (orderDetails.Order_id.Order_status.createdAt ).toLocaleDateString()  %></span>
-              <!-- <span class="me-3">#16123222</span>
-              <span class="me-3"></span> -->
-              <span class="badge rounded-pill bg-info"><%= orderDetails.Order_id.Order_status.Status %></span>
-            </div>
-            <div class="d-flex">
-              <button class="btn btn-link p-0 me-3 d-none d-lg-block btn-icon-text"><i class="bi bi-download"></i> <span class="text">Invoice</span></button>
-              <div class="dropdown">
-                <button class="btn btn-link p-0 text-muted" type="button" data-bs-toggle="dropdown">
-                  <i class="bi bi-three-dots-vertical"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Edit</a></li>
-                  <li><a class="dropdown-item" href="#"><i class="bi bi-printer"></i> Print</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <table class="table table-borderless">
-        <tbody>
-            <% for (let i=0; i < orderDetails.Product_item_id.length; i++) { %>
-                <tr class="<%= orderDetails.Status[i] === 'Cancelled' ? 'text-muted' : '' %>">
-                    <td>
-                        <div class="d-flex mb-2">
-                            <div class="flex-shrink-0">
-                                <img src="<%= productArray[i].Product_item.Image_filename[0] %>" alt="" width="35"
-                                    class="img-fluid">
-                            </div>
-                            <div class="flex-lg-grow-1 ms-3">
-                                <h6 class="small mb-0">
-                                    <a href="#" class="text-reset">
-                                        <%= productArray[i].Product_item.Product_variation_id.Product_item_id.Product_id.product_name
-                                            %>
-                                    </a>
-                                </h6>
-                                <span class="small">Color: <%=
-                                        productArray[i].Product_item.Product_variation_id.Product_item_id.Colour_id.Colour_name
-                                        %></span>
-                            </div>
+                        <div class="flex-lg-grow-1 ms-3">
+                            <h6 class="small mb-0">
+                                <a href="#" class="text-reset">
+                                    <%= productArray[i].Product_item.Product_variation_id.Product_item_id.Product_id.product_name
+                                        %>
+                                </a>
+                            </h6>
+                            <span class="small">Color: <%=
+                                    productArray[i].Product_item.Product_variation_id.Product_item_id.Colour_id.Colour_name
+                                    %></span>
                         </div>
-                    </td>
-                    <td>
-                        <%= orderDetails.Qty[i] %>
-                    </td>
-                    <td class="text-end">$ <%= productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price
-                            %>
-                    </td>
-                    <td>
-                        <!-- Button trigger modal -->
-                        <% if (orderDetails.Status[i]==='Cancelled' ) { %>
-                            <!-- Muted and disabled button for Cancelled status -->
-                            <button type="button" class="btn btn-secondary" disabled>Cancelled</button>
-                            <% } else if (orderDetails.Status[i]==='Processing') { %>
-                                <button type="button" class="btn btn-danger" data-id="<%= orderDetails.Product_item_id[i] %>"
-                                    data-order-id="<%= orderDetails._id %>" data-toggle="modal"
-                                    data-target="#exampleModalCenterItem">
-                                    Cancel
-                                </button>
-                                <% } else if (orderDetails.Status[i]==='Delivered') { %>
-                            <a href="/user/orders/return-delivery/<%= orderDetails.Product_item_id[i] %>?orderId=<%= orderDetails._id %>"
-                                type="button" class="btn btn-danger">
-                                Return Item
-                            </a>
-                                <% }  else if (orderDetails.Status[i]==='Returned') { %>
-                            <button type="button" class="btn btn-secondary" disabled>Returned</button>
-                                <% } else if (orderDetails.Status[i]==='Refunded') { %>
-                            <button type="button" class="btn btn-secondary" disabled>Refunded</button>
-                                <% } else if (orderDetails.Status[i]==='Shipped') { %>
-                                    <button type="button" class="btn btn-success" disabled>Shipped</button>
-                                    <a href="/user/orders/confirm-delivery/<%= orderDetails.Product_item_id[i] %>?orderId=<%= orderDetails._id %>" type="button"
-                                        class="btn btn-info">
-                                        Confirm delivery
-                                    </a>
-                                    <% } %>
-                    </td>
-                </tr>
-                <% } %>
-        </tbody>
-
-            <tfoot>
-              <tr>
-                <td colspan="2">Subtotal</td>
-                <td class="text-end">$ <%= (orderDetails.Order_id.Product_cost).toFixed(2)%></td>
-              </tr>
-              <tr>
-                <td colspan="2">Shipping</td>
-                <td class="text-end">$00.00</td>
-              </tr>
-              <tr>
-                <td colspan="2">Discount (Code:<%= orderDetails.Order_id.Coupon_code%>)</td>
-                <td class="text-danger text-end">-$<%= (orderDetails.Order_id.Coupon_discount).toFixed(2) %></td>
-              </tr>
-            <tr>
-                <td colspan="2">Sales Discount</td>
-                <td class="text-danger text-end">-$ <%= (orderDetails.Order_id.Sales_discount).toFixed(2) %> </td>
+                    </div>
+                </td>
+                <td>
+                    <%= orderDetails.Qty[i] %>
+                </td>
+                <td class="text-end">$ <%=
+                        productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price %>
+                </td>
+                <td>
+                    <!-- Button trigger modal -->
+                    <% if (orderDetails.Status[i]==='Cancelled' ) { %>
+                        <!-- Muted and disabled button for Cancelled status -->
+                        <button type="button" class="btn btn-secondary" disabled>Cancelled</button>
+                        <% } else if (orderDetails.Status[i]==='Processing' ) { %>
+                            <button type="button" class="btn btn-danger"
+                                data-id="<%= orderDetails.Product_item_id[i] %>" data-order-id="<%= orderDetails._id %>"
+                                data-toggle="modal" data-target="#exampleModalCenterItem">
+                                Cancel
+                            </button>
+                            <% } else if (orderDetails.Status[i]==='Delivered' ) { %>
+                                <a href="/user/orders/return-delivery/<%= orderDetails.Product_item_id[i] %>?orderId=<%= orderDetails._id %>"
+                                    type="button" class="btn btn-danger">
+                                    Return Item
+                                </a>
+                                <% } else if (orderDetails.Status[i]==='Returned' ) { %>
+                                    <button type="button" class="btn btn-secondary" disabled>Returned</button>
+                                    <% } else if (orderDetails.Status[i]==='Refunded' ) { %>
+                                        <button type="button" class="btn btn-secondary" disabled>Refunded</button>
+                                        <% } else if (orderDetails.Status[i]==='Shipped' ) { %>
+                                            <button type="button" class="btn btn-success" disabled>Shipped</button>
+                                            <a href="/user/orders/confirm-delivery/<%= orderDetails.Product_item_id[i] %>?orderId=<%= orderDetails._id %>"
+                                                type="button" class="btn btn-info">
+                                                Confirm delivery
+                                            </a>
+                                            <% } %>
+                </td>
             </tr>
-              <tr class="fw-bold">
-                <td colspan="2">TOTAL</td>
-                <td class="text-end">$<%= (orderDetails.Order_id.Order_total).toFixed(2) %></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-      <!-- Payment -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <div class="row">
+            <% } %>
+    </tbody>
+
+    <tfoot>
+        <tr>
+            <td colspan="2">Subtotal</td>
+            <td class="text-end">$ <%= (orderDetails.Order_id.Product_cost).toFixed(2)%>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">Shipping</td>
+            <td class="text-end">$00.00</td>
+        </tr>
+        <tr>
+            <td colspan="2">Discount (Code:<%= orderDetails.Order_id.Coupon_code%>)</td>
+            <td class="text-danger text-end">-$<%= (orderDetails.Order_id.Coupon_discount).toFixed(2) %>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">Sales Discount</td>
+            <td class="text-danger text-end">-$ <%= (orderDetails.Order_id.Sales_discount).toFixed(2) %>
+            </td>
+        </tr>
+        <tr class="fw-bold">
+            <td colspan="2">TOTAL</td>
+            <td class="text-end">$<%= (orderDetails.Order_id.Order_total).toFixed(2) %>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+</div>
+</div>
+<!-- Payment -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
             <div class="col-lg-6">
-              <h3 class="h6">Payment Method</h3>
-              <p>COD<br>
-              Total: $ <%= orderDetails.Order_id.Order_total %> <span class="badge bg-success rounded-pill">PENDING</span></p>
-
-
-
-              <!-- Button trigger modal -->
-              <% if (orderDetails.Order_id.Order_status.Status === "Paid"||orderDetails.Order_id.Order_status.Status === "Processing") { %>
-               <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter" >
-  Cancel Entire Order
-</button>
-              <% } else { %>
-<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter" disabled>
-  Cancel Entire Order
-</button>
-<% } %>
+                <% function determinePaymentStatus(order) { const statuses=order.Status; const
+                    paymentMethod=order.Order_id.Payment_method_id.Value; if (statuses.includes('Returned')) { return 'REFUNDED' ; }
+                    else if (paymentMethod==='Cash On Delivery' ) { if (statuses.includes('Delivered')) { return 'PAID' ; } else {
+                    return 'PENDING' ; } } else { return 'PAID' ; } } const paymentStatus=determinePaymentStatus(orderDetails); %>
+                
+                    <h3 class="h6">Payment Method</h3>
+                    <p>
+                        <%= orderDetails.Order_id.Payment_method_id.Value %><br>
+                            Total: $ <%= (orderDetails.Order_id.Order_total).toFixed(2) %>
+                                <span
+                                    class="badge bg-<%= paymentStatus === 'PENDING' ? 'success' : paymentStatus === 'PAID' ? 'primary' : 'danger' %> rounded-pill">
+                                    <%= paymentStatus %>
+                                </span>
+                    </p>
 
 
 
 
+                <!-- Button trigger modal -->
+                    
 
+
+</div>
+</div>
+</div>
+</div>
 <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Order Cancellation</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      Do you Want to cancel this order?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        
-         <a href="/user/orders/delete/<%= orderDetails._id %>" type="button" class="btn btn-primary" >Confirm</a>
-        
-        
-      </div>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Order Cancellation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Do you Want to cancel this order?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                <a href="/user/orders/delete/<%= orderDetails._id %>" type="button" class="btn btn-primary">Confirm</a>
+
+
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 <!-- 2 -->
-
 <div class="modal fade" id="exampleModalCenterItem" tabindex="-1" role="dialog"
     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -455,60 +482,103 @@ a {
 </div>
 
 
-            </div>
-            <div class="col-lg-6">
-              <h3 class="h6">Billing address</h3>
-              <address>
-                <p><%= orderDetails.Order_id.Billing_address.FirstName %> <%= orderDetails.Order_id.Billing_address.LastName %> </p>
-               
-  <p> <%= orderDetails.Order_id.Billing_address.House_number %> ,<%= orderDetails.Order_id.Billing_address.Address_line_1%></p>
-
-  <p> <%= orderDetails.Order_id.Billing_address.Address_line_2 %>,<%= orderDetails.Order_id.Billing_address.Postal_code %> </p>
-  
-  <p><%= orderDetails.Order_id.Billing_address.State %>,<%= orderDetails.Order_id.Billing_address.Country %></p>
-  <p></p>
-              </address>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-    <div class="col-lg-4">
-      <!-- Customer Notes -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <h3 class="h6">Customer Notes</h3>
-          <p>Sed enim, faucibus litora velit vestibulum habitasse. Cras lobortis cum sem aliquet mauris rutrum. Sollicitudin. Morbi, sem tellus vestibulum porttitor.</p>
-        </div>
-      </div>
-      <div class="card mb-4">
-        <!-- Shipping information -->
-        <div class="card-body">
-          <!-- <h3 class="h6">Shipping Information</h3>
-          <strong>FedEx</strong>
-          <span><a href="#" class="text-decoration-underline" target="_blank">FF1234567890</a> <i class="bi bi-box-arrow-up-right"></i> </span> -->
-          <hr>
-          <h3 class="h6">Address</h3>
-          <address>
-                <p><%= orderDetails.Order_id.Shipping_address.FirstName %> <%= orderDetails.Order_id.Shipping_address.LastName %> </p>
-               
-  <p> <%= orderDetails.Order_id.Shipping_address.House_number %> ,<%= orderDetails.Order_id.Shipping_address.Address_line_1%></p>
-
-  <p> <%= orderDetails.Order_id.Shipping_address.Address_line_2 %>,<%= orderDetails.Order_id.Shipping_address.Postal_code %> </p>
-  
-  <p><%= orderDetails.Order_id.Shipping_address.State %>,<%= orderDetails.Order_id.Shipping_address.Country %></p>
-  <p></p>
-              </address>
-        </div>
-      </div>
     </div>
-  </div>
+    </div>
+
+
+
 </div>
-  </div>
-                        
+</div>
+</div>
+</div>
+<div class="col-lg-4">
+    
+    <div class="card mb-4">
       
-            </main>
-            <!-- Footer Section Begin -->
+    </div>
+    <div class="card mb-4">
+        
+        <div class="card-body">
+          <h3 class="h6"></h3>
+          <strong>Billing Information</strong>
+         
+            <hr>
+           
+            <address>
+                <p>
+                    <%= orderDetails.Order_id.Billing_address.FirstName %>
+                        <%= orderDetails.Order_id.Billing_address.LastName %>
+                </p>
+
+                <p>
+                    <%= orderDetails.Order_id.Billing_address.House_number %> ,<%=
+                            orderDetails.Order_id.Billing_address.Address_line_1%>
+                </p>
+
+                <p>
+                    <%= orderDetails.Order_id.Billing_address.Address_line_2 %>,<%=
+                            orderDetails.Order_id.Billing_address.Postal_code %>
+                </p>
+
+                <p>
+                    <%= orderDetails.Order_id.Billing_address.State %>,<%=
+                            orderDetails.Order_id.Billing_address.Country %>
+                </p>
+                <p></p>
+            </address>
+        </div>
+    </div>
+        <div class="card mb-4">
+            
+            <div class="card-body">
+               <h3 class="h6"></h3>
+                  <strong>Shipping Information</strong>
+                  
+                <hr>
+                
+                <address>
+                    <p>
+                        <%= orderDetails.Order_id.Shipping_address.FirstName %>
+                            <%= orderDetails.Order_id.Shipping_address.LastName %>
+                    </p>
+        
+                    <p>
+                        <%= orderDetails.Order_id.Shipping_address.House_number %> ,<%=
+                                orderDetails.Order_id.Shipping_address.Address_line_1%>
+                    </p>
+        
+                    <p>
+                        <%= orderDetails.Order_id.Shipping_address.Address_line_2 %>,<%=
+                                orderDetails.Order_id.Shipping_address.Postal_code %>
+                    </p>
+        
+                    <p>
+                        <%= orderDetails.Order_id.Shipping_address.State %>,<%= orderDetails.Order_id.Shipping_address.Country
+                                %>
+                    </p>
+                    <p></p>
+                </address>
+            </div>
+        </div>
+</div>
+
+
+</div>
+
+
+
+
+<div id="passwordCriteria" class="mt-2"></div>
+<div class="alert alert-success" id="userSuccessMessage" style="display: none;"></div>
+</div>
+</div>
+
+</section>
+</main>
+        
+        
+        <!-- Footer Section Begin -->
             <footer class="footer">
                 <div class="container">
                     <div class="row">

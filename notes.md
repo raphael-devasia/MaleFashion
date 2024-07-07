@@ -1,362 +1,233 @@
- document.addEventListener('DOMContentLoaded', () => {
-                const categoryRadios = document.querySelectorAll('.category-radio');
-
-                categoryRadios.forEach((radio) => {
-                    radio.addEventListener('change', handleCategoryChange);
-                });
-
-                function handleCategoryChange() {
-                    const selectedCategory = document.querySelector('input[name="category"]:checked')?.value;
-                    
-                    if (selectedCategory) {
-                        const queryString = `key=${selectedCategory}`;
-                        fetch(`/filtered-category?${queryString}`)
-                            .then((response) => response.json())
-                            .then((data) => {
-                                const productsContainer = document.getElementById('products-container');
-                                let templateHtml = '';
-                                data.data.forEach((row) => {
-                                    templateHtml += `
-                            <div class="col-lg-4 col-md-6 col-sm-6">
-                                <div class="product__item">
-                                    <div class="product__item sale">
-                                        <div class="product__item__pic set-bg" data-setbg="${setImageUrl(row)}">
-                                            ${row.discountPercentage > 0 ? '<span class="label">Sale</span>' : ''}
-                                            <ul class="product__hover">
-                                                <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
-                                                <li><a href="#"><img src="img/icon/compare.png" alt=""><span>Compare</span></a></li>
-                                                <li><a href="/products/${row._id}"><img src="img/icon/search.png" alt=""></a></li>
-                                            </ul>
+ <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Shop</h4>
+                        <div class="breadcrumb__links">
+                            <a href="./index.html">Home</a>
+                            <span>User</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+    <main class="main">
+        <section class="section-parent">
+            <div class="profile-details">
+                <div class="profile-inner">
+    
+                    <div class="account-management">
+                        <div class="container mb-4 main-container">
+                            <div class="row">
+                                <div class="col-lg-4 pb-5">
+                                    <!-- Account Sidebar-->
+                                    <div class="author-card pb-3">
+                                        <div class="author-card-cover"
+                                            style="background-image: url(https://bootdey.com/img/Content/flores-amarillas-wallpaper.jpeg);">
+                                            <a class="btn btn-style-1 btn-white btn-sm" href="#" data-toggle="tooltip"
+                                                title=""
+                                                data-original-title="You currently have 290 Reward points to spend"><i
+                                                    class="fa fa-award text-md"></i>&nbsp;Wallet Balance: <%=
+                                                    (userWallet.Wallet_amount).toFixed(2) %></a>
+                                        </div>
+                                        <div class="author-card-profile">
+                                            <div class="author-card-avatar"><img
+                                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                    alt="Daniel Adams">
+                                            </div>
+                                            <div class="author-card-details">
+                                                <h5 class="author-card-name text-lg">
+                                                    <%= user.firstName %>
+                                                        <%= user.lastName %>
+                                                </h5>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="product__item__text">
-                                        <h6>${row._id}</h6>
-                                        <a href="#" class="add-cart">+ Add To Cart</a>
-                                        <div class="rating">
-                                            <i class="fa fa-star-o"></i>
-                                            <i class="fa fa-star-o"></i>
-                                            <i class="fa fa-star-o"></i>
-                                            <i class="fa fa-star-o"></i>
-                                            <i class="fa fa-star-o"></i>
-                                        </div>
-                                        ${row.discountPercentage > 0 ?
-                                            `<h6><s>${row.Original_price}</s>$</h6>
-                                            <h5>$${row.effectivePrice}</h5>` :
-                                            `<h5>$${row.Original_price}</h5>`
-                                        }
-                                        <div class="product__color__select">
-                                            ${row.colours.map((color, index) => `
-                                                <label class="active ${color.toLowerCase()}" for="pc-${index + 4}">
-                                                    <input type="radio" id="pc-${index + 4}">
-                                                </label>
-                                            `).join('')}
-                                        </div>
+                                    <div class="wizard">
+                                        <nav class="list-group list-group-flush">
+                                            <a class="list-group-item active" href="/user/orders">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div><i class="fa fa-shopping-bag mr-1 text-muted"></i>
+                                                        <div class="d-inline-block font-weight-medium text-uppercase">Orders
+                                                            List</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a class="list-group-item " href="/user"><i
+                                                    class="fa fa-user text-muted"></i>Profile Settings</a>
+                                            <a class="list-group-item " href="/user/address"><i
+                                                    class="fa fa-map-marker text-muted"></i>Addresses</a>
+                                            <a class="list-group-item" href="/wishlist">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div><i class="fa fa-heart mr-1 text-muted"></i>
+                                                        <div class="d-inline-block font-weight-medium text-uppercase">My
+                                                            Wishlist</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a class="list-group-item" href="/user/wallet">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div><i class="fa fa-tag mr-1 text-muted"></i>
+                                                        <div class="d-inline-block font-weight-medium text-uppercase">My
+                                                            Wallet</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </nav>
                                     </div>
                                 </div>
-                            </div>
-                        `;
-                                });
-                                productsContainer.innerHTML = templateHtml;
-                                setBackgrounds();  // Manually set the background images after updating the DOM
-                            });
-                    }
-                }
-
-                function setImageUrl(row) {
-                    const imgPath = row.images[0][0].startsWith('/') ? row.images[0][0].substring(1) : row.images[0][0];
-                    const imgUrl = `${window.location.origin}/${imgPath}`;
-                    return imgUrl;
-                }
-
-                function setBackgrounds() {
-                    document.querySelectorAll('.set-bg').forEach(element => {
-                        const bg = element.getAttribute('data-setbg');
-                        element.style.backgroundImage = `url(${bg})`;
-                    });
-                }
-            });
-
-
-
-
-            /////////edit product 
-
-        <script>
-
-   // Function to remove an image from the UI and database
-    function removeImage(element, imageSrc) {
-        
-        const productId = '<%= data[0]._id %>'; // Replace with the actual product ID
-
-        $.ajax({
-            url: '/admin/editproduct/delete-image',
-            type: 'POST',
-            data: {
-                image: imageSrc,
-                productId: productId
-            },
-            success: function (response) {
-                if (response.success) {
-                    // Remove the image from the UI
-                    $(element).closest('li').remove();
-                    
-
-                    // Update the image list with the new data
-                    if (response.newImageList) {
-                        
-                        $('#imageList').empty();
-                        response.newImageList.forEach((image) => {
-                            $('#imageList').append(
-                                `<li>
-                                    <div class="productviews">
-                                        <div class="productviewsimg">
-                                            <img src="${image}" alt="img">
-                                        </div>
-                                        <div class="productviewscontent">
-                                            <div class="productviewsname"></div>
-                                            <a href="javascript:void(0);" class="hideset" onclick="removeImage(this, '${image}')">x</a>
+                                <!-- Orders Table-->
+                                <!-- Orders Table-->
+                                <div class="col-lg-8 pb-5">
+                                    <div class="d-flex justify-content-end pb-3">
+                                        <div class="form-inline">
+                                            <label class="text-muted mr-3" for="order-sort">Sort Orders</label>
+                                            <select class="form-control" id="order-sort">
+                                                <option>All</option>
+                                                <option>Delivered</option>
+                                                <option>In Progress</option>
+                                                <option>Delayed</option>
+                                                <option>Canceled</option>
+                                            </select>
                                         </div>
                                     </div>
-                                </li>`
-                            );
-                        });
-                    }
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Order #</th>
+                                                    <th>Date Purchased</th>
+                                                    <th>Status</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% orderDetails.forEach(item => { %>
 
-                    // Check the number of images
-                    checkImageCount();
-                    console.log(initialImageCount);
-                    // Show a success message
-                    $('#error-message').text('Image removed successfully.');
+                                                    <tr>
+                                                        <td><a class="navi-link" href="/user/orders/orderdetail/<%= item._id %>" data-toggle="modal">
+                                                                <%= item.Shop_orders.Order_number %>
+                                                            </a></td>
+                                                        <td><%= (item.order_statuses.createdAt).toLocaleString() %></td>
+                                                        <td><span class="badge  m-0">
+                                                        <% function determineOverallStatus(statusArray) { if (statusArray.every(status=> status === 'Cancelled')) {
+                                                            return 'Cancelled';
+                                                            } else if (statusArray.every(status => status === 'Shipped')) {
+                                                            return 'Shipped';
+                                                            } else if (statusArray.every(status => status === 'Delivered')) {
+                                                            return 'Delivered';
+                                                            } else if (statusArray.every(status => status === 'Returned')) {
+                                                            return 'Returned';
+                                                            } else {
+                                                            return 'Processing';
+                                                            }
+                                                            }
+                                                        
+                                                            const overallStatus = determineOverallStatus(item.Status);
+                                                            %>
+                                                        
+                                                           
+                                                        
+                                                            <p class="card-text 
+                                                            <% if (overallStatus === 'Cancelled' || overallStatus === 'Refunded') { %>
+                                                                text-danger p-1
+                                                            <% } else if (overallStatus === 'Processing' || overallStatus === 'Shipped') { %>
+                                                                text-warning p-1
+                                                            <% } else if (overallStatus === 'Delivered') { %>
+                                                                text-success p-1
+                                                            <% } else if (overallStatus === 'Returned') { %>
+                                                                text-muted p-1
+                                                            <% } %>">
+                                                                <%= overallStatus %>
+                                                            </p>
 
-                    // Update the initialImageCount with the new image list length
-                    initialImageCount = response.newImageList.length;
-                     checkImageCount();
 
-                } else {
-                    // Handle errors
-                    $('#error-message').text('Failed to remove image.');
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Error removing image:', error);
-                $('#error-message').text('Error removing image.');
-            }
-        });
+                                                            </span></td>
+                                                        <td><span>$ <%= (item.Shop_orders.Order_total).toFixed(2) %></span></td>
+                                                    </tr>
+                                                 
+                                                <% }) %>
+                                               
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                </div>
+                                </div>
+                         
+    
+                            </div>
+                        </div>
+    
+                        <div id="passwordCriteria" class="mt-2"></div>
+                        <div class="alert alert-success" id="userSuccessMessage" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+
+
+    const getOrders = async (req, res) => {
+    const user = req.session.user
+     const { page = 1, sort = "all" } = req.query
+     const limit = 10
+     const skip = (page - 1) * limit
+
+     let query = {}
+     if (sort !== "all") {
+         query = { "order_statuses.Status": sort }
+     }
+     const totalOrders = await Order.countDocuments(query)
+     const totalPages = Math.ceil(totalOrders / limit)
+    if (user) {
+        let category = await fetchCategories()
+        const userdetails = await findUserByEmail(user)
+        const userdata = await collection.findOne({email:user})
+         const userWallet = await Wallet.findOne({ user_id: userdata._id })
+
+            const OrderDetails = await Order_line.aggregate([
+                {
+                    $lookup: {
+                        from: "shop_orders",
+                        localField: "Order_id",
+                        foreignField: "_id",
+                        as: "Shop_orders",
+                    },
+                },
+                { $unwind: "$Shop_orders" },
+                {
+                    $lookup: {
+                        from: "order_statuses",
+                        localField: "Shop_orders.Order_status",
+                        foreignField: "_id",
+                        as: "order_statuses",
+                    },
+                },
+                { $unwind: "$order_statuses" },
+            ])
+            const objectIdString = userdetails.id.toString()
+            const numericValue = objectIdString.match(/[a-fA-F0-9]{24}/)[0]
+            let orderDetail = OrderDetails.filter(
+                (e) => e.Shop_orders.User_id.toString() === numericValue
+            )
+            const orderDetails = orderDetail.sort(
+                (a, b) => b.order_statuses.createdAt - a.order_statuses.createdAt
+            )
+       
+        res.render("user/orders", {
+            category,
+            user: userdetails,
+            orderDetails,
+            userWallet,
+        })
+    } else {
+        res.redirect("/home")
     }
-
-// ENDS HERE IMAGE DELETION 
-
-$(document).ready(function () {
-        const productImageContainer = $('#imageList');
-
-        const imageElement = document.getElementById('image');
-        let cropper;
-        let croppedImages = [];
-        let croppedLength = 0
-          let initialImageCount = <%= data[0].Image_filename.length %>;
-
-        // Function to initialize existing images
-        function initializeExistingImages(images) {
-            images.forEach((imageSrc) => {
-                addImageToList(imageSrc);
-                croppedImages.push(imageSrc);
-            });
-             checkImageCount();
-        }
-
-        // Function to add an image to the list
-        function addImageToList(imageSrc) {
-            const imgElement = $('<img>').attr('src', imageSrc).addClass('uploaded-image');
-            const liElement = $('<li>').addClass('ps-0').append(
-                $('<div>').addClass('productviewset').append(
-                    $('<div>').addClass('productviewsimg').append(imgElement),
-                    $('<div>').addClass('productviewscontent').append(
-                        $('<a>').attr('href', 'javascript:void(0);').addClass('hideset').html('<i class="fa fa-trash-alt"></i>').on('click', function () {
-                            $(this).closest('li').remove();
-                            croppedLength--
-                            const index = croppedImages.indexOf(imageSrc);
-                            if (index > -1) {
-                                croppedImages.splice(index, 1);
-                            }
-                            // Check the number of images
-                            checkImageCount();
-                        })
-                    )
-                )
-            );
-
-            productImageContainer.append(liElement);
-            $('#productListSection').show();
-            croppedImages.push(imageSrc);
-        }
-
-        // Function to initialize the cropper
-        function initializeCropper(imageSrc) {
-            if (cropper) {
-                cropper.destroy();
-            }
-            imageElement.src = imageSrc;
-            cropper = new Cropper(imageElement, {
-                aspectRatio: 1,
-                viewMode: 1,
-            });
-            $('.main-container').show(); // Show the main container
-            $('#btn-crop').show(); // Show the main container
-        }
-
-        // Function to display an image for cropping
-        function displayImage(event) {
-            const files = event.target.files;
-            if (files.length > 0) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    initializeCropper(e.target.result);
-                };
-                reader.readAsDataURL(files[0]);
-            }
-        }
-
-       
-
-        // Event listener for file input change
-    $('#product_image_input').on('change', function(event) {
-            if (croppedImages.length >= 5) {
-                document.getElementById('error-message').textContent = 'You can upload a maximum of 5 images.';
-                return;
-            }
-            displayImage(event);
-        });
-
-        // Event listener for crop button click
-    $('#btn-crop').on('click', function() {
-            if (cropper) {
-                const croppedCanvas = cropper.getCroppedCanvas({
-                    width: 300,
-                    height: 300,
-                });
-                const croppedImage = croppedCanvas.toDataURL("image/png");
-                croppedImages.push(croppedImage);
-                croppedLength++
-
-                addImageToList(croppedImage);
-                cropper.reset();
-                $('.main-container').hide();
-
-                // Check the number of images
-                checkImageCount();
-            }
-        });
-
-        // Hide the thumbnail initially
-        $('#thumbnail').hide();
-    $('#product_image_input').on('click', function() {
-            if (!this.value) {
-                $('#thumbnail').show();
-            }
-        });
-
-        const validationRegex = {
-            product_name: /^[a-zA-Z0-9\s\-]+$/,
-            SKU: /^(?!-)(?!.*--)[a-zA-Z0-9-]+$/,
-            Qty_in_stock: /^[1-9]\d*$/,
-            product_description: /^.+$/s,
-            price: /^(?!0(\.0{1,2})?$)\d+(\.\d{1,2})?$/
-        };
-
-        function validateForm() {
-            let errorMessage = '';
-
-            const product_name = document.querySelector('input[name="product_name"]').value.trim();
-            const SKU = document.querySelector('input[name="SKU"]').value.trim();
-            const Qty_in_stock = document.querySelector('input[name="Qty_in_stock"]').value.trim();
-            const product_description = document.querySelector('textarea[name="product_description"]').value.trim();
-            const price = document.querySelector('input[name="price"]').value.trim();
-
-            if (!product_name || !validationRegex.product_name.test(product_name)) {
-                errorMessage += 'Product Name is required and should be alphanumeric. ';
-            }
-            if (!SKU || !validationRegex.SKU.test(SKU)) {
-                errorMessage += 'SKU is required and should be alphanumeric. ';
-            }
-            if (!Qty_in_stock || !validationRegex.Qty_in_stock.test(Qty_in_stock)) {
-                errorMessage += 'Quantity in Stock is required and should be a numeric value. ';
-            }
-            if (!product_description || !validationRegex.product_description.test(product_description)) {
-                errorMessage += 'Product Description is required. ';
-            }
-            if (!price || !validationRegex.price.test(price)) {
-                errorMessage += 'Price is required and should be a valid numeric format (e.g., 10 or 10.99). ';
-            }
-
-            if (errorMessage) {
-                document.getElementById('error-message').textContent = errorMessage.trim();
-                return false;
-            }
-
-            // If validation passes, clear any previous error messages
-            document.getElementById('error-message').textContent = '';
-
-            // Update the hidden fields with the final selected size and color
-            const sizeSelect = document.getElementById('sizeSelect');
-            const finalSize = document.getElementById('finalSize');
-
-            const colourSelect = document.getElementById('colourSelect');
-            const finalColour = document.getElementById('finalColour');
-
-            if (sizeSelect.value === "" || sizeSelect.value === "Choose Size") {
-                finalSize.value = '<%= data[0].size_option.Size_name %>';
-            } else {
-                finalSize.value = sizeSelect.value;
-            }
-
-            if (colourSelect.value === "" || colourSelect.value === "Choose Colour") {
-                finalColour.value = '<%= data[0].colour.Colour_name %>';
-            } else {
-                finalColour.value = colourSelect.value;
-            }
-
-            // Check the number of images before form submission
-            return checkImageCount();
-        }
-
-        // Form submission handling
-    document.getElementById('cform').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            if (validateForm()) {
-                // const formData = new FormData(this);
-               const formData = new FormData(document.getElementById('cform'));
-
-                // Append cropped images to FormData
-                croppedImages.forEach((image, index) => {
-                    formData.append(`product_images[]`, image);
-                      console.log(formData);
-                });
-                
-                 fetch('/admin/editproduct', {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => {
-                        if (response.redirected) {
-                            window.location.href = response.url;
-                        } else {
-                            return response.json().then(data => {
-                                if (data.message) {
-                                    document.getElementById('error-message').textContent = data.message;
-                                }
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        document.getElementById('error-message').textContent = 'An error occurred. Please try again.';
-                    });
-
-                // Proceed with form submission (native form submission)
-                // this.submit();
-            }
-        });
-
-       
-    });
-</script>
+}

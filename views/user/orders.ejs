@@ -127,109 +127,187 @@
     <!-- Header Section End -->
 
     <!-- Breadcrumb Section Begin -->
-    <section class="breadcrumb-option">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="breadcrumb__text">
-                        <h4>Shop</h4>
-                        <div class="breadcrumb__links">
-                            <a href="./index.html">Home</a>
-                            <span>User</span>
-                        </div>
+<section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>Shop</h4>
+                    <div class="breadcrumb__links">
+                        <a href="./index.html">Home</a>
+                        <span>User</span>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!-- Breadcrumb Section End -->
-   
-      <main class="main">
-        <section class="section-parent">
-            <div class="profile-details">
-                <div class="profile-inner">
-                    <div class="welcome-message">
-                        <div class="welcome-md-rimel-container">
-                            <span>Welcome! </span>
-                            <span class="md-rimel"><%= user.firstName %></span>
-                        </div>
-                    </div>
-                    <div class="account-management">
-                        <div class="manage-account">
-                            <div class="manage-my-account">Manage My Account</div>
-                            <div class="account-options">
-                                <div class="options">
-                                    <div >My Profile</div>
-                                    <div href="/home" class="address-book" id="addressBookText">Address Book</div>
-                                    <div class="my-payment-options" id="myPaymentOptions">My Payment Options</div>
-                                </div>
-                            </div>
-                            <div class="my-orders-parent">
-                                <div class="my-orders">My Orders</div>
-                                <div class="order-types">
-                                    <div class="my-orders-wrapper">
-                                        <div class="my-profile">My Orders</div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+<main class="main">
+    <section class="section-parent">
+        <div class="profile-details">
+            <div class="profile-inner">
+                <div class="account-management">
+                    <div class="container mb-4 main-container">
+                        <div class="row">
+                            <div class="col-lg-4 pb-5">
+                                <!-- Account Sidebar-->
+                                <div class="author-card pb-3">
+                                    <div class="author-card-cover"
+                                        style="background-image: url(https://bootdey.com/img/Content/flores-amarillas-wallpaper.jpeg);">
+                                        <a class="btn btn-style-1 btn-white btn-sm" href="#" data-toggle="tooltip"
+                                            title=""
+                                            data-original-title="You currently have 290 Reward points to spend"><i
+                                                class="fa fa-award text-md"></i>&nbsp;Wallet Balance: <%=
+                                                (userWallet.Wallet_amount).toFixed(2) %></a>
                                     </div>
-                                    <div class="my-returns-wrapper">
-                                        <div class="my-returns">My Returns</div>
-                                    </div>
-                                    <div class="cancellation">
-                                        <div class="my-cancellations-wrapper">
-                                            <div class="my-cancellations">My Cancellations</div>
+                                    <div class="author-card-profile">
+                                        <div class="author-card-avatar"><img
+                                                src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                alt="Daniel Adams">
                                         </div>
-                                        <div class="my-wishlist">My WishList</div>
+                                        <div class="author-card-details">
+                                            <h5 class="author-card-name text-lg">
+                                                <%= user.firstName %>
+                                                    <%= user.lastName %>
+                                            </h5>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="wizard">
+                                    <nav class="list-group list-group-flush">
+                                        <a class="list-group-item active" href="/user/orders">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div><i class="fa fa-shopping-bag mr-1 text-muted"></i>
+                                                    <div class="d-inline-block font-weight-medium text-uppercase">Orders
+                                                        List</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="list-group-item " href="/user"><i
+                                                class="fa fa-user text-muted"></i>Profile Settings</a>
+                                        <a class="list-group-item " href="/user/address"><i
+                                                class="fa fa-map-marker text-muted"></i>Addresses</a>
+                                        <a class="list-group-item" href="/wishlist">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div><i class="fa fa-heart mr-1 text-muted"></i>
+                                                    <div class="d-inline-block font-weight-medium text-uppercase">My
+                                                        Wishlist</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="list-group-item" href="/user/wallet">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div><i class="fa fa-tag mr-1 text-muted"></i>
+                                                    <div class="d-inline-block font-weight-medium text-uppercase">My
+                                                        Wallet</div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </nav>
+                                </div>
+                            </div>
+                            <!-- Orders Table-->
+                            <div class="col-lg-8 pb-5">
+                                <div class="d-flex justify-content-end pb-3">
+                                    
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Order #</th>
+                                                <th>Date Purchased</th>
+                                                <th>Status</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="order-list">
+                                            <% orderDetails.forEach(item=> { %>
+                                                <tr>
+                                                    <td><a class="navi-link"
+                                                            href="/user/orders/orderdetail/<%= item._id %>"
+                                                            data-toggle="modal">
+                                                            <%= item.Shop_orders.Order_number %>
+                                                        </a></td>
+                                                    <td>
+                                                        <%= new Date(item.order_statuses.createdAt).toLocaleString() %>
+                                                    </td>
+                                                    <td><span class="badge m-0">
+                                                            <% function determineOverallStatus(statusArray) { if
+                                                                (statusArray.every(status=> status === 'Cancelled')) {
+                                                                return 'Cancelled';
+                                                                } else if (statusArray.every(status => status ===
+                                                                'Shipped')) {
+                                                                return 'Shipped';
+                                                                } else if (statusArray.every(status => status ===
+                                                                'Delivered')) {
+                                                                return 'Delivered';
+                                                                } else if (statusArray.every(status => status ===
+                                                                'Returned')) {
+                                                                return 'Returned';
+                                                                } else {
+                                                                return 'Processing';
+                                                                }
+                                                                }
+                                                                const overallStatus =
+                                                                determineOverallStatus(item.Status);
+                                                                %>
+                                                                <p class="card-text 
+                                                            <% if (overallStatus === 'Cancelled' || overallStatus === 'Refunded') { %>
+                                                                text-danger p-1
+                                                            <% } else if (overallStatus === 'Processing' || overallStatus === 'Shipped') { %>
+                                                                text-warning p-1
+                                                            <% } else if (overallStatus === 'Delivered') { %>
+                                                                text-success p-1
+                                                            <% } else if (overallStatus === 'Returned') { %>
+                                                                text-muted p-1
+                                                            <% } %>">
+                                                                    <%= overallStatus %>
+                                                                </p>
+                                                        </span></td>
+                                                    <td><span>$ <%= (item.Shop_orders.Order_total).toFixed(2) %></span>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Pagination -->
+                            <!-- Pagination -->
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-center">
+                                    <% if (currentPage> 1) { %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                                        </li>
+                                        <% } %>
+                                            <% for (let i=1; i <=totalPages; i++) { %>
+                                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                                    <a class="page-link" href="?page=<%= i %>">
+                                                        <%= i %>
+                                                    </a>
+                                                </li>
+                                                <% } %>
+                                                    <% if (currentPage < totalPages) { %>
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                                                        </li>
+                                                        <% } %>
+                                </ul>
+                            </nav>
+
                             </div>
                         </div>
-                           <section class="product spad">
-        <div class="container">
-            <div class="row">
-                <div class="">
-                  
-                </div>
-            </div>
-            <div class="row product__filter">
-
- <% orderDetails.forEach(item => { %>
-<div class="card" style="width: 18rem;">
-  <div class="card-body">
-    <h5 class="card-title">Order #:<%= item.Shop_orders.Order_number %></h5>
-   <p class="card-text 
-    <% if (item.order_statuses.Status === "Cancelled") { %> 
-        rounded-pill bg-danger text-white p-1 
-    <% } else if (item.order_statuses.Status === "Refunded") { %> 
-        rounded-pill bg-danger text-white p-1 
-    <% }else if (item.order_statuses.Status === "Processing") { %> 
-        rounded-pill bg-warning text-white p-1 
-    <% } else if (item.order_statuses.Status === "Shipped") { %> 
-        rounded-pill bg-warning text-dark p-1 
-    <% } %>">
-    Order Status: <%= item.order_statuses.Status %>
-</p>
-
-    <p class="card-text">Order Amount: <%= item.Shop_orders.Order_total %></p>
-     <p class="card-text">Ship To: <%= item.Shop_orders.Shipping_address.House_number %>, <%= item.Shop_orders.Shipping_address.Address_line_1 %>, <%= item.Shop_orders.Shipping_address.Postal_code %>, <%= item.Shop_orders.Shipping_address.State %></p>
-    <a href="/user/orders/orderdetail/<%= item._id %>" class="btn btn-primary">Order details</a>
-  </div>
-</div>
-              
-
-            <% }); %>
-            
-            </div>
-        </div>
-    </section>
-                      
-                        <div id="passwordCriteria" class="mt-2"></div>
-                        <div class="alert alert-success" id="userSuccessMessage" style="display: none;"></div>
                     </div>
                 </div>
             </div>
-        </section>
-      
-    </main>
+        </div>
+    </section>
+</main>
+
    
+    
       <!-- Footer Section Begin -->
     <footer class="footer">
         <div class="container">

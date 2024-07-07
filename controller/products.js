@@ -1433,58 +1433,7 @@ const verifyPayment = async (req, res) => {
         })
     }
 }
-// const getCatogoryProducts = async (req,res)=>{
-//      const selectedCategory = req.params.id
 
-//      try {
-//          const category = await Product_category.find()
-
-//          const productVariation = await fetchProductVariations()
-
-//          function countCategories(products) {
-//              const categoryCount = {}
-
-//              products.forEach((product) => {
-//                  const category = product.category
-//                  if (categoryCount[category]) {
-//                      categoryCount[category]++
-//                  } else {
-//                      categoryCount[category] = 1
-//                  }
-//              })
-
-//              return categoryCount
-//          }
-
-//          // Using the function
-//          const categoryCount = countCategories(productVariation)
-//          const categoryArray = Object.keys(categoryCount).map((key) => ({
-//              key,
-//              count: categoryCount[key],
-//          }))
-
-         
-//          let productsToDisplay
-//          if (selectedCategory) {
-//             console.log("categoryArray:", selectedCategory)
-//              productsToDisplay = productVariation.filter((e) => {
-//                  return e.category === selectedCategory
-//              })
-//          }
-//          else{
-//  productsToDisplay = productVariation.filter((e) => {
-//      return e.category === categoryArray[0].key
-//  })
-//          }
-        
-
-//          res.render("user/categorypro", {
-//              data: productsToDisplay,
-//              category,
-//              categoryArray,
-//          })
-//      } catch (error) {}
-// }
 const getCatogoryProducts = async (req, res) => {
     const selectedCategory = req.params.id
 
@@ -1622,101 +1571,7 @@ const addToWishlist = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" })
     }
 }
-// const getWishlist = async (req, res) => {
-//     try {
-//         const category = await Product_category.find()
 
-//         const user = req.session.user
-
-//         if (!user) {
-//             return res.status(401).json({ message: "User not logged in" })
-//         }
-
-//         const userdetails = await findUserByEmail(user)
-
-//         if (!userdetails) {
-//             return res.status(404).json({ message: "User not found" })
-//         }
-
-//         const existingWishList = await Wishlist.find({
-//             User_id: userdetails._id,
-//         })
-
-//         if (existingWishList.length < 1) {
-//             return res.status(400).json({ message: "No Products In wishlist" })
-//         }
-
-//         const getNew = await fetchAllProducts()
-//         const wishListItems = []
-//         const productNames = []
-
-//         const productPromises = existingWishList.map(async (item) => {
-//             const product = await fetchSingleProduct(item.Product_image_id)
-//             const productName =
-//                 product.Product_variation_id.Product_item_id.Product_id
-//                     .product_name
-
-//             const getSingleProduct = getNew.filter((e) => {
-//                 return (
-//                     e.Product.product_name
-//                         .trim()
-//                         .localeCompare(productName.trim(), undefined, {
-//                             sensitivity: "base",
-//                         }) === 0
-//                 )
-//             })
-
-//             // Find unique colors
-//             const uniqueColors = new Set()
-//             getSingleProduct.forEach((product) => {
-//                 const color = product.Colours?.Colour_name
-//                 if (color) {
-//                     uniqueColors.add(color)
-//                 }
-//             })
-//             const uniqueColorsArray = Array.from(uniqueColors).sort()
-
-//             // Extract sizes
-//             const sizesArray = extractSizes(getSingleProduct)
-
-//             wishListItems.push({
-//                 product,
-//                 uniqueColors: uniqueColorsArray,
-//                 sizes: sizesArray,
-//             })
-
-//             console.log("WISH LIST ITEMS", wishListItems[0])
-            
-//         })
-
-//         await Promise.all(productPromises)
-
-//         res.render("user/wishlist", { category, wishListItems })
-//     } catch (error) {
-//         console.error("Error getting wishlist:", error)
-//         res.status(500).json({ message: "Internal server error" })
-//     }
-// }
-
-// // Helper function to extract sizes
-// const extractSizes = (products) => {
-//     const sizesArray = []
-//     products.forEach((product) => {
-//         const sizeName = product.Sizes.Size_name
-//         const sortOrder = product.Sizes.Sort_order
-
-//         if (!sizesArray.find((size) => size.size === sizeName)) {
-//             sizesArray.push({
-//                 size: sizeName,
-//                 sortOrder: parseInt(sortOrder),
-//             })
-//         }
-//     })
-
-//     sizesArray.sort((a, b) => a.sortOrder - b.sortOrder)
-
-//     return sizesArray
-// }
 const getWishlist = async (req, res) => {
     try {
         const category = await Product_category.find()
@@ -1770,7 +1625,7 @@ const getWishlist = async (req, res) => {
         })
 
         await Promise.all(productPromises)
-console.log("WISH LIST ITEMS", wishListItems)
+console.log("category");
         res.render("user/wishlist", { category, wishListItems })
     } catch (error) {
         console.error("Error getting wishlist:", error)

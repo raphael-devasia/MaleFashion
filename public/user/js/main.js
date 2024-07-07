@@ -556,11 +556,11 @@ function addToWishlist(productId) {
 
      // Create the URL with product ID and quantity as query parameters
      const url = `/addtocart?product_id=${encodeURIComponent(
-         productId
+         variationId
      )}&quantity=${encodeURIComponent(
          quantity
      )}&product_image=${encodeURIComponent(
-         variationId
+         productId
      )}&wishlist_id=${encodeURIComponent(wishListId)}`
 
      // Make an AJAX request
@@ -574,6 +574,7 @@ function addToWishlist(productId) {
                  response.cartLength
              )
              $("#cart-count").text(response.cartLength)
+             $(`#wishlist-item-${wishListId}`).remove()
              // Optionally, you can redirect the user to the cart page or update UI
              // window.location.href = '/cart'; // Example redirect to cart page
          },

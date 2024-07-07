@@ -231,3 +231,65 @@
         res.redirect("/home")
     }
 }
+
+
+const getWishlist = async (req, res) => {
+    try {
+        const category = await Product_category.find()
+
+        const user = req.session.user
+
+        if (!user) {
+            return res.status(401).json({ message: "User not logged in" })
+        }
+
+        const userdetails = await findUserByEmail(user)
+
+        if (!userdetails) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        const existingWishList = await Wishlist.find({
+            User_id: userdetails._id,
+        })
+
+        if (existingWishList.length < 1) {
+            return res.status(400).json({ message: "No Products In wishlist" })
+        }
+
+        const getNew = await fetchAllProducts()
+        const wishListItems = []
+
+        const productPromises = existingWishList.map(async (item) => {
+            const product = await fetchSingleProduct(item.Product_image_id)
+            const productName =
+                product.Product_variation_id.Product_item_id.Product_id
+                    .product_name
+
+            const getSingleProduct = getNew.filter((e) => {
+                return (
+                    e.Product.product_name
+                        .trim()
+                        .localeCompare(productName.trim(), undefined, {
+                            sensitivity: "base",
+                        }) === 0
+                )
+            })
+
+            // Find unique colors and their associated sizes
+           
+
+            wishListItems.push({
+                product,
+               
+            })
+        })
+
+        await Promise.all(productPromises)
+console.log("category");
+        res.render("user/wishlist", { category, wishListItems })
+    } catch (error) {
+        console.error("Error getting wishlist:", error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}

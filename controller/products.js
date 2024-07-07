@@ -528,13 +528,15 @@ filteredProduct = filteredProduct.map((product) => {
 //  ========>>>> POST (Add To Cart)  http://localhost:5050/addtocart
 const getAddToCart = async (req, res) => {
     const {
+        
         product_id: Product_item_id,
         quantity: Qty,
         product_image,
-        
+        wishlist_id,
     } = req.query // Destructuring query parameters
+   console.log(product_image)
     const user = req.session.user
-let wishlist = await Wishlist.findOne({ Product_image_id: product_image })
+let wishlist = await Wishlist.findById(wishlist_id)
 
 if (wishlist) {
     await Wishlist.findByIdAndDelete(wishlist._id)
@@ -1593,39 +1595,42 @@ const getWishlist = async (req, res) => {
         })
 
         if (existingWishList.length < 1) {
-            return res.status(400).json({ message: "No Products In wishlist" })
+            return res.render("user/wishlist", {
+                category,
+                wishListItems: existingWishList,
+            })
         }
 
         const getNew = await fetchAllProducts()
-        const wishListItems = []
 
-        const productPromises = existingWishList.map(async (item) => {
-            const product = await fetchSingleProduct(item.Product_image_id)
-            const productName =
-                product.Product_variation_id.Product_item_id.Product_id
-                    .product_name
+        // Extract Product_image_ids from existingWishList
+        const wishListProductImageIds = existingWishList.map((item) =>
+            item.Product_image_id.toString()
+        )
 
-            const getSingleProduct = getNew.filter((e) => {
-                return (
-                    e.Product.product_name
-                        .trim()
-                        .localeCompare(productName.trim(), undefined, {
-                            sensitivity: "base",
-                        }) === 0
-                )
-            })
+        // Filter out products from getNew that are already in the existingWishList
+        const filteredGetNew = getNew.filter(
+            (product) =>
+                wishListProductImageIds.includes(product._id.toString())
+        )
 
-            // Find unique colors and their associated sizes
-            const colorsWithSizes = extractColorsAndSizes(getSingleProduct)
-
-            wishListItems.push({
-                product,
-                colorsWithSizes,
-            })
+        // Merge existing wishlist with filtered products
+        const wishListItems = existingWishList.map((wishListItem) => {
+            const productDetails = getNew.find(
+                (product) =>
+                    product._id.toString() ===
+                    wishListItem.Product_image_id.toString()
+            )
+            return {
+                ...wishListItem.toObject(),
+                productDetails,
+            }
         })
 
-        await Promise.all(productPromises)
-console.log("category");
+        console.log("WISH LIST IS", wishListItems)
+        
+
+        // Pass the merged wishlist items to the view
         res.render("user/wishlist", { category, wishListItems })
     } catch (error) {
         console.error("Error getting wishlist:", error)
@@ -1633,37 +1638,30 @@ console.log("category");
     }
 }
 
-// Helper function to extract colors and their associated sizes
-const extractColorsAndSizes = (products) => {
-    const colorsWithSizes = {}
+const deleteAllWishlist = async (req, res) => {
+    try {
+        const user = req.session.user
 
-    products.forEach((product) => {
-        const color = product.Colours?.Colour_name
-        const sizeName = product.Sizes.Size_name
-        const sortOrder = product.Sizes.Sort_order
-
-        if (color) {
-            if (!colorsWithSizes[color]) {
-                colorsWithSizes[color] = []
-            }
-            if (
-                !colorsWithSizes[color].find((size) => size.size === sizeName)
-            ) {
-                colorsWithSizes[color].push({
-                    size: sizeName,
-                    sortOrder: parseInt(sortOrder),
-                })
-            }
+        if (!user) {
+            return res.status(401).json({ message: "User not logged in" })
         }
-    })
 
-    // Sort sizes for each color
-    Object.keys(colorsWithSizes).forEach((color) => {
-        colorsWithSizes[color].sort((a, b) => a.sortOrder - b.sortOrder)
-    })
+        const userData = await collection.findOne({ email: user })
 
-    return colorsWithSizes
+        if (!userData) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        await Wishlist.deleteMany({ User_id: userData._id })
+
+        res.redirect("/wishlist")
+    } catch (error) {
+        console.error("Error deleting wishlist:", error)
+        res.status(500).json({ message: "Internal server error" })
+    }
 }
+
+
 const verifyCoupon = async (req,res)=>{
     const { couponCode, userId } = req.body
     try {
@@ -1756,6 +1754,7 @@ module.exports = {
     verifyCoupon,
     removeWishlistItem,
     getProductsFiltered,
+    deleteAllWishlist
 
     // deleteWishlist,
 }

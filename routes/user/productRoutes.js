@@ -22,6 +22,7 @@ const {
     removeWishlistItem,
     getProductsFiltered,
     // deleteWishlist,
+    deleteAllWishlist,
 } = require("../../controller/products")
 
 router.use(checkUserStatus)
@@ -43,6 +44,7 @@ router.get("/wishlist",isAuthenticatedUser,getWishlist)
 router.post("/verify-coupon",isAuthenticatedUser,verifyCoupon)
 router.get("/wishlist/remove-item",isAuthenticatedUser, removeWishlistItem)
 router.get("/filtered-category",getProductsFiltered)
+router.get("/delete-all-wishlist",deleteAllWishlist)
 // router.get('/deletewishlist',deleteWishlist)
 
 module.exports = router

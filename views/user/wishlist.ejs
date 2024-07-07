@@ -200,125 +200,128 @@ a {
 <div class="container">
     <div class="row">
         <div class="col-xl-8">
-            <% wishListItems.forEach((element, index)=> { %>
-                <div class="card border shadow-none mb-3">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start border-bottom pb-3">
-                            <div class="me-4">
-                                <img src="<%= element.product.Image_filename[0] %>" alt="" class="avatar-lg rounded">
-                            </div>
-                            <div class="flex-grow-1 align-self-center overflow-hidden">
+            <% if (wishListItems.length===0) { %>
+                <h4>No products in your wishlist</h4>
+                <% } else { %>
+                    <% wishListItems.forEach((element, index)=> { %>
+                        <div class="card border shadow-none mb-3" id="wishlist-item-<%= element._id %>">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start border-bottom pb-3">
+                                    <div class="me-4">
+                                        <img src="<%= element.productDetails.Image_filename[0] %>" alt=""
+                                            class="avatar-lg rounded">
+                                    </div>
+                                    <div class="flex-grow-1 align-self-center overflow-hidden">
+                                        <div>
+                                            <h5 class="text-truncate font-size-18">
+                                                <a href="#" class="text-dark">
+                                                    <%= element.productDetails.Product.product_name %>
+                                                </a>
+                                            </h5>
+                                            <p class="text-muted mb-0">
+                                                <i class="bx bxs-star text-warning"></i>
+                                                <i class="bx bxs-star text-warning"></i>
+                                                <i class="bx bxs-star text-warning"></i>
+                                                <i class="bx bxs-star text-warning"></i>
+                                                <i class="bx bxs-star-half text-warning"></i>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex-shrink-0 ms-2">
+                                        <ul class="list-inline mb-0 font-size-16">
+                                            <li class="list-inline-item">
+                                                <a href="#" class="text-muted px-1">
+                                                    <i class="mdi mdi-trash-can-outline"></i>
+                                                </a>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <a href="#" class="text-muted px-1">
+                                                    <i class="mdi mdi-heart-outline"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
                                 <div>
-                                    <h5 class="text-truncate font-size-18">
-                                        <a href="#" class="text-dark">
-                                            <%= element.product.Product_variation_id.Product_item_id.Product_id.product_name
-                                                %>
-                                        </a>
-                                    </h5>
-                                    <p class="text-muted mb-0">
-                                        <i class="bx bxs-star text-warning"></i>
-                                        <i class="bx bxs-star text-warning"></i>
-                                        <i class="bx bxs-star text-warning"></i>
-                                        <i class="bx bxs-star text-warning"></i>
-                                        <i class="bx bxs-star-half text-warning"></i>
-                                    </p>
-                                    <!-- <p class="mb-0 mt-1">Color : <span class="fw-medium">
-                                         
-                                        </span></p> -->
-                                </div>
-                            </div>
-                            <div class="flex-shrink-0 ms-2">
-                                <ul class="list-inline mb-0 font-size-16">
-                                    <li class="list-inline-item">
-                                        <a href="#" class="text-muted px-1">
-                                            <i class="mdi mdi-trash-can-outline"></i>
-                                        </a>
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <a href="#" class="text-muted px-1">
-                                            <i class="mdi mdi-heart-outline"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="mt-3">
-                                        <p class="text-muted mb-2">Price</p>
-                                        <h5 class="mb-0 mt-2">
-                                            <span class="text-muted me-2">
-                                                <del class="font-size-16 fw-normal">
-                                                    <%= element.product.Product_variation_id.Product_item_id.Original_price
-                                                        %>
-                                                </del>
-                                            </span>
-                                           
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <div class="mt-3">
-                                        <p class="text-muted mb-2">Colour</p>
-                                        <div class="d-inline-flex">
-                                            
-                                                <div class="color-display" >
-                                                    <%= element.product.Product_variation_id.Product_item_id.Colour_id.Colour_name %>
-                                                </div>
-                                        </div>
-                                    </div>
-                                   
-                                    <div class="mt-3">
-                                        <p class="text-muted mb-2">Sizes</p>
-                                    <div class="d-inline-flex">
-                                        
-                                            <div class="size-display">
-                                                <%= element.product.Product_variation_id.Size_id.Size_name  %>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mt-3">
+                                                <p class="text-muted mb-2">Price</p>
+                                                <h5 class="mb-0 mt-2">
+                                                    <span class="text-muted me-2">
+                                                        <del class="font-size-16 fw-normal">
+                                                            <%= element.productDetails.Product_item.Original_price %>
+                                                        </del>
+                                                    </span>
+                                                </h5>
                                             </div>
-                                    </div>
-
-                                    </div>
-                                </div>
-                                    
-                                <div class="col-md-3">
-                                    <div class="mt-3">
-                                        <button type="button" class="btn btn-danger btn-block" onclick="deleteWish('<%= element.product._id %>')">Delete from
-                                            Wishlist</button>
-                                        <div class="mt-3">
-                                            <button type="button" class="btn btn-primary btn-block" onclick="wishTocart('<%= element.product.Product_variation_id._id %>','<%= element.product._id %>','<%= element._id %>')">Add to Cart</button>
-                                            <p id="stockError"></p>
                                         </div>
-                                      
-                                    
+                                        <div class="col-md-5">
+                                            <div class="mt-3">
+                                                <p class="text-muted mb-2">Colour</p>
+                                                <div class="d-inline-flex">
+                                                    <div class="color-display">
+                                                        <%= element.productDetails.Colours.Colour_name %>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-3">
+                                                <p class="text-muted mb-2">Sizes</p>
+                                                <div class="d-inline-flex">
+                                                    <div class="size-display">
+                                                        <%= element.productDetails.Sizes.Size_name %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="mt-3">
+                                                <button type="button" class="btn btn-danger btn-block"
+                                                    onclick="deleteWish('<%= element.productDetails._id %>')">Delete
+                                                    from
+                                                    Wishlist</button>
+                                                <div class="mt-3">
+                                                    <button type="button" class="btn btn-primary btn-block"
+                                                        onclick="wishTocart('<%= element.productDetails._id %>','<%= element.productDetails.Product_variation._id %>','<%= element._id %>')">Add
+                                                        to Cart</button>
+                                                    <p id="stockError"></p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <% }) %>
-                    <!-- end card -->
+                        <% }) %>
+                            <% } %>
 
-                    <div class="row my-4">
-                        <div class="col-sm-6">
-                            <a href="/products" class="btn btn-link text-muted">
-                                <i class="mdi mdi-arrow-left me-1"></i> Continue Shopping
-                            </a>
-                        </div> <!-- end col -->
-                        <div class="col-sm-6">
-                            <div class="text-sm-end mt-2 mt-sm-0">
-                                <a href="ecommerce-checkout.html" class="btn btn-danger">
-                                    <i class="mdi mdi-cart-outline me-1"></i> Clear Wish List
-                                </a>
-                            </div>
-                        </div> <!-- end col -->
-                    </div> <!-- end row -->
+                                <!-- end card -->
+
+                                <div class="row my-4">
+                                    <div class="col-sm-6">
+                                        <a href="/products" class="btn btn-link text-muted">
+                                            <i class="mdi mdi-arrow-left me-1"></i> Continue Shopping
+                                        </a>
+                                    </div> <!-- end col -->
+                                    <div class="col-sm-6">
+                                        <% if (wishListItems.length> 0) { %>
+                                            <div class="text-sm-end mt-2 mt-sm-0">
+                                                <a href="/delete-all-wishlist" class="btn btn-danger">
+                                                    <i class="mdi mdi-cart-outline me-1"></i> Clear Wish List
+                                                </a>
+                                            </div>
+                                            <% } %>
+                                    </div> <!-- end col -->
+                                </div> <!-- end row -->
         </div>
     </div>
     <!-- end row -->
 </div>
+
+
     <!-- Js Plugins -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

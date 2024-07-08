@@ -126,8 +126,12 @@
                                 style="color: red;"><%= cartLength %></span></a>
                 
                 
-                
-                        <div class="price">$ <%= (totalCartAmount).toFixed(2) %></div>
+                <% if (totalCartAmount) { %>
+                 <div class="price">$ <%= (totalCartAmount).toFixed(2) %></div>
+                    
+                <% } else{%>
+                        <div class="price">$ 0.00</div>
+                        <% } %>
                     </div>
                 </div>
                 </div>

@@ -68,22 +68,22 @@
                 <div class="col-lg-5">
                     <div class="banner__item banner__item--middle">
                         <div class="banner__item__pic">
-                            <img src="<%= category[1].category_image %>" alt="">
+                            <img src="<%= category[0].category_image %>" alt="">
                         </div>
                         <div class="banner__item__text">
-                            <h2><%= category[1].category_name %> Collection</h2>
-                            <a href="products/<%= category[1]._id %>">Shop now</a>
+                            <h2><%= category[0].category_name %> Collection</h2>
+                            <a href="products/<%= category[0]._id %>">Shop now</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-7">
                     <div class="banner__item banner__item--last">
                         <div class="banner__item__pic">
-                            <img src="<%= category[2].category_image %>" alt="">
+                            <img src="<%= category[0].category_image %>" alt="">
                         </div>
                         <div class="banner__item__text">
-                            <h2><%= category[2].category_name %> Collection</h2>
-                            <a href="products/<%= category[2]._id %>">Shop now</a>
+                            <h2><%= category[0].category_name %> Collection</h2>
+                            <a href="products/<%= category[0]._id %>">Shop now</a>
                         </div>
                     </div>
                 </div>
@@ -404,7 +404,7 @@
                 <div class="col-lg-3">
                     <div class="categories__text">
                         
-                        <h2><%= category[0].category_name %> <br /> <span><%= category[2].category_name %></span> <br /> <%= category[1].category_name %></h2>
+                        <h2><%= category[0].category_name %> <br /> <span><%= category[0].category_name %></span> <br /> <%= category[0].category_name %></h2>
                     </div>
                 </div>
                 <div class="col-lg-4">

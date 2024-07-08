@@ -83,7 +83,7 @@ const getProducts = async (req, res) => {
                 },
             ],
         })
-
+        
         return res.render("productlist", { data: productVariation })
     } catch (error) {
         console.log(error)
@@ -618,13 +618,19 @@ const deleteCategory = async (req, res) => {
         const findCategory = await ProductCategory.findById(id)
         await ProductCategory.findByIdAndUpdate(id, { is_deleted: true })
         const allProducts = await fetchAllProducts()
+        
+
         const filteredProducts = allProducts.filter((e) => {
             return (
                 e.Product_Category.category_name === findCategory.category_name
             )
         })
         for (const product of filteredProducts) {
-            await ProductImage.findByIdAndUpdate(e._id, { Is_active: false })
+            console.log(product)
+            await ProductImage.findByIdAndUpdate(product._id, {
+                Is_active: false,
+            })
+
         }
 
         res.status(200).json({ message: "Category deleted successfully" })
@@ -658,141 +664,7 @@ const editBrand = async (req, res) => {
     res.redirect("/admin/login")
 }
 
-/////create new product  POST
-// const createNewProduct = async (req, res) => {
 
-//     const images = req.files ? req.files.product_images : null
-//     console.log(req.body);
-//     const imageFilenames = []
-//     if (images) {
-//         const uploadDirectory = path.join(
-//             __dirname,
-//             "../../public/assets/img/product"
-//         )
-
-//         if (Array.isArray(images)) {
-//             for (let i = 0; i < images.length; i++) {
-//                 const image = images[i]
-//                 const imagePath = path.join(uploadDirectory, image.name)
-//                 ////cropping
-//                 await image.mv(imagePath)
-//                 imageFilenames.push("/assets/img/product/" + image.name)
-//             }
-//         } else {
-//             // If a single image is uploaded
-//             const imagePath = path.join(uploadDirectory, images.name)
-//             await images.mv(imagePath)
-//             imageFilenames.push("/assets/img/product/" + images.name)
-//             console.log(imagePath)
-//         }
-//     }
-
-//     const {
-//         category_name,
-//         product_name,
-//         product_description,
-//         size,
-//         Colour_name,
-//         SKU,
-//         Qty_in_stock,
-//         price,
-//     } = req.body
-
-//     try {
-//         const productExists = await ProductVariation.aggregate([
-//             {
-//                 $lookup: {
-//                     from: "product_items",
-//                     localField: "Product_item_id",
-//                     foreignField: "_id",
-//                     as: "product_item",
-//                 },
-//             },
-//             { $unwind: "$product_item" },
-//             {
-//                 $lookup: {
-//                     from: "products",
-//                     localField: "product_item.Product_id",
-//                     foreignField: "_id",
-//                     as: "product",
-//                 },
-//             },
-//             { $unwind: "$product" },
-//             {
-//                 $lookup: {
-//                     from: "colours",
-//                     localField: "product_item.Colour_id",
-//                     foreignField: "_id",
-//                     as: "colour",
-//                 },
-//             },
-//             { $unwind: "$colour" },
-//             {
-//                 $lookup: {
-//                     from: "sizeoptions",
-//                     localField: "Size_id",
-//                     foreignField: "_id",
-//                     as: "size_option",
-//                 },
-//             },
-//             { $unwind: "$size_option" },
-//             {
-//                 $match: {
-//                     "product.product_name": product_name,
-//                     "colour.Colour_name": Colour_name,
-//                     "size_option.Size_name": size,
-//                 },
-//             },
-//             { $count: "productCount" },
-//         ])
-
-//         if (productExists.length > 0 && productExists[0].productCount > 0) {
-//             console.log("Product already exists")
-
-//             req.flash("info", "Product Variant Exists in Database")
-//             return res.status(200).redirect("/admin/addproduct")
-//         } else {
-//             console.log("Product does not exist")
-
-//             const category_id = await ProductCategory.findOne({ category_name })
-//             const sizeOptions = await SizeOption.find({ Size_name: size })
-//             const colourname = await Colours.findOne({ Colour_name })
-
-//             const newProduct = await Product.create({
-//                 product_name,
-//                 product_description,
-//                 product_category_id: category_id._id,
-//             })
-
-//             const product_items = await ProductItem.create({
-//                 Product_id: newProduct._id,
-//                 Colour_id: colourname._id,
-//                 Original_price: price,
-//                 Product_sku: SKU,
-//             })
-
-//             const newVariation = await ProductVariation.create({
-//                 Product_item_id: product_items._id,
-//                 Size_id: sizeOptions[0]._id,
-//                 Qty_in_stock,
-//             })
-
-//             if (imageFilenames.length > 0) {
-//                 await ProductImage.create({
-//                     Product_variation_id: newVariation._id,
-//                     Image_filename: imageFilenames,
-//                 })
-//             }
-
-//             res.status(201).redirect("/admin/products")
-//             // res.status(201).json({ message: "Successfully added the product" })
-
-//         }
-//     } catch (err) {
-//         console.error("Error creating new product:", err)
-//         res.status(400).send({ error: err.message })
-//     }
-// }
 
 const createNewProduct = async (req, res) => {
     const base64Images = req.body["product_images[]"]
@@ -942,7 +814,7 @@ const deleteProduct = async (req, res) => {
     }
 }
 const getSales = async (req, res) => {
-    const OrderDetails = await Order_line.aggregate([
+    const orders = await Order_line.aggregate([
         {
             $lookup: {
                 from: "shop_orders",
@@ -980,13 +852,15 @@ const getSales = async (req, res) => {
         },
         { $unwind: "$order_statuses" },
     ])
-console.log(OrderDetails)
+    const OrderDetails = orders.sort(
+        (a, b) => b.order_statuses.createdAt - a.order_statuses.createdAt
+    )
     res.render("saleslist", { OrderDetails })
 }
 const getSaleDetails = async (req, res) => {
     const id = req.params.id
 
-    const orderDetails = await Order_line.findById(id).populate({
+    let orderDetails = await Order_line.findById(id).populate({
         path: "Order_id",
         model: "Shop_order",
         populate: {
@@ -1008,9 +882,8 @@ const getSaleDetails = async (req, res) => {
         }
         productArray.push(data)
     }
-    console.log("ORDER DETAILS", orderDetails)
-    console.log("PRODUCTS ARRAY:", productArray)
-
+    
+    console.log(orderDetails)
     res.render("sales-details", { orderDetails, productArray })
 }
 const deleteOrder = async (req, res) => {

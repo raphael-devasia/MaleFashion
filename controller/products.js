@@ -101,7 +101,8 @@ const getHome = async (req, res) => {
                 category,
                 products: productVariation,
                 name: null, // Assuming name is not available when there's no session user
-                cartLength,
+                cartLength:null,
+                totalCartAmount:null
             })
         }
 

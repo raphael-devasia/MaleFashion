@@ -243,9 +243,12 @@
                                                     <div class="address">Address</div>
                                                     <div class="placebox-info3">
                                                         <div class="place-to-info-box3"></div>
+                                                        <% if (billingAddress) { %>
                                                         <input class="md3"
                                                             value="<%= billingAddress.Address_id.House_number %> <%= billingAddress.Address_id.Address_line_1 %> <%= billingAddress.Address_id.Postal_code %> "
                                                             type="text" readonly>
+                                                        <% } %>
+                                                       
                                                     </div>
                                                 </div>
                                             </div>
@@ -288,9 +291,9 @@
                                     <div id="error-message" class="m-auto" style="color: red;"></div>
                                     <div class="form-buttons">
                                         <div class="button-container" id="buttonContainer">
-                                            <div class="cancel-button">
+                                            <!-- <div class="cancel-button">
                                                 <a class="cancel">Cancel</a>
-                                            </div>
+                                            </div> -->
                                             <div class="form-buttons">
                                                 <button type="submit" class="button1" id="saveChangesButton">Save Changes</button>
                                 

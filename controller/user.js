@@ -1433,13 +1433,13 @@ const cancelItem = async (req, res) => {
             const storeDiscount =
                 (order.Qty[index] *
                     order.Price[index] *
-                   order.Offer_percentage[index]) /
-                100
+                   (order.Offer_percentage[index] /
+                100))
             const couponDiscount =
                 (order.Qty[index] *
                     order.Price[index] *
-                    order.Coupon_percentage[index]) /
-                100
+                    (order.Coupon_percentage[index] /
+                100))
             const productActualCost = order.Qty[index] * order.Price[index]
             const productCost =
                 productActualCost - couponDiscount - storeDiscount

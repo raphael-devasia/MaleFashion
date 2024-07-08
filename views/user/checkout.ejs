@@ -330,7 +330,7 @@
                                         <% if (!session) { %>
                                             <% if (element.Product_variation.Is_active) { %>
                                                 <li>0<%= index + 1 %>. <%= element.SingleProduct.product_name %> <span>$
-                                                                <%= element.Product.Original_price * element.Qty %>
+                                                                <%= (element.Product.Original_price * element.Qty).toFixed(2) %>
                                                             </span></li>
                                                 <% } %>
 
@@ -338,15 +338,15 @@
                                                         <li>0<%= index + 1 %>. <%=
                                                                     element.product.Product_variation_id.Product_item_id.Product_id.product_name
                                                                     %> <span>$ <%=
-                                                                            element.product.Product_variation_id.Product_item_id.Original_price
-                                                                            * element.Qty %></span></li>
+                                                                            (element.product.Product_variation_id.Product_item_id.Original_price
+                                                                            * element.Qty).toFixed(2) %></span></li>
                                                         <% } %>
                                                             <% }) %>
 
                                 </ul>
                                 <ul class="checkout__total__all">
-                                    <li>Subtotal <span>$<%= totalCartAmount%></span>
-                                        <input type="hidden" name="subtotal" value="<%= totalCartAmount %>">
+                                    <li>Subtotal <span>$<%= (totalCartAmount).toFixed(2) %></span>
+                                        <input type="hidden" name="subtotal" value="<%= (totalCartAmount).toFixed(2) %>">
                                     </li>
                                     <li hidden>Subtotal <span>$<%= couponDiscountPercentage%></span>
                                         <input type="hidden" name="couponDiscountPercentage"

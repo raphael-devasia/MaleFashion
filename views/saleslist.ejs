@@ -115,7 +115,7 @@
   }) %> </td>
 <td><%= element.User_details.firstName %> <%= element.User_details.lastName %></td>
 
-<td>#..<%= element._id.toString().slice(-5) %></td>
+<td><%= element.Shop_orders.Order_number %></td>
 <td>
     <span class="badges 
         <% if (element.order_statuses.Status === "Cancelled") { %>
@@ -138,7 +138,7 @@
 </td>
 
 <!-- <td><span class="badges bg-lightgreen"></span></td> -->
-<td >$ <%= element.Shop_orders.Order_total %></td>
+<td >$ <%= Math.abs((element.Shop_orders.Order_total).toFixed(2)) %></td>
 <!-- <td>0.00</td> -->
 <!-- <td class="text-red">0.00</td> -->
 

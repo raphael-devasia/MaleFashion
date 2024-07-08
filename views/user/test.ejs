@@ -1,0 +1,146 @@
+<div class="row">
+    <div class="col-sm-6">
+        <div>
+            <span class="text-sm text-grey-m2 align-middle">To:</span>
+            <span class="text-600 text-110 text-blue align-middle"><%= orderDetails.Order_id.Billing_address.FirstName %>
+                <%= orderDetails.Order_id.Billing_address.LastName %>
+                </span>
+        </div>
+        <div class="text-grey-m2">
+            <div class="my-1">
+                
+            </div>
+            <div class="my-1">
+                <%= orderDetails.Order_id.Billing_address.House_number %> ,<%= orderDetails.Order_id.Billing_address.Address_line_1%>
+            </div>
+            <div class="my-1">
+                <i class="fa fa-phone fa-flip-horizontal text-secondary"></i>
+                <b class="text-600"></b>
+            </div>
+        </div>
+    </div>
+    <!-- /.col -->
+
+    <div class="text-95 col-sm-6 align-self-start d-sm-flex justify-content-end">
+        <hr class="d-sm-none" />
+        <div class="text-grey-m2">
+            <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
+                Invoice
+            </div>
+
+            <div class="my-2">
+                <i class="fa fa-circle text-blue-m2 text-xs mr-1"></i>
+                <span class="text-600 text-90">ID:</span>
+                #<%= orderDetails.Order_id.Order_number %>
+            </div>
+
+            <div class="my-2">
+                <i class="fa fa-circle text-blue-m2 text-xs mr-1"></i>
+                <span class="text-600 text-90">Issue
+                    Date:</span>
+                Oct 12, 2019
+            </div>
+
+            <div class="my-2">
+                <i class="fa fa-circle text-blue-m2 text-xs mr-1"></i>
+                <span class="text-600 text-90">Status:</span>
+                <span class="badge badge-warning badge-pill px-25"><%= paymentStatus %></span>
+            </div>
+        </div>
+    </div>
+    <!-- /.col -->
+</div>
+
+<div class="mt-4">
+    <div class="row text-600 text-white bgc-default-tp1 py-25">
+       
+        <div class="col-9 col-sm-5">
+            Description
+        </div>
+        <div class="d-none d-sm-block col-4 col-sm-2">
+            Qty</div>
+        <div class="d-none d-sm-block col-sm-2">
+            Unit Price</div>
+        <div class="col-2">
+            Amount</div>
+    </div>
+
+    <div class="text-95 text-secondary-d3">
+       <% for(let i=0; i < orderDetails.Product_item_id.length; i++ ) { %>
+        <div class="row mb-2 mb-sm-0 py-25">
+            <div class="d-none d-sm-block col-1">
+                1</div>
+            <div class="col-9 col-sm-5">
+                <%= productArray[i].Product_item.Product_variation_id.Product_item_id.Product_id.product_name %>
+            </div>
+            <div class="d-none d-sm-block col-2">
+                <%= orderDetails.Qty[i] %></div>
+            <div class="d-none d-sm-block col-2 text-95">
+                $ <%= productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price %></div>
+            <div class="col-2 text-secondary-d2">
+                $ <%= (productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price)*orderDetails.Qty[i] %></div>
+        </div>
+       
+       <% } %>
+       
+
+        
+    <div class="row border-b-2 brc-default-l2">
+    </div>
+
+    <div class="row mt-3">
+       
+
+        <div class="col-12 col-sm-5 text-grey text-90 order-first order-sm-last">
+            <div class="row my-2">
+                <div class="col-7 text-right">
+                    SubTotal
+                </div>
+                <div class="col-5">
+                    <span class="text-120 text-secondary-d1">$<%= (orderDetails.Order_id.Product_cost).toFixed(2)%></span>
+                </div>
+            </div>
+
+            <div class="row my-2">
+                <div class="col-7 text-right">
+                    Coupon discount
+                </div>
+                <div class="col-5">
+                    <span class="text-110 text-secondary-d1">$<%= (orderDetails.Order_id.Coupon_discount).toFixed(2) %></span>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-7 text-right">
+                    Store discount
+                </div>
+                <div class="col-5">
+                    <span class="text-110 text-secondary-d1">$<%= (orderDetails.Order_id.Sales_discount).toFixed(2) %></span>
+                </div>
+            </div>
+
+            <div class="row my-2 align-items-center bgc-primary-l3 p-2">
+                <div class="col-7 text-right">
+                    Total
+                    Amount
+                </div>
+                <div class="col-5">
+                    <span class="text-150 text-success-d3 opacity-2">$<%= (orderDetails.Order_id.Order_total).toFixed(2) %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div>
+        <span class="text-secondary-d1 text-105">Thank
+            you for your
+            business</span>
+      
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

@@ -549,7 +549,7 @@ const createRegister = async (req, res) => {
 
 const getLogout = (req, res) => {
     const isAdmin = false
-    req.session.destroy()
+    req.session.user=null
 
     res.redirect("/")
 }

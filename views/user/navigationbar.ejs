@@ -38,7 +38,7 @@
                 <% if (locals.name) { %>
                     <a href="/home">
                         <%= locals.name %>
-                    </a>
+                   
                     <% } else { %>
                         <a href="/login">Login</a>
                         <% } %>
@@ -74,9 +74,11 @@
                         <div class="header__top__right">
                             <div class="header__top__links">
                                 <% if (locals.name) { %>
+                                    <a href="/logout"><img  src="/img/icon/log-out.svg" alt="logout button" style="padding: 5px;"></a>
                                     <a href="/user">
                                         <%= locals.name %>
-                                    </a>
+                                       
+                                    </a> 
                                     <% } else { %>
                                         <a href="/login">Login</a>
                                         <% } %>

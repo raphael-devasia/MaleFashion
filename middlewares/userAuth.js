@@ -16,12 +16,14 @@ const checkUserStatus = async (req, res, next) => {
         try {
             const user = await User.findOne({ email: req.session.user })
             if (user && !user.is_active) {
-                req.session.destroy((err) => {
-                    if (err) {
-                        console.error("Error destroying session:", err)
-                    }
-                    return res.redirect("/login")
-                })
+                // req.session.destroy((err) => {
+                //     if (err) {
+                //         console.error("Error destroying session:", err)
+                //     }
+                //     return res.redirect("/login")
+                // })
+                req.session.user= null;
+                 return res.redirect("/login")
             } else {
                 next()
             }

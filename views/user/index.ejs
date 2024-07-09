@@ -54,39 +54,45 @@
     <section class="banner spad">
         <div class="container">
             <div class="row">
-                <div class="col-lg-7 offset-lg-4">
-                    <div class="banner__item">
-                        <div class="banner__item__pic">
-                            <img src="<%= category[0].category_image %>" alt="">
-                        </div>
-                        <div class="banner__item__text">
-                            <h2> <%= category[0].category_name %> Collection</h2>
-                            <a href="products/<%= category[0]._id %>">Shop now</a>
-                        </div>
-                    </div>
+
+<% category.forEach((element,index )=> { %>
+    <% if (index===0) { %>
+        <div class="col-lg-7 offset-lg-4">
+            <div class="banner__item">
+                <div class="banner__item__pic">
+                    <img src="<%= element.category_image %>" alt="">
                 </div>
-                <div class="col-lg-5">
-                    <div class="banner__item banner__item--middle">
-                        <div class="banner__item__pic">
-                            <img src="<%= category[0].category_image %>" alt="">
-                        </div>
-                        <div class="banner__item__text">
-                            <h2><%= category[0].category_name %> Collection</h2>
-                            <a href="products/<%= category[0]._id %>">Shop now</a>
-                        </div>
-                    </div>
+                <div class="banner__item__text">
+                    <h2>
+                        <%= element.category_name %> Collection
+                    </h2>
+                    <a href="products/<%= element.category_name %>">Shop now</a>
                 </div>
-                <div class="col-lg-7">
-                    <div class="banner__item banner__item--last">
-                        <div class="banner__item__pic">
-                            <img src="<%= category[0].category_image %>" alt="">
-                        </div>
-                        <div class="banner__item__text">
-                            <h2><%= category[0].category_name %> Collection</h2>
-                            <a href="products/<%= category[0]._id %>">Shop now</a>
-                        </div>
-                    </div>
-                </div>
+            </div>
+        </div>
+     
+    <% } else { %>
+
+<div class="col-lg-5">
+    <div class="banner__item banner__item--middle">
+        <div class="banner__item__pic">
+            <img src="<%= element.category_image %>" alt="">
+        </div>
+        <div class="banner__item__text">
+            <h2>
+                <%= element.category_name %> Collection
+            </h2>
+            <a href="products/<%= element._id %>">Shop now</a>
+        </div>
+    </div>
+</div>
+    <% }  %>
+ 
+<% }) %>
+
+               
+              
+            
             </div>
         </div>
     </section>

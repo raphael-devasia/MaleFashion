@@ -1047,8 +1047,6 @@ const getCheckout = async (req, res) => {
 }
 
 
-
-
 const addCheckout = async (req, res) => {
     try {
         console.log(req.body)
@@ -1359,7 +1357,6 @@ const addCheckout = async (req, res) => {
     }
 }
 
-
 const updateCart = async (req, res) => {
     const cartUpdates = req.body
     console.log(cartUpdates)
@@ -1402,11 +1399,7 @@ const updateCart = async (req, res) => {
         })
     }
 }
-// const updateCart = async(req,res)=>{
 
-// const cartUpdates = req.body
-
-// }
 const verifyPayment = async (req, res) => {
     const { payment, order } = req.body
     let hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -1415,7 +1408,27 @@ const verifyPayment = async (req, res) => {
 
     if (hmac == payment.razorpay_signature) {
         try {
-            const orderDetails = await Shop_order.findById(order.receipt)
+
+ 
+const orderDetails = await Shop_order.findById(order.receipt)
+ const orderLine = await Order_line.findOneAndUpdate(
+     { Order_id: orderDetails._id },
+     { $set: { Status: [] } }
+ )
+ const orders = orderLine.Product_item_id
+ for (e of orders) {
+     const update = {
+         $push: { Status: "Processing" },
+     }
+     await Order_line.findByIdAndUpdate(orderLine._id, update, {
+         new: true,
+     })
+ }
+
+
+         
+            
+
             const updateStatus = await Order_status.findByIdAndUpdate(
                 orderDetails.Order_status,
                 { $set: { Status: "Paid" } },
@@ -1529,7 +1542,6 @@ const getCatogoryProducts = async (req, res) => {
         res.status(500).send("Internal Server Error")
     }
 }
-
 
 const addToWishlist = async (req, res) => {
     try {
@@ -1734,9 +1746,61 @@ async function generateCombinedOrderNumber() {
     const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, '');
     return `${datePart}-${lastOrderNumber + 1}`;
 }
+const paymentFailed = async(req,res)=>{
+    const orderId = req.query.receipt
+    const shopOrder = await Shop_order.findById(orderId)
+    const orderLine = await Order_line.findOneAndUpdate({ Order_id :shopOrder._id},{$set:{Status:[]}})
+    const orders = orderLine.Product_item_id
+    for(e of orders){
 
+        const update = {
+            $push: { Status: "Pending" },
+        }
+        await Order_line.findByIdAndUpdate(orderLine._id, update, {
+            new: true,
+        })
 
-// router.get('/deletewishlist',deleteWishlist)
+    }
+
+    res.render('user/payment-failed')
+}
+
+const paymentRetry = async(req,res)=>{
+
+const {total,orderId}=req.body
+console.log(req.body)
+
+     try {
+        const orderDetail = await Shop_order.findById(orderId)
+         const receipt = orderDetail._id.toString().replace(/\D/g, "")
+         console.log(receipt)
+         const amount = Math.round(total * 100)
+
+         const razorDetails = await instance.orders.create({
+             amount: amount,
+             currency: "INR",
+             receipt: orderDetail._id,
+             notes: {
+                 key1: "value3",
+                 key2: "value2",
+             },
+         })
+
+         console.log(razorDetails)
+         return res.status(200).json({
+             message: "Proceed to payment",
+             razorDetails: {
+                 id: razorDetails.id,
+                 amount: razorDetails.amount,
+                 receipt: razorDetails.receipt,
+             },
+         })
+     } catch (error) {
+         console.error(error)
+         return res.status(500).send({ message: "Internal Server Error" })
+     }
+
+}
 
 module.exports = {
     getHome,
@@ -1755,7 +1819,9 @@ module.exports = {
     verifyCoupon,
     removeWishlistItem,
     getProductsFiltered,
-    deleteAllWishlist
+    deleteAllWishlist,
+    paymentFailed,
+    paymentRetry,
 
     // deleteWishlist,
 }

@@ -537,7 +537,7 @@ function addToWishlist(productId) {
                 "Product added to wishlist successfully!",
                 response.cartLength
             )
-            $("#wish    -count").text(response.wishlistCount)
+            $("#wish-count").text(response.wishlistCount)
             // Optionally, you can redirect the user to the cart page or update UI
             // window.location.href = '/cart'; // Example redirect to cart page
         },

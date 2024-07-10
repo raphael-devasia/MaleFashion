@@ -23,6 +23,8 @@ const {
     getProductsFiltered,
     // deleteWishlist,
     deleteAllWishlist,
+    paymentFailed,
+    paymentRetry,
 } = require("../../controller/products")
 
 router.use(checkUserStatus)
@@ -45,6 +47,8 @@ router.post("/verify-coupon",isAuthenticatedUser,verifyCoupon)
 router.get("/wishlist/remove-item",isAuthenticatedUser, removeWishlistItem)
 router.get("/filtered-category",getProductsFiltered)
 router.get("/delete-all-wishlist",deleteAllWishlist)
+router.get("/payment-failed",paymentFailed)
+router.post('/payment-retry',paymentRetry)
 // router.get('/deletewishlist',deleteWishlist)
 
 module.exports = router

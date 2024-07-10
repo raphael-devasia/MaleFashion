@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
+    
+
 </head>
 
 <body>
@@ -148,7 +150,22 @@
         </div>
     </section>
     <!-- Breadcrumb Section End -->
-
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+        </div>
+    </div>
+</div>
     <!-- Checkout Section Begin -->
     <section class="checkout spad">
         <div class="container">
@@ -238,21 +255,7 @@
 
 
 
-                            <!-- <div class="checkout__input__checkbox">
-                                <label for="acc">
-                                    Create an account?
-                                    <input type="checkbox" id="acc" onchange="togglePasswordFields()">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <div id="passwordFields" style="display: none;">
-                                    <p>Create an account by entering the information below. If you are a returning
-                                        customer please login at the top of the page</p>
-                                    <div class="checkout__input">
-                                        <p>Account Password<span>*</span></p>
-                                        <input type="password" id="accountPassword">
-                                    </div>
-                                </div>
-                            </div> -->
+                           
                             <div class="checkout__input__checkbox">
                                 <h6 class="checkout__title" data-toggle="collapse" data-target="#shippingDetails" aria-expanded="true"
                                     aria-controls="shippingDetails">Shipping Details</h6>
@@ -450,7 +453,9 @@
         </div>
         <% } %>
 
-
+<div class="alert alert-primary" role="alert">
+    This is a primary alert—check it out!
+</div>
             <!-- Checkout Section End -->
 
             <!-- Footer Section Begin -->
@@ -501,6 +506,7 @@
                             </div>
                         </div>
                     </div>
+                   
                     <div class="row">
                         <div class="col-lg-12 text-center">
                             <div class="footer__copyright__text">
@@ -563,238 +569,9 @@
                 }
             </style>
 
-            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    // Validate the checkout form
-                    function validateCheckoutForm() {
-                       
-                        const requiredFields = [
-                            'billingFirstName',
-                            'billingLastName',
-                            'billingCountry',
-                            'billingHouseNumber',
-                            'billingAddressLine1',
-                            'billingState',
-                            'billingPostalCode',
-                            'phone',
-                            'email'
-                        ];
-
-                        // Validate required fields
-                        for (const fieldId of requiredFields) {
-                            const field = document.getElementById(fieldId);
-                            if (!field.value.trim()) {
-                               document.getElementById('paymentMessage').innerText = `Please fill out the ${fieldId.replace('billing', '').replace(/([A-Z])/g, ' $1').toLowerCase()} field.`;
-                                document.getElementById('paymentMessage').style.display = 'block';
-                            
-                                field.focus();
-                                return false;
-                            }
-                        }
-
-                        // Validate Indian PIN code format
-                        const pinCodePattern = /^[1-9][0-9]{5}$/;
-                        const billingPostalCode = document.getElementById('billingPostalCode');
-                        const shippingPostalCode = document.getElementById('shippingPostalCode');
-
-                        if (!pinCodePattern.test(billingPostalCode.value)) {
-                            document.getElementById('paymentMessage').innerText = 'Please enter a valid Indian PIN code for Billing Address.';
-                            document.getElementById('paymentMessage').style.display = 'block';
-                             billingPostalCode.focus();
-                            return false;
-                        }
-
-                        if (!pinCodePattern.test(shippingPostalCode.value)) {
-                           document.getElementById('paymentMessage').innerText = 'Please enter a valid Indian PIN code for Shipping Address.';
-                            document.getElementById('paymentMessage').style.display = 'block';
-                            shippingPostalCode.focus();
-                            return false;
-                        }
-
-                        // Validate shipping address fields if the checkbox is checked
-                        
-                            const shippingFields = [
-                                'shippingFirstName',
-                                'shippingLastName',
-                                'shippingCountry',
-                                'shippingHouseNumber',
-                                'shippingAddressLine1',
-                                'shippingState',
-                                'shippingPostalCode'
-                            ];
-
-                            for (const fieldId of shippingFields) {
-                                const field = document.getElementById(fieldId);
-                                if (!field.value.trim()) {
-                                    document.getElementById('paymentMessage').innerText = `Please fill out the ${fieldId.replace('shipping', '').replace(/([A-Z])/g, ' $1').toLowerCase()} field.`;
-                                    document.getElementById('paymentMessage').style.display = 'block';
-                                    field.focus();
-                                    return false;
-                                }
-                            }
-
-                            // Validate shipping PIN code format
-                            if (!pinCodePattern.test(shippingPostalCode.value)) {
-                               document.getElementById('paymentMessage').innerText = 'Please enter a valid Indian PIN code for Shipping Address.';
-                                document.getElementById('paymentMessage').style.display = 'block';
-                            shippingPostalCode.focus();
-                                return false;
-                            }
-                        
-
-                        // Validate password if account creation checkbox is checked
-                        // if (document.getElementById('acc').checked) {
-                        //     const accountPassword = document.getElementById('accountPassword');
-                        //     if (!accountPassword.value.trim()) {
-                        //         alert('Please enter a password for the new account.');
-                        //         accountPassword.focus();
-                        //         return false;
-                        //     }
-                        // }
-
-                        return true;
-                    }
-
-                    // Populate the shipping address from billing address
-                    // function populateShippingAddressFromBilling() {
-                    //     const shippingAddress = {}; // Assuming this comes from some data source if user is editing existing address
-
-                    //     if (shippingAddress && shippingAddress.Address_id) {
-                    //         document.getElementById('shippingFirstName').value = shippingAddress.Address_id.FirstName || '';
-                    //         document.getElementById('shippingLastName').value = shippingAddress.Address_id.LastName || '';
-                    //         document.getElementById('shippingCountry').value = shippingAddress.Address_id.Country || '';
-                    //         document.getElementById('shippingHouseNumber').value = shippingAddress.Address_id.House_number || '';
-                    //         document.getElementById('shippingAddressLine1').value = (shippingAddress.Address_id.Address_line_1 || '') + ', ' + (shippingAddress.Address_id.Address_line_2 || '');
-                    //         document.getElementById('shippingState').value = shippingAddress.Address_id.State || '';
-                    //         document.getElementById('shippingPostalCode').value = shippingAddress.Address_id.Postal_code || '';
-                    //     } else {
-                    //         document.getElementById('shippingFirstName').value = document.getElementById('billingFirstName').value;
-                    //         document.getElementById('shippingLastName').value = document.getElementById('billingLastName').value;
-                    //         document.getElementById('shippingCountry').value = document.getElementById('billingCountry').value;
-                    //         document.getElementById('shippingHouseNumber').value = document.getElementById('billingHouseNumber').value;
-                    //         document.getElementById('shippingAddressLine1').value = document.getElementById('billingAddressLine1').value;
-                    //         document.getElementById('shippingState').value = document.getElementById('billingState').value;
-                    //         document.getElementById('shippingPostalCode').value = document.getElementById('billingPostalCode').value;
-                    //     }
-                    // }
-
-                    // Toggle the visibility of the password fields
-                    // function togglePasswordFields() {
-                    //     const checkBox = document.getElementById("acc");
-                    //     const passwordFields = document.getElementById("passwordFields");
-                    //     passwordFields.style.display = checkBox.checked ? "block" : "none";
-                    // }
-
-                    // Toggle the visibility of the shipping address fields
-                    // function toggleShippingAddressFields() {
-                    //     const shippingFields = document.getElementById('shippingFields');
-                    //     const shipToDifferentAddress = document.getElementById('add').checked;
-                    //     shippingFields.style.display = shipToDifferentAddress ? 'block' : 'none';
-                    //     if (!shipToDifferentAddress) {
-                    //         populateShippingAddressFromBilling();
-                    //     }
-                    // }
-
-                    // Add event listeners for the checkboxes
-                    // document.getElementById('add').addEventListener('change', toggleShippingAddressFields);
-                    // document.getElementById('acc').addEventListener('change', togglePasswordFields);
-                    // Validate payment method selection
-                    $('#checkoutBtn').click(function (event) {
-                        const paymentMethod = $('input[name="payment_method"]:checked').val();
-                        if (!paymentMethod) {
-                            event.preventDefault();
-                            document.getElementById('paymentMessage').innerText = 'Please select a payment method.';
-                            document.getElementById('paymentMessage').style.display = 'block';
-                        } else {
-                            document.getElementById('paymentMessage').style.display = 'none';
-                        }
-                    });
-                    // Handle form submission
-                    document.getElementById('checkoutForm').addEventListener('submit', function (event) {
-                        event.preventDefault(); // Prevent form submission
-
-                        if (!validateCheckoutForm()) {
-                            return;
-                        }
-
-                        const formData = new FormData(document.getElementById('checkoutForm'));
-
-                        fetch('/checkout', {
-                            method: 'POST',
-                            body: formData
-                        })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Network response was not ok');
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                console.log('Form submission successful', data);
-                                if (data.message === "Order placed successfully") {
-                                    window.location.href = `user/orders`;
-                                } else if (data.razorDetails) {
-                                    var options = {
-                                        "key": "rzp_test_oD4HudkUX2nicH",
-                                        "amount": data.razorDetails.amount,
-                                        "currency": "INR",
-                                        "name": "Male Fashion",
-                                        "description": "Test Transaction",
-                                        "image": "img/logo.png",
-                                        "order_id": data.razorDetails.id,
-                                        "handler": function (response) {
-                                            // Call verifyPayment function on successful payment
-                                            verifyPayment(response, data.razorDetails);
-                                        },
-                                        "prefill": {
-                                            "name": "Gaurav Kumar",
-                                            "email": "gaurav.kumar@example.com",
-                                            "contact": "9000090000"
-                                        },
-                                        "notes": {
-                                            "address": "Razorpay Corporate Office"
-                                        },
-                                        "theme": {
-                                            "color": "#3399cc"
-                                        }
-                                    };
-                                    var rzp1 = new Razorpay(options);
-                                    rzp1.open();
-                                } else {
-                                    console.log('Order placement failed or invalid response');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error during form submission', error);
-                            });
-                    });
-
-                    // Verify the payment with the server
-                    function verifyPayment(payment, order) {
-                        $.ajax({
-                            url: '/verify-payment',
-                            data: {
-                                payment,
-                                order
-                            },
-                            method: "post",
-                            success: function (response) {
-                                if (response.message === "Order placed successfully") {
-                                    window.location.href = '/user/orders';
-                                } else {
-                                    alert(response.message);
-                                }
-                            },
-                            error: function (error) {
-                                alert("Payment verification failed");
-                            }
-                        });
-                    }
-
-                });
-
-            </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
             <!-- Js Plugins -->
@@ -808,6 +585,203 @@
             <script src="js/mixitup.min.js"></script>
             <script src="js/owl.carousel.min.js"></script>
             <script src="js/main.js"></script>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+
+            // Validate the checkout form
+            function validateCheckoutForm() {
+
+                const requiredFields = [
+                    'billingFirstName',
+                    'billingLastName',
+                    'billingCountry',
+                    'billingHouseNumber',
+                    'billingAddressLine1',
+                    'billingState',
+                    'billingPostalCode',
+                    'phone',
+                    'email'
+                ];
+
+                // Validate required fields
+                for (const fieldId of requiredFields) {
+                    const field = document.getElementById(fieldId);
+                    if (!field.value.trim()) {
+                        document.getElementById('paymentMessage').innerText = `Please fill out the ${fieldId.replace('billing', '').replace(/([A-Z])/g, ' $1').toLowerCase()} field.`;
+                        document.getElementById('paymentMessage').style.display = 'block';
+
+                        field.focus();
+                        return false;
+                    }
+                }
+
+                // Validate Indian PIN code format
+                const pinCodePattern = /^[1-9][0-9]{5}$/;
+                const billingPostalCode = document.getElementById('billingPostalCode');
+                const shippingPostalCode = document.getElementById('shippingPostalCode');
+
+                if (!pinCodePattern.test(billingPostalCode.value)) {
+                    document.getElementById('paymentMessage').innerText = 'Please enter a valid Indian PIN code for Billing Address.';
+                    document.getElementById('paymentMessage').style.display = 'block';
+                    billingPostalCode.focus();
+                    return false;
+                }
+
+                if (!pinCodePattern.test(shippingPostalCode.value)) {
+                    document.getElementById('paymentMessage').innerText = 'Please enter a valid Indian PIN code for Shipping Address.';
+                    document.getElementById('paymentMessage').style.display = 'block';
+                    shippingPostalCode.focus();
+                    return false;
+                }
+
+                // Validate shipping address fields if the checkbox is checked
+
+                const shippingFields = [
+                    'shippingFirstName',
+                    'shippingLastName',
+                    'shippingCountry',
+                    'shippingHouseNumber',
+                    'shippingAddressLine1',
+                    'shippingState',
+                    'shippingPostalCode'
+                ];
+
+                for (const fieldId of shippingFields) {
+                    const field = document.getElementById(fieldId);
+                    if (!field.value.trim()) {
+                        document.getElementById('paymentMessage').innerText = `Please fill out the ${fieldId.replace('shipping', '').replace(/([A-Z])/g, ' $1').toLowerCase()} field.`;
+                        document.getElementById('paymentMessage').style.display = 'block';
+                        field.focus();
+                        return false;
+                    }
+                }
+
+                // Validate shipping PIN code format
+                if (!pinCodePattern.test(shippingPostalCode.value)) {
+                    document.getElementById('paymentMessage').innerText = 'Please enter a valid Indian PIN code for Shipping Address.';
+                    document.getElementById('paymentMessage').style.display = 'block';
+                    shippingPostalCode.focus();
+                    return false;
+                }
+
+
+
+                return true;
+            }
+
+
+            $('#checkoutBtn').click(function (event) {
+                const paymentMethod = $('input[name="payment_method"]:checked').val();
+                if (!paymentMethod) {
+                    event.preventDefault();
+                    document.getElementById('paymentMessage').innerText = 'Please select a payment method.';
+                    document.getElementById('paymentMessage').style.display = 'block';
+                } else {
+                    document.getElementById('paymentMessage').style.display = 'none';
+                }
+            });
+            // Function to show modal based on type and message
+
+            // Handle form submission
+
+
+
+            document.getElementById('checkoutForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent form submission
+
+                if (!validateCheckoutForm()) {
+                    return;
+                }
+
+                const formData = new FormData(document.getElementById('checkoutForm'));
+
+                fetch('/checkout', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Form submission successful', data);
+                        if (data.message === "Order placed successfully") {
+                            window.location.href = `user/orders`;
+                        } else if (data.razorDetails) {
+                            var options = {
+                                "key": "rzp_test_oD4HudkUX2nicH",
+                                "amount": data.razorDetails.amount,
+                                "currency": "INR",
+                                "name": "Male Fashion",
+                                "description": "Test Transaction",
+                                "image": "img/logo.png",
+                                "order_id": data.razorDetails.id,
+                                "handler": function (response) {
+                                    // Call verifyPayment function on successful payment
+
+                                    verifyPayment(response, data.razorDetails);
+                                },
+                                "prefill": {
+                                    "name": "Gaurav Kumar",
+                                    "email": "gaurav.kumar@example.com",
+                                    "contact": "9000090000"
+                                },
+                                "notes": {
+                                    "address": "Razorpay Corporate Office"
+                                },
+                                "theme": {
+                                    "color": "#3399cc"
+                                }, "modal": {
+                                    "ondismiss": function () {
+                                        console.log(data.razorDetails);
+                                        window.location.href = `payment-failed?receipt=${data.razorDetails.receipt}`;
+                                    }
+                                }
+                            };
+                            var rzp1 = new Razorpay(options);
+                            rzp1.open();
+                        } else {
+                            console.log('Order placement failed or invalid response');
+
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error during form submission', error);
+                    });
+            });
+
+            // Verify the payment with the server
+            function verifyPayment(payment, order) {
+                console.log(payment, order);
+                $.ajax({
+                    url: '/verify-payment',
+                    data: {
+                        payment,
+                        order
+                    },
+                    method: "post",
+                    success: function (response) {
+                        if (response.message === "Order placed successfully") {
+                            window.location.href = '/user/orders';
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (error) {
+                        alert("Payment verification failed");
+                    }
+                });
+            }
+
+        });
+
+    </script>
+
 
             <script>
                 document.addEventListener("DOMContentLoaded", () => {

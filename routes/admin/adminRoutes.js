@@ -22,7 +22,7 @@ router.route("/login").get(getLogin).post(createLogin)
 router.route("/register").get(getRegister).post(createRegister)
 
 
-router.get("/home", getHome)
+// router.get("/home", getHome)
 router.get("/logout", getLogout)
 
 router.post("/search",searchData)

@@ -40,6 +40,9 @@ const {
     refundItem,
     shipItem,
     deleteImage,
+    getHome,
+    deleteCoupon,
+    deleteCategoryOffer,
 } = require("../../controller/admin/productController")
 
 
@@ -67,6 +70,8 @@ router.get('/sales/saledetails/:id',getSaleDetails)
 router.get("/orders/delete/:id", deleteOrder)
 router.get("/sales/update", updateOrder)
 router.get('/add-coupon',getAddCoupon)
+router.delete("/deletecoupon/:id", deleteCoupon)
+router.delete("/delete-category-offer/:id", deleteCategoryOffer)
 router.post(
     "/add-coupon",
     [
@@ -130,5 +135,6 @@ router.get("/salesreport",getSalesReport)
 router.get("/sales/cancelItem/:id", cancelItem)
 router.get("/sales/refund/:id",refundItem)
 router.get("/sales/shipItem/:id", shipItem)
+router.get("/home", getHome)
 
 module.exports = router

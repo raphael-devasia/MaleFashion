@@ -199,7 +199,9 @@
            <td class="quantity__item">
     <div class="quantity">
         <div class="pro-qty">
-            <input name="quantity-input" type="text" value="<%= element.Qty %>" min="1" max="<%= element.Product_item.Qty_in_stock %>" data-product-id="<%= element._id %>" readonly>
+            <% if (element.Qty> element.Product_item.Qty_in_stock) { element.Qty = element.Product_item.Qty_in_stock; } %>
+                <input name="quantity-input" type="text" value="<%= element.Qty %>" min="1"
+                    max="<%= Math.min(element.Product_item.Qty_in_stock, 5) %>" data-product-id="<%= element._id %>" readonly>
         </div>
     </div>
 </td>

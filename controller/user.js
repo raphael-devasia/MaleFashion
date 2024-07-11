@@ -1312,7 +1312,7 @@ const deleteOrder = async (req, res) => {
         console.log("Testing pahes :", paymentMethod)
         if (
             paymentMethod.Value === "Credit Card" ||
-            paymentMethod.Value === "Wallet Pay"
+            paymentMethod.Value === "Wallet Payment"
         ) {
             const walletUpdate = await Wallet.findOneAndUpdate(
                 { user_id: user._id },

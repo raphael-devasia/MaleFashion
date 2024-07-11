@@ -1,7 +1,7 @@
 <%- include('dashboardheader') %>
-    <div id="global-loader">
+    <!-- <div id="global-loader">
         <div class="whirly-loader"> </div>
-    </div>
+    </div> -->
 
     <div class="main-wrapper">
 
@@ -139,7 +139,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% if (offers && offers.length> 0) { %>
+                                            <% if (offers && offers.length> 0 ) { %>
                                                 <% offers.forEach(item=> { %>
 
                                                     <% const currentDate=new Date(); const startDate=new

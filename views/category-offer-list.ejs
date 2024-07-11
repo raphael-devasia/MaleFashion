@@ -1,7 +1,7 @@
 <%- include('dashboardheader') %>
-    <div id="global-loader">
+    <!-- <div id="global-loader">
         <div class="whirly-loader"> </div>
-    </div>
+    </div> -->
 
     <div class="main-wrapper">
 
@@ -159,7 +159,8 @@
                                                                 </label>
                                                             </td>
                                                             <td>
-                                                                <%= item.category_id.category_name %>
+                                                                <%= item.category_id ? item.category_id.category_name : 'No Category' %>
+
                                                             </td>
                                                             <td>
                                                                 <%= item.offer_percentage %>
@@ -177,13 +178,8 @@
                                                                 <%= status %>
                                                             </td>
                                                             <td>
-                                                                <a class="me-3" href="product/<%= item._id %>">
-                                                                    <img src="../assets/img/icons/eye.svg" alt="img">
-                                                                </a>
-                                                                <a class="me-3" href="editproduct/<%= item._id %>">
-                                                                    <img src="../assets/img/icons/edit.svg" alt="img">
-                                                                </a>
-                                                                <a class="confirm-product" href="javascript:void(0);"
+                                                              
+                                                                <a class="confirm-category-offer" href="javascript:void(0);"
                                                                     data-id="<%= item._id %>">
                                                                     <img src="../assets/img/icons/delete.svg" alt="img">
                                                                 </a>

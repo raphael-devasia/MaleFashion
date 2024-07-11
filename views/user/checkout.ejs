@@ -348,25 +348,25 @@
 
                                 </ul>
                                 <ul class="checkout__total__all">
-                                    <li>Subtotal <span>$<%= (totalCartAmount).toFixed(2) %></span>
+                                    <li>Subtotal <span id="total-cart">$<%= (totalCartAmount).toFixed(2) %></span>
                                         <input type="hidden" name="subtotal" value="<%= (totalCartAmount).toFixed(2) %>">
                                     </li>
-                                    <li hidden>Subtotal <span>$<%= couponDiscountPercentage%></span>
+                                    <li hidden>Subtotal <span >$<%= couponDiscountPercentage%></span>
                                         <input type="hidden" name="couponDiscountPercentage"
                                             value="<%= couponDiscountPercentage %>">
                                     </li>
 
-                                    <li>Coupon Discount <span id="coupon-discount">$ <%= discountAmount %> </span>
-                                        <input type="hidden" name="couponDiscount" value="<%= discountAmount %>">
+                                    <li>Coupon Discount <span id="coupon-discount">$ <%= ((totalCartAmount-totalOfferDiscount)*couponDiscountPercentage/100).toFixed(2) %> </span>
+                                        <input type="hidden" name="couponDiscount" value="<%= ((totalCartAmount-totalOfferDiscount)*couponDiscountPercentage/100).toFixed(2) %>">
                                     </li>
-                                    <li>Offer Discount <span>$ <%= (totalOfferDiscount).toFixed(2) %></span>
+                                    <li>Offer Discount <span id="store-discount">$ <%= (totalOfferDiscount).toFixed(2) %></span>
                                         <input type="hidden" name="offerDiscount" value="<%= totalOfferDiscount %>">
                                     </li>
                                     <li>Shipping <span>$ 0.00</span>
                                         <input type="hidden" name="shipping" value="0.00">
                                     </li>
-                                    <li>Total <span>$<%=newTotalAmount %></span>
-                                        <input type="hidden" name="total" value="<%= newTotalAmount %>">
+                                    <li>Total <span id="total-amount">$<%=((totalCartAmount-totalOfferDiscount)-((totalCartAmount-totalOfferDiscount)*couponDiscountPercentage/100)).toFixed(2) %></span>
+                                        <input type="hidden" name="total" value="<%= ((totalCartAmount-totalOfferDiscount)-((totalCartAmount-totalOfferDiscount)*couponDiscountPercentage/100)).toFixed(2) %>">
                                     </li>
                                 </ul>
 
@@ -704,6 +704,7 @@
                 })
                     .then(response => {
                         if (!response.ok) {
+                            
                             throw new Error('Network response was not ok');
                         }
                         return response.json();
@@ -802,7 +803,10 @@
                         event.preventDefault();
                         const couponCode = $('#coupon-code').val();
                         const userId = '<%= user._id %>'; // Make sure to pass userId from server-side to your template
-
+                        const subTotal = '<%= totalCartAmount %>';
+                        const storeDiscount = '<%= totalOfferDiscount %>'
+                            console.log(subTotal);
+                            console.log(storeDiscount);
                         $.ajax({
                             url: '/verify-coupon',
                             method: 'POST',
@@ -812,8 +816,10 @@
                                 console.log(response.newTotalAmount);
                                 if (response.valid) {
                                     $('#coupon-message').text('Coupon applied successfully!').css('color', 'green');
-                                    $('#coupon-discount').text(`$ ${response.discountAmount.toFixed(2)}`);
-                                    $('#total-amount').text(`$ ${response.newTotalAmount.toFixed(2)}`);
+                                    // $('#coupon-discount').text(`$ ${response.discountAmount.toFixed(2)}`);
+                                    // $('#total-amount').text(`$ ${response.newTotalAmount.toFixed(2)}`);
+                                     $('#coupon-discount').text(`$ ${((subTotal - storeDiscount)* response.couponPercenetge).toFixed(2)}`);
+                                     $('#total-amount').text(`$ ${(subTotal - storeDiscount -((subTotal - storeDiscount) * response.couponPercenetge)).toFixed(2)}`)
                                 } else {
                                     $('#coupon-message').text(response.message).css('color', 'red');
                                 }

@@ -618,6 +618,10 @@ const deleteCategory = async (req, res) => {
         const findCategory = await ProductCategory.findById(id)
         await ProductCategory.findByIdAndUpdate(id, { is_deleted: true })
         const allProducts = await fetchAllProducts()
+
+        const deletecatogaryOffers = await Category_offer.deleteMany({
+            category_id: id,
+        })
         
 
         const filteredProducts = allProducts.filter((e) => {
@@ -1094,13 +1098,14 @@ res.render("add-product-discount", { data: productVariation })
 }
  const getCategoryDiscount = async (req,res)=>{
      const categories = await ProductCategory.find()
+     console.log(categories)
     res.render("add-category-discount",{categories})
  }
 
 ///LIST 
 const getProductDiscountList = async (req,res)=>{ 
         
-         const offers = await Product_offer.find().populate({
+         const resultOffers = await Product_offer.find().populate({
              path: "Product_id",
              model: ProductImage,
              populate: {
@@ -1116,7 +1121,10 @@ const getProductDiscountList = async (req,res)=>{
                  },
              },
          })
-         console.log(offers)
+         const offers = resultOffers.filter((offer) => {
+             return offer.Product_id.Is_active === true
+         })
+        
          
         res.render("productofferlist", { offers })
     }
@@ -1124,11 +1132,38 @@ const getProductDiscountList = async (req,res)=>{
 
 const getCategoryDiscountList = async (req,res)=>{
 
-         const offers = await Category_offer.find().populate({
-             path: "category_id",
-             model:ProductCategory
-         })
+        const offers = await Category_offer.aggregate([
+            {
+                $lookup: {
+                    from: "productcategories", // The name of the collection for ProductCategory
+                    localField: "category_id",
+                    foreignField: "_id",
+                    as: "category_id",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$category_id",
+                    preserveNullAndEmptyArrays: false, // Exclude documents where category_id is null
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    offer_percentage: 1,
+                    start_date: 1,
+                    end_date: 1,
+                    offer_description: 1,
+                    category_id: {
+                        _id: 1,
+                        category_name: 1,
+                        category_image: 1,
+                    },
+                },
+            },
+        ])
 
+console.log(offers.length)
          res.render("category-offer-list", { offers })
      }
      const addProductDiscount = async (req, res) => {
@@ -1272,74 +1307,7 @@ const getCategoryDiscountList = async (req,res)=>{
              res.status(500).json({ message: "Server error" })
          }
      }
-//      const getSalesReport = async (req,res)=>{
 
-//         const productDetails = await Order_line.aggregate([
-//             {
-//                 $lookup: {
-//                     from: "shop_orders",
-//                     localField: "Order_id",
-//                     foreignField: "_id",
-//                     as: "Shop_Orders",
-//                 },
-//             },
-//             { $unwind: "$Shop_Orders" },
-//             {
-//                 $lookup: {
-//                     from: "users",
-//                     localField: "Shop_Orders.User_id",
-//                     foreignField: "_id",
-//                     as: "User",
-//                 },
-//             },
-//             { $unwind: "$User" },
-//             {
-//                 $lookup: {
-//                     from: "payment_types",
-//                     localField: "Shop_Orders.Payment_method_id",
-//                     foreignField: "_id",
-//                     as: "Payment_type",
-//                 },
-//             },
-//             { $unwind: "$Payment_type" },
-//             {
-//                 $lookup: {
-//                     from: "order_statuses",
-//                     localField: "Shop_Orders.Order_status",
-//                     foreignField: "_id",
-//                     as: "Status",
-//                 },
-//             },
-//             { $unwind: "$Status" },
-//         ])
-//         console.log(productDetails)
-//         let totalRevenue =0
-//         let totalDiscount =0
-//         let couponDiscount =0
-
-
-// let totalOrders = productDetails.length
-
-
-
-
-
-
-//          productDetails.forEach ((order)=>{
-//              totalRevenue += order.Shop_Orders.Order_total
-//              totalDiscount += order.Shop_Orders.Sales_discount
-//              couponDiscount += order.Shop_Orders.Coupon_discount
-//         })
-
-//         const averageOrderValue = totalOrders ? totalRevenue / totalOrders : 0
-//         res.render("salesreport", {
-//             productDetails,
-//             totalRevenue,
-//             couponDiscount,
-//             totalDiscount,
-//             averageOrderValue,
-//         })
-//      }
 
 const getSalesReport = async (req, res) => {
     // Extract query parameters
@@ -1691,6 +1659,254 @@ const deleteImage = async (req,res)=> {
     }
 }
 
+//dashboard
+
+const getHome = async (req, res) => {
+    const isAdmin = true
+    if (req.session.admin) {
+        const orderLines = await Order_line.aggregate([
+            {
+                $addFields: {
+                    combined: {
+                        $zip: {
+                            inputs: [
+                                "$Product_name",
+                                "$Qty",
+                                "$Price",
+                                "$Offer_percentage",
+                                "$Coupon_percentage",
+                                "$Status",
+                                "$Product_item_id",
+                            ],
+                        },
+                    },
+                },
+            },
+            {
+                $unwind: "$combined",
+            },
+            {
+                $match: { "combined.5": "Delivered" },
+            },
+            {
+                $group: {
+                    _id: { $arrayElemAt: ["$combined", 0] },
+                    Product_item_id: {
+                        $first: { $arrayElemAt: ["$combined", 6] },
+                    },
+                    totalQty: { $sum: { $arrayElemAt: ["$combined", 1] } },
+                    totalPrice: {
+                        $sum: {
+                            $multiply: [
+                                {
+                                    $subtract: [
+                                        {
+                                            $subtract: [
+                                                {
+                                                    $arrayElemAt: [
+                                                        "$combined",
+                                                        2,
+                                                    ],
+                                                },
+                                                {
+                                                    $divide: [
+                                                        {
+                                                            $multiply: [
+                                                                {
+                                                                    $arrayElemAt:
+                                                                        [
+                                                                            "$combined",
+                                                                            2,
+                                                                        ],
+                                                                },
+                                                                {
+                                                                    $arrayElemAt:
+                                                                        [
+                                                                            "$combined",
+                                                                            3,
+                                                                        ],
+                                                                },
+                                                            ],
+                                                        },
+                                                        100,
+                                                    ],
+                                                },
+                                            ],
+                                        },
+                                        {
+                                            $divide: [
+                                                {
+                                                    $multiply: [
+                                                        {
+                                                            $subtract: [
+                                                                {
+                                                                    $arrayElemAt:
+                                                                        [
+                                                                            "$combined",
+                                                                            2,
+                                                                        ],
+                                                                },
+                                                                {
+                                                                    $divide: [
+                                                                        {
+                                                                            $multiply:
+                                                                                [
+                                                                                    {
+                                                                                        $arrayElemAt:
+                                                                                            [
+                                                                                                "$combined",
+                                                                                                2,
+                                                                                            ],
+                                                                                    },
+                                                                                    {
+                                                                                        $arrayElemAt:
+                                                                                            [
+                                                                                                "$combined",
+                                                                                                3,
+                                                                                            ],
+                                                                                    },
+                                                                                ],
+                                                                        },
+                                                                        100,
+                                                                    ],
+                                                                },
+                                                            ],
+                                                        },
+                                                        {
+                                                            $arrayElemAt: [
+                                                                "$combined",
+                                                                4,
+                                                            ],
+                                                        },
+                                                    ],
+                                                },
+                                                100,
+                                            ],
+                                        },
+                                    ],
+                                },
+                                { $arrayElemAt: ["$combined", 1] },
+                            ],
+                        },
+                    },
+                },
+            },
+            {
+                $sort: { totalQty: -1 }, // Add this stage to sort by totalQty in descending order
+            },
+        ])
+
+        // Populate Product_item_id
+        const populatedOrderLines = await ProductImage.populate(orderLines, {
+            path: "Product_item_id",
+
+            populate: {
+                path: "Product_variation_id",
+                model: ProductVariation,
+
+                populate: {
+                    path: "Product_item_id",
+                    model: ProductItem,
+                    populate: {
+                        path: "Product_id",
+                        model: Product,
+                        populate: {
+                            path: "product_category_id",
+                            model: ProductCategory,
+                        },
+                    },
+                },
+            },
+        })
+        // Count total quantity and total price for each category
+        const categoryStats = populatedOrderLines.reduce((acc, current) => {
+            const productCategory =
+                current.Product_item_id &&
+                current.Product_item_id.Product_variation_id &&
+                current.Product_item_id.Product_variation_id.Product_item_id &&
+                current.Product_item_id.Product_variation_id.Product_item_id
+                    .Product_id &&
+                current.Product_item_id.Product_variation_id.Product_item_id
+                    .Product_id.product_category_id
+
+            if (productCategory && productCategory.category_name) {
+                const categoryName = productCategory.category_name
+
+                if (!acc[categoryName]) {
+                    acc[categoryName] = { totalQty: 0, totalPrice: 0 }
+                }
+
+                acc[categoryName].totalQty += current.totalQty
+                acc[categoryName].totalPrice += current.totalPrice
+            }
+
+            return acc
+        }, {})
+        // Convert the object to an array and sort based on totalQty
+        const sortedCategoryStats = Object.entries(categoryStats)
+            .map(([categoryName, stats]) => ({
+                categoryName,
+                ...stats,
+            }))
+            .sort((a, b) => b.totalQty - a.totalQty)
+
+        console.log(orderLines)
+const totalQty = orderLines.reduce((acc, current) => acc + current.totalQty, 0)
+const totalPrice = orderLines.reduce(
+    (acc, current) => acc + current.totalPrice,
+    0
+)
+   
+        return res.render("index", {
+            bestProducts: populatedOrderLines,
+            sortedCategoryStats,
+            totalQty,totalPrice
+        })
+    }
+   
+
+    res.redirect("/admin/login")
+}
+const deleteCoupon = async(req,res)=>{
+ const isAdmin = true
+ const { id } = req.params
+
+ try {
+     const findCoupon = await Coupon.findByIdAndDelete(id)
+    console.log(findCoupon)
+    const users = await userCollection.find({
+        coupon: findCoupon.coupon_code,
+    })
+     if (users.length > 0) {
+         await userCollection.updateMany(
+             { coupon: findCoupon.coupon_code },
+             { $set: { coupon: "" } }
+         )
+     }
+
+     res.status(200).json({ message: "Coupon deleted successfully" })
+ } catch (error) {
+     res.status(500).json({
+         error: "An error occurred while deleting the Coupon",
+     })
+ }
+}
+const deleteCategoryOffer = async (req, res) => {
+    const isAdmin = true
+    const { id } = req.params
+
+    try {
+        const findOffer = await Category_offer.findByIdAndDelete(id)
+        
+
+        res.status(200).json({ message: "Coupon deleted successfully" })
+    } catch (error) {
+        res.status(500).json({
+            error: "An error occurred while deleting the Coupon",
+        })
+    }
+}
+
      module.exports = {
          getProducts,
          addProduct,
@@ -1725,5 +1941,8 @@ const deleteImage = async (req,res)=> {
          cancelItem,
          shipItem,
          refundItem,
-         deleteImage
+         deleteImage,
+         getHome,
+         deleteCoupon,
+         deleteCategoryOffer,
      }

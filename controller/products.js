@@ -17,6 +17,7 @@ const crypto = require("crypto")
 const Coupon = require('../models/coupons')
 const Address = require("../models/addresses")
 const User_address = require("../models/userAddress")
+const Referral_items = require("../models/referralItems")
 
 
 dotenv.config()
@@ -41,6 +42,7 @@ const Product_image = require("../models/productImage")
 const Product_variation = require("../models/productVariation")
 const Product_item = require("../models/product_item")
 const Wishlist = require("../models/wishlist")
+const Wallet = require("../models/wallet")
 var instance = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -679,7 +681,13 @@ const getCart = async (req, res) => {
         let newTotalAmount = 0
         let discountAmount = 0
         let couponCode = ""
-      
+       if (stockUnavailability) {
+           const updateQuantity = await Shopping_cart_item.findByIdAndUpdate(
+               stockUnavailability,
+               { $set: { Qty: stock } }
+           )
+       }
+
  const { cartLength } = await getCartDetails(req.session.user)
         if (user) {
             // If user is logged in, retrieve cart from database
@@ -693,15 +701,8 @@ const getCart = async (req, res) => {
             const userCart = usercartTemp.filter(
                 (e) => e.User_details && e.User_details.email === user
             )
-            console.log("FINAL USERCART TEMP", usercartTemp)
-            if (stockUnavailability) {
-                const updateQuantity =
-                    await Shopping_cart_item.findByIdAndUpdate(
-                        stockUnavailability,
-                        { $set: { Qty: stock } }
-                    )
-            }
-
+            
+           
             if (userCart.length > 0) {
                 cartProduct = userCart
                 totalCartAmount = await getTotalAmount(userdetails._id)
@@ -709,9 +710,10 @@ const getCart = async (req, res) => {
                 ///////Testin
 
                 const today = new Date()
-
+console.log(userCart)
                 cartProduct = userCart.map((product) => {
                     let discountPercentage = 0
+                    let isProductActive = product.Product_variation.Is_active
                     const productOfferValid =
                         product.Product_Offers &&
                         new Date(product.Product_Offers.start_date) <= today &&
@@ -723,15 +725,19 @@ const getCart = async (req, res) => {
                         new Date(product.Product_Category_offers.end_date) >=
                             today
 
-                    if (productOfferValid && categoryOfferValid) {
+                    if (
+                        productOfferValid &&
+                        categoryOfferValid &&
+                        isProductActive
+                    ) {
                         discountPercentage = Math.max(
                             product.Product_Offers.offer_percentage,
                             product.Product_Category_offers.offer_percentage
                         )
-                    } else if (productOfferValid) {
+                    } else if (productOfferValid && isProductActive) {
                         discountPercentage =
                             product.Product_Offers.offer_percentage
-                    } else if (categoryOfferValid) {
+                    } else if (categoryOfferValid && isProductActive) {
                         discountPercentage =
                             product.Product_Category_offers.offer_percentage
                     }
@@ -882,7 +888,8 @@ const getCheckout = async (req, res) => {
         res.redirect('/home')
     }
         if (userSession) {
-            const user = await findUserByEmail(userSession) // Assuming findUserByEmail is a function to find user details
+            const user = await findUserByEmail(userSession)
+            const userWallet = await Wallet.findById(user._id) // Assuming findUserByEmail is a function to find user details
             if (!user) {
                 throw new Error("User details not found")
             }
@@ -1010,6 +1017,7 @@ const getCheckout = async (req, res) => {
                     newTotalAmount: newTotalAmount.toFixed(2),
                     session: false,
                     couponCode,
+                    userWallet,
                 })
             } else {
                 // User has no active cart items
@@ -1027,6 +1035,7 @@ const getCheckout = async (req, res) => {
                     session: false,
                     couponDiscountPercentage:
                         couponDiscountPercentage.toFixed(2),
+                    userWallet,
                 })
             }
         } else {
@@ -1344,6 +1353,35 @@ const addCheckout = async (req, res) => {
                     .send({ message: "Internal Server Error" })
             }
         } else if (payment_method === "Cash On Delivery") {
+            return res.status(200).json({
+                message: "Order placed successfully",
+                orderId: orderDetail._id,
+            })
+        } else if (payment_method === "Wallet Payment") {
+            const userWallet = await Wallet.findOne({
+                user_id: userdetails._id,
+            })
+
+            if (!userWallet) {
+                return res.status(404).send({ message: "Wallet not found" })
+            }
+
+            if (total > userWallet.Wallet_amount) {
+                return res
+                    .status(400)
+                    .send({ message: "Insufficient Wallet Balance" })
+            }
+
+            await Wallet.findByIdAndUpdate(userWallet._id, {
+                $inc: { Wallet_amount: -total },
+            })
+
+            const transaction = await Referral_items.create({
+                Referral_Amount: -total,
+                Status: "Shop Purchase",
+                Wallet_id: userWallet._id,
+            })
+
             return res.status(200).json({
                 message: "Order placed successfully",
                 orderId: orderDetail._id,
@@ -1702,6 +1740,7 @@ const verifyCoupon = async (req,res)=>{
 
         const discountAmount = (coupon.offer_percentage / 100) * totalCartAmount
         const newTotalAmount = totalCartAmount - discountAmount
+        const couponPercenetge = coupon.offer_percentage/100
 
         // Update the user's coupon field
         const user = await collection.findByIdAndUpdate(
@@ -1713,7 +1752,13 @@ const verifyCoupon = async (req,res)=>{
         )
         console.log("total cart Amount Test 1 ", user)
 
-        res.json({ valid: true, discountAmount, newTotalAmount, user })
+        res.json({
+            valid: true,
+            discountAmount,
+            newTotalAmount,
+            user,
+            couponPercenetge,
+        })
        
     } catch (error) {
         console.error(error)

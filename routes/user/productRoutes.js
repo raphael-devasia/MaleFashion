@@ -3,6 +3,7 @@ const router = express.Router()
 const {
     checkUserStatus,
     isAuthenticatedUser,
+    reDirectioAuth,
 } = require("../../middlewares/userAuth")
 const {
     getHome,
@@ -25,6 +26,7 @@ const {
     deleteAllWishlist,
     paymentFailed,
     paymentRetry,
+    aboutUs,
 } = require("../../controller/products")
 
 router.use(checkUserStatus)
@@ -34,7 +36,7 @@ router.get("/products", getProducts)
 router.get("/products/:id",singleProduct)
 
 router.get("/addtocart",isAuthenticatedUser,getAddToCart)
-router.get("/cart", isAuthenticatedUser,getCart)
+router.get("/cart", [reDirectioAuth,isAuthenticatedUser], getCart)
 router.get("/deleteproduct",isAuthenticatedUser,deleteCart)
 router.get("/checkout",isAuthenticatedUser,getCheckout)
 router.post("/checkout",addCheckout)
@@ -49,6 +51,7 @@ router.get("/filtered-category",getProductsFiltered)
 router.get("/delete-all-wishlist",deleteAllWishlist)
 router.get("/payment-failed",paymentFailed)
 router.post('/payment-retry',paymentRetry)
+router.get("/about", aboutUs)
 // router.get('/deletewishlist',deleteWishlist)
 
 module.exports = router

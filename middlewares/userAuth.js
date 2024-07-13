@@ -10,6 +10,17 @@ res. redirect('/login')
 }
 
 
+// authMiddleware.js
+const reDirectioAuth = (req, res, next) => {
+    if (!req.session || !req.session.user) {
+        req.session.redirectTo = req.originalUrl
+        return res.redirect("/login")
+    }
+    next()
+}
+
+
+
 const checkUserStatus = async (req, res, next) => {
     if (req.session.user) {
         console.log(req.session.user)
@@ -36,4 +47,4 @@ const checkUserStatus = async (req, res, next) => {
     }
 }
 
-module.exports = { checkUserStatus, isAuthenticatedUser }
+module.exports = { checkUserStatus, isAuthenticatedUser, reDirectioAuth }

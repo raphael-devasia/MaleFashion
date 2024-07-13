@@ -1850,7 +1850,7 @@ const getHome = async (req, res) => {
             }))
             .sort((a, b) => b.totalQty - a.totalQty)
 
-        console.log(orderLines)
+        console.log(populatedOrderLines)
 const totalQty = orderLines.reduce((acc, current) => acc + current.totalQty, 0)
 const totalPrice = orderLines.reduce(
     (acc, current) => acc + current.totalPrice,

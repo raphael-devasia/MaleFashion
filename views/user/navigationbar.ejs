@@ -54,9 +54,9 @@
             <div class="price">$0.00</div>
         </div>
         <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__text">
+        <!-- <div class="offcanvas__text">
             <p>Free shipping, 30-day return or refund guarantee.</p>
-        </div>
+        </div> -->
     </div>
     <!-- Offcanvas Menu End -->
 
@@ -66,9 +66,9 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6 col-md-7">
-                        <div class="header__top__left">
+                        <!-- <div class="header__top__left">
                             <p>Free shipping, 30-day return or refund guarantee.</p>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-lg-6 col-md-5">
                         <div class="header__top__right">
@@ -104,14 +104,17 @@
 
 
                         <ul>
-                            <li class="active"><a href="./">Home</a></li>
-                            <li><a href="products">Shop</a></li>
+                            
+                            <li id="home"><a href="home">Home</a></li>
+                            <li id="shop"><a href="products">Shop</a></li>
+                            <li id="about"><a href="about">About Us</a></li>
+                            <% /* %>
                             <% category.forEach((row, index)=> { %>
-                                <li><a href="./category/<%= row.category_name %>">
+                                <li><a href="/products/filtered-category?page=1&sort='price-asc'&limit=5&key=<%= row.category_name %>">
                                         <%= row.category_name %>
                                     </a></li>
                                 <% }) %>
-
+<% */ %>
                         </ul>
 
 
@@ -119,7 +122,7 @@
                 </div>
                 <div class="col-lg-3 col-md-3">
                     <div class="header__nav__option">
-                        <a href="#" class="search-switch"><img src="/img/icon/search.png" alt=""></a>
+                        <!-- <a href="#" class="search-switch"><img src="/img/icon/search.png" alt=""></a> -->
                         <a href="/wishlist"><img id="wish-icon" src="/img/icon/heart.png" alt="" style="width: 23px;"> <span
                                 id="wish-count" style="color: red;">0</span></a>
                 
@@ -141,3 +144,30 @@
             <div class="canvas__open"><i class="fa fa-bars"></i></div>
         </div>
     </header>
+
+    <script>// Function to set the active class based on the current path
+        function setActiveNavLink() {
+            const path = window.location.pathname; // Get the current path
+            let activeLinkId;
+
+            // Determine which link should be active based on the path
+            if (path === '/home' || path === '/index.html') {
+                activeLinkId = 'home';
+            } else if (path.includes('about')) {
+                activeLinkId = 'about';
+            } else  {
+                activeLinkId = 'shop';
+            }
+
+            // Remove active class from all links
+            document.querySelectorAll('ul li').forEach(li => li.classList.remove('active'));
+
+            // Add active class to the current link
+            if (activeLinkId) {
+                document.getElementById(activeLinkId).classList.add('active');
+            }
+        }
+
+        // Call the function when the page loads
+        document.addEventListener('DOMContentLoaded', setActiveNavLink);
+</script>

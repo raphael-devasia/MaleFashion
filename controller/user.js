@@ -147,7 +147,15 @@ const createLogin = async (req, res) => {
                 }
 
                 req.session.user = email
-                return res.redirect("/home")
+
+const redirectTo = req.session.redirectTo || "/home"
+console.log("Redirect to", redirectTo)
+delete req.session.redirectTo
+res.redirect(redirectTo)
+
+
+
+                // return res.redirect("/home")
             } catch (error) {
                 console.log(error)
             }
@@ -272,68 +280,6 @@ const verifyOTP = async (req, res) => {
     }
 }
 
-//========>>>>>> ###### POST : http://localhost:5050/register ######
-
-// const createRegister = async (req, res) => {
-//     const isAdmin = false
-//     let referral = req.body.referral
-//     const userData = {
-//         firstName: req.body.firstName,
-//         lastName: req.body.lastName,
-//         password: req.body.password,
-//         referral: referral,
-
-//         phone: req.body.phone,
-//         email: req.body.email,
-//     }
-
-// if (referral){
-// referral = new mongoose.Types.ObjectId(referral)
-
-// }
-
-//     const registerData = await collection.insertMany(userData)
-
-//     const referredUser = await collection.findById(referral)
-//     if (referredUser) {
-//         const newreferral = await Wallet.create({
-//             user_id: registerData._id,
-//             Referral_amount: 250,
-//         })
-//         const referral_item = await Referral_items.create({
-//             Referral_Amount: 250,
-//             Status: "Welcome Bonus",
-//             Referred_by: referredUser._id,
-//             Wallet_id: newreferral._id,
-//         })
-
-//         ///check existing wallet for the refferd user
-//         const existingWallet = await Wallet.findOne({ user_id: referral })
-//         if (existingWallet) {
-//             const updateWallet = await Wallet.findByIdAndUpdate(
-//                 existingWallet._id,
-//                 { $inc: { Referral_amount: 250 } },
-//                 { new: true }
-//             )
-//             const referral_item = await Referral_items.create({
-//                 Referral_Amount: 250,
-//                 Status: "Welcome Bonus",
-//                 Refferals_ids: registerData._id,
-//                 Wallet_id: existingWallet._id,
-//             })
-//         }
-//     }
-//     else{
-//         const newWallet = await Wallet.create({})
-//     }
-
-//     // console.log('registration successfulllll');
-//     // req.flash("info", "New User Added Successfully")
-//     // req.flash("admin",isAdmin)
-//     setTimeout(() => {
-//         res.redirect("/")
-//     }, 2000) //
-// }
 const createRegister = async (req, res) => {
     const isAdmin = false
     let referral = req.body.referral

@@ -240,7 +240,7 @@
   <% } else { %>
     <div class="quantity">
       <div class="pro-qty">
-        <input type="text" value="1" min="1" max="<%= filteredProduct[0].Product_variation.Qty_in_stock %>" id="quantity-input">
+        <input type="text" value="1" min="1"  max="<%= Math.min(filteredProduct[0].Product_variation.Qty_in_stock, 5) %>" id="quantity-input">
       </div>
     </div>
     <button class="primary-btn" onclick="addToCart('<%= filteredProduct[0].Product_item._id %>','<%= filteredProduct[0]._id %>')"> Add to Cart</button>

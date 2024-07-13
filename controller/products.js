@@ -139,7 +139,7 @@ const getProducts = async (req, res) => {
   const page = parseInt(req.query.page) || 1 // Default to page 1 if not provided
   const limit = parseInt(req.query.limit) || 5 // Default to 5 products per page if not provided
   const skip = (page - 1) * limit
-console.log(page, limit, skip)
+
     try {
          const { cartLength, totalCartAmount } = await getCartDetails(
              req.session.user
@@ -163,7 +163,7 @@ console.log(page, limit, skip)
 
             return categoryCount
         }
-        console.log("VARIATION1", productVariation)
+        
         // Using the function
         const categoryCount = countCategories(productVariation)
         const categoryArray = Object.keys(categoryCount).map((key) => ({
@@ -171,7 +171,7 @@ console.log(page, limit, skip)
             count: categoryCount[key],
         }))
 
-        console.log("VARIATION2", categoryArray)
+        
         let productsToDisplay
 
         // Calculate the effective price for each product
@@ -224,7 +224,7 @@ console.log(page, limit, skip)
         // Calculate the current range of products being shown
         const start = skip + 1
         const end = Math.min(skip + limit, totalProducts)
-        console.log("VARIATION3", totalProducts)
+        
         res.render("user/shop", {
             data: paginatedProducts,
             category,
@@ -889,7 +889,7 @@ const getCheckout = async (req, res) => {
     }
         if (userSession) {
             const user = await findUserByEmail(userSession)
-            const userWallet = await Wallet.findById(user._id) // Assuming findUserByEmail is a function to find user details
+            const userWallet = await Wallet.findOne({user_id:user._id}) // Assuming findUserByEmail is a function to find user details
             if (!user) {
                 throw new Error("User details not found")
             }
@@ -1001,7 +1001,7 @@ const getCheckout = async (req, res) => {
                     (e) => e.Is_Billing_default
                 )
 
-                console.log(address)
+                console.log("USER WALLET",userWallet)
                 res.render("user/checkout", {
                     user,
                     totalOfferDiscount,
@@ -1846,6 +1846,10 @@ console.log(req.body)
      }
 
 }
+const aboutUs = async(req,res)=>{
+     const { cartLength, totalCartAmount } = await getCartDetails(req.session.user)
+    res.render("user/about", { cartLength, totalCartAmount ,active:"about"})
+}
 
 module.exports = {
     getHome,
@@ -1867,6 +1871,7 @@ module.exports = {
     deleteAllWishlist,
     paymentFailed,
     paymentRetry,
+    aboutUs
 
-    // deleteWishlist,
+   
 }

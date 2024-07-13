@@ -371,30 +371,33 @@
                                 </ul>
 
                                 <% let codAvailable=true; %>
-                                    <% Payment_types.forEach(element=> { %>
-                                        <% const isCashOnDelivery=element.Value==='Cash On Delivery' ; %>
-                                            <% const shouldDisable=newTotalAmount> 1000 && isCashOnDelivery; %>
-                                                <% if (shouldDisable) { %>
-                                                    <% codAvailable=false; %>
-                                                        <% } else { %>
-                                                            <div class="checkout__input__radio">
-                                                                <label for="payment_<%= element.Value %>">
-                                                                    <%= element.Value %>
-                                                                        <input type="radio"
-                                                                            id="payment_<%= element.Value %>"
-                                                                            name="payment_method"
-                                                                            value="<%= element.Value %>">
-                                                                        <span class="checkmark"></span>
-                                                                </label>
-                                                            </div>
-                                                            <% } %>
-                                                                <% }); %>
-
-                                                                    <% if (!codAvailable) { %>
-                                                                        <p style="color: red;">Cash On Delivery is not
-                                                                            available for orders above 1000.
-                                                                        </p>
-                                                                        <% } %>
+                                    <% let walletAvailable=true; %>
+                                        <% Payment_types.forEach(element=> { %>
+                                            <% const isCashOnDelivery=element.Value==='Cash On Delivery' ; %>
+                                                <% const finalAmount=((totalCartAmount - totalOfferDiscount) - ((totalCartAmount - totalOfferDiscount) *
+                                                    couponDiscountPercentage / 100)).toFixed(2); %>
+                                
+                                                    <% if (newTotalAmount> 1000 && isCashOnDelivery) { %>
+                                                        <% codAvailable=false; %>
+                                                            <% } else { %>
+                                                                <div class="checkout__input__radio">
+                                                                    <label for="payment_<%= element.Value %>">
+                                                                        <%= element.Value %>
+                                                                            <input type="radio" id="payment_<%= element.Value %>" name="payment_method"
+                                                                                value="<%= element.Value %>" data-final-amount="<%= finalAmount %>"
+                                                                                data-wallet-amount="<%= userWallet.Wallet_amount %>">
+                                                                            <span class="checkmark"></span>
+                                                                    </label>
+                                                                </div>
+                                                                <% } %>
+                                                                    <% }); %>
+                                
+                                                                        <% if (!codAvailable) { %>
+                                                                            <p style="color: red;">Cash On Delivery is not available for orders above
+                                                                                1000.</p>
+                                                                            <% } %>
+                                
+                                                                                <p id="paymentMessage" style="color: red; display: none;"></p>
 
 
 
@@ -679,8 +682,19 @@
                     event.preventDefault();
                     document.getElementById('paymentMessage').innerText = 'Please select a payment method.';
                     document.getElementById('paymentMessage').style.display = 'block';
-                } else {
+                }  else {
                     document.getElementById('paymentMessage').style.display = 'none';
+                    if (paymentMethod === 'Wallet Payment') {
+                        const selectedInput = $('input[name="payment_method"]:checked');
+                        const finalAmount = parseFloat(selectedInput.data('final-amount'));
+                        const walletAmount = parseFloat(selectedInput.data('wallet-amount'));
+
+                        if (finalAmount > walletAmount) {
+                            event.preventDefault();
+                            document.getElementById('paymentMessage').innerText = 'Insufficient wallet Balance.';
+                            document.getElementById('paymentMessage').style.display = 'block';
+                        }
+                    }
                 }
             });
             // Function to show modal based on type and message
@@ -704,7 +718,7 @@
                 })
                     .then(response => {
                         if (!response.ok) {
-                            
+                             
                             throw new Error('Network response was not ok');
                         }
                         return response.json();

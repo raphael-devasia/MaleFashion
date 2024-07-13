@@ -36,6 +36,7 @@ const {
     calculateTotalCartAmount,
     getCartLength,
     getCartDetails,
+    
 } = require("../utils/userProductsFunctions")
 const { render } = require("ejs")
 const Product_image = require("../models/productImage")
@@ -49,14 +50,18 @@ var instance = new Razorpay({
 })
 
 require("../middlewares/auth")
-
+const {getWishlistLength} = require("../utils/userProductsFunctions")
 
 const getHome = async (req, res) => {
     
     try {
 
- const { cartLength, totalCartAmount } = await getCartDetails(req.session.user)
+ const { cartLength, totalCartAmount } = await getCartDetails(
+     req.session.user
+ )
 
+     const wishListlength = await getWishlistLength(req.session.user)
+ console.log("wishListlength", wishListlength)
         let category = await Product_category.find()
         // Check if there is a session user
         const productVariation = await ProductImage.aggregate([
@@ -103,8 +108,9 @@ const getHome = async (req, res) => {
                 category,
                 products: productVariation,
                 name: null, // Assuming name is not available when there's no session user
-                cartLength:null,
-                totalCartAmount:null
+                cartLength:0,
+                totalCartAmount:0,
+                wishListlength
             })
         }
 
@@ -128,6 +134,7 @@ const getHome = async (req, res) => {
             name,
             cartLength,
             totalCartAmount,
+            wishListlength,
         })
     } catch (error) {
         console.log(error)
@@ -144,7 +151,7 @@ const getProducts = async (req, res) => {
          const { cartLength, totalCartAmount } = await getCartDetails(
              req.session.user
          )
-       
+       const wishListlength = await getWishlistLength(req.session.user)
         const category = await Product_category.find()
 
         const productVariation = await fetchProductVariations()
@@ -238,6 +245,7 @@ const getProducts = async (req, res) => {
             name,
             cartLength,
             totalCartAmount,
+            wishListlength,
         })
     } catch (error) {
         console.error(error)
@@ -1847,8 +1855,15 @@ console.log(req.body)
 
 }
 const aboutUs = async(req,res)=>{
+
      const { cartLength, totalCartAmount } = await getCartDetails(req.session.user)
-    res.render("user/about", { cartLength, totalCartAmount ,active:"about"})
+      const wishListlength = await getWishlistLength(req.session.user)
+    res.render("user/about", {
+        cartLength,
+        totalCartAmount,
+        active: "about",
+        wishListlength,
+    })
 }
 
 module.exports = {

@@ -1,7 +1,9 @@
 // utils/cartUtils.js
 
+const Wishlist = require("../models/wishlist")
 const {cartProducts} = require("../utils/database") // Adjust the path as needed
 const {findUserByEmail} = require("../utils/database") // Adjust the path as needed
+const User = require("../models/schema")
 
 // Function to calculate total cart amount
 const calculateTotalCartAmount = (cart) => {
@@ -59,6 +61,22 @@ const getCartLength = async (sessionUser) => {
     return cartLength
 }
 
+
+const getWishlistLength = async (sessionUser) => {
+     let wishListlength = 0
+     if(!sessionUser){
+        return wishListlength
+     }
+     const userId = await User.findOne({email:sessionUser})
+     const wishListTemp = await Wishlist.find({ User_id: userId._id})
+     if(wishListTemp.length>0){
+        wishListlength = wishListTemp.length
+     }
+return wishListlength
+}
+
+
+
 // Function to get cart details (length and total amount)
 const getCartDetails = async (sessionUser) => {
     const userCartTemp = await cartProducts()
@@ -78,4 +96,5 @@ module.exports = {
     calculateTotalCartAmount,
     getCartLength,
     getCartDetails,
+    getWishlistLength,
 }

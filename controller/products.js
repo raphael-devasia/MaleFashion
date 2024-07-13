@@ -4,6 +4,10 @@ const collection = require("../models/schema")
 const GoogleUser = require("../models/googleUser")
 const Product_category = require("../models/productSchema")
 const ProductImage = require("../models/productImage")
+const ProductVariation = require("../models/productVariation")
+const ProductItem = require("../models/product_item")
+const Product = require("../models/products")
+const ProductCategory = require("../models/productSchema")
 const Shopping_cart = require("../models/shopping_cart")
 const Shopping_cart_item = require("../models/shopping_cart_item")
 const Payment_type = require("../models/payment_type")
@@ -31,6 +35,7 @@ const {
     getTotalAmountFromSession,
     getProductsFromSession,
     fetchSingleProduct,
+    getOrderLines,
 } = require("../utils/database")
 const {
     calculateTotalCartAmount,
@@ -61,7 +66,38 @@ const getHome = async (req, res) => {
  )
 
      const wishListlength = await getWishlistLength(req.session.user)
- console.log("wishListlength", wishListlength)
+ 
+// FINDING THE BEST PRODUCTS//
+
+ const orderLines = await getOrderLines()
+
+ const populatedOrderLines = await ProductImage.populate(orderLines, {
+     path: "Product_item_id",
+
+     populate: {
+         path: "Product_variation_id",
+         model: ProductVariation,
+
+         populate: {
+             path: "Product_item_id",
+             model: ProductItem,
+             populate: {
+                 path: "Product_id",
+                 model: Product,
+                 populate: {
+                     path: "product_category_id",
+                     model: ProductCategory,
+                 },
+             },
+         },
+     },
+ })
+
+
+
+console.log("populatedOrderLines", populatedOrderLines[0])
+
+
         let category = await Product_category.find()
         // Check if there is a session user
         const productVariation = await ProductImage.aggregate([
@@ -110,7 +146,8 @@ const getHome = async (req, res) => {
                 name: null, // Assuming name is not available when there's no session user
                 cartLength:0,
                 totalCartAmount:0,
-                wishListlength
+                wishListlength,
+                bestProducts:populatedOrderLines
             })
         }
 
@@ -135,6 +172,7 @@ const getHome = async (req, res) => {
             cartLength,
             totalCartAmount,
             wishListlength,
+            bestProducts: populatedOrderLines,
         })
     } catch (error) {
         console.log(error)
@@ -404,9 +442,7 @@ const singleProduct = async (req, res) => {
          const category = await Product_category.find()
         const getNew = await fetchAllProducts()
         const getSingleProduct = getNew.filter((e) => {
-            console.log(
-                `Comparing: '${e.Product.product_name.trim()}' with '${productId.trim()}'`
-            )
+           
             return (
                 e.Product.product_name
                     .trim()
@@ -538,6 +574,7 @@ filteredProduct = filteredProduct.map((product) => {
 }
 //  ========>>>> POST (Add To Cart)  http://localhost:5050/addtocart
 const getAddToCart = async (req, res) => {
+     console.log("STEP 1 JUST BEFORE THE USER")  
     const {
         
         product_id: Product_item_id,
@@ -552,9 +589,12 @@ let wishlist = await Wishlist.findById(wishlist_id)
 if (wishlist) {
     await Wishlist.findByIdAndDelete(wishlist._id)
 }
-      
+    
     try {
+       
         if (user) {
+            
+
             // If user is logged in, find user details
             const userdetails = await findUserByEmail(user) // Assuming findUserByEmail is a function to find user details
             if (!userdetails) {
@@ -635,38 +675,43 @@ if (wishlist) {
                 cartLength,
             })
         } else {
-            let cart = req.cookies.cart ? JSON.parse(req.cookies.cart) : []
-            const cartLength = cart.length
-            cart.push({ Product_item_id, Qty, product_image })
-            res.cookie("cart", JSON.stringify(cart), {
-                httpOnly: true,
-                path: "/",
-            })
-            const qtyToReduceNum = Number(Qty)
-            // Reduce the item from the cart ===>
-            const productReduce = await Product_image.findById(
-                product_image
-            ).populate({
-                path: "Product_variation_id",
-                model: "Product_variation",
-            })
-            if (productReduce) {
-                const variationId = productReduce.Product_variation_id._id // Adjust according to your data structure
+            console.log("user not logged in testing ok");
+            //  if the user not logged in 
 
-                await Product_variation.findByIdAndUpdate(variationId, {
-                    $inc: { Qty_in_stock: -qtyToReduceNum },
-                })
+            // let cart = req.cookies.cart ? JSON.parse(req.cookies.cart) : []
+            // const cartLength = cart.length
+            // cart.push({ Product_item_id, Qty, product_image })
+            // res.cookie("cart", JSON.stringify(cart), {
+            //     httpOnly: true,
+            //     path: "/",
+            // })
+            // const qtyToReduceNum = Number(Qty)
+            // // Reduce the item from the cart ===>
+            // const productReduce = await Product_image.findById(
+            //     product_image
+            // ).populate({
+            //     path: "Product_variation_id",
+            //     model: "Product_variation",
+            // })
+            // if (productReduce) {
+            //     const variationId = productReduce.Product_variation_id._id // Adjust according to your data structure
 
-                console.log("Product quantity reduced successfully.")
-            } else {
-                console.log("Product not found.")
-            }
+            //     await Product_variation.findByIdAndUpdate(variationId, {
+            //         $inc: { Qty_in_stock: -qtyToReduceNum },
+            //     })
+
+            //     console.log("Product quantity reduced successfully.")
+            // } else {
+            //     console.log("Product not found.")
+            // }
 
             // Return a success response
-            res.status(200).json({
-                message: "Item added to cart successfully",
-                cartLength,
-            })
+            // res.status(200).json({
+            //     message: "Item added to cart successfully",
+            //     cartLength,
+            // })
+           
+             res.status(401).json({ error: "user not logged in" })
         }
     } catch (error) {
         console.error("Error adding item to cart:", error)

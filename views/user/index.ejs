@@ -66,7 +66,7 @@
                     <h2>
                         <%= element.category_name %> Collection
                     </h2>
-                    <a href="products/<%= element.category_name %>">Shop now</a>
+                    <a href="products">Shop now</a>
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
             <h2>
                 <%= element.category_name %> Collection
             </h2>
-            <a href="products/<%= element._id %>">Shop now</a>
+            <a href="products">Shop now</a>
         </div>
     </div>
 </div>
@@ -112,35 +112,34 @@
             </div>
             <div class="row product__filter">
 
- <% products.forEach(item => { %>
+ <% bestProducts.forEach(item => { %>
 
-                <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 m-5  mix new-arrivals">
                     <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="<%= item.images[0][0] %>">
+                        <div class="product__item__pic set-bg" data-setbg="<%= item.Product_item_id.Image_filename[0] %>">
                             <span class="label"></span>
                             <ul class="product__hover">
-                                <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
-                                <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a></li>
-                                <li><a href="/products/<%= item.Product_variation_ids %>"><img src="img/icon/search.png" alt=""></a></li>
+                               
+                                <li><a href="/products/<%= item._id %>"><img src="img/icon/search.png" alt=""></a></li>
                             </ul>
                         </div>
                         <div class="product__item__text">
                             <h6><%= item._id %></h6>
-                            <a href="#" class="add-cart">+ Add To Cart</a>
-                            <div class="rating">
+                            
+                            <!-- <div class="rating">
                                 <i class="fa fa-star-o"></i>
                                 <i class="fa fa-star-o"></i>
                                 <i class="fa fa-star-o"></i>
                                 <i class="fa fa-star-o"></i>
                                 <i class="fa fa-star-o"></i>
                             </div>
-                             <h5>$<%= item.Original_price %></h5>
+                             <h5>$<%= item.Original_price %></h5> -->
                             <div class="product__color__select">
 
 
-    <label for="pc-1" class="active" style="background:<%= item._id %>">
+    <!-- <label for="pc-1" class="active" style="background:<%= item._id %>">
         <input type="radio" id="pc-1">
-    </label>
+    </label> -->
 
           
     <!-- <label class="active black" for="pc-2">
@@ -165,7 +164,7 @@
     <!-- Product Section End -->
 
     <!-- Categories Section Begin -->
-    <section class="categories spad">
+    <!-- <section class="categories spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3">
@@ -210,7 +209,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- Categories Section End -->
 
     <!-- Instagram Section Begin -->

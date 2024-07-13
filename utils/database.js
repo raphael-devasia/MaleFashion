@@ -9,6 +9,7 @@ const User_address = require("../models/userAddress")
 const Address = require("../models/addresses")
 const Shopping_cart_item = require("../models/shopping_cart_item")
 const { model } = require("mongoose")
+const Order_line = require ('../models/order_line')
 
 const fetchCategories = async () => {
     return await Product_category.find()
@@ -535,7 +536,136 @@ const getProductsFromSession = async (sessionData) => {
 
     return products
 }
+// For the admin Dashboard
 
+const getOrderLines = async()=>{
+const orderLines = await Order_line.aggregate([
+    {
+        $addFields: {
+            combined: {
+                $zip: {
+                    inputs: [
+                        "$Product_name",
+                        "$Qty",
+                        "$Price",
+                        "$Offer_percentage",
+                        "$Coupon_percentage",
+                        "$Status",
+                        "$Product_item_id",
+                    ],
+                },
+            },
+        },
+    },
+    {
+        $unwind: "$combined",
+    },
+    {
+        $match: { "combined.5": "Delivered" },
+    },
+    {
+        $group: {
+            _id: { $arrayElemAt: ["$combined", 0] },
+            Product_item_id: {
+                $first: { $arrayElemAt: ["$combined", 6] },
+            },
+            totalQty: { $sum: { $arrayElemAt: ["$combined", 1] } },
+            totalPrice: {
+                $sum: {
+                    $multiply: [
+                        {
+                            $subtract: [
+                                {
+                                    $subtract: [
+                                        {
+                                            $arrayElemAt: ["$combined", 2],
+                                        },
+                                        {
+                                            $divide: [
+                                                {
+                                                    $multiply: [
+                                                        {
+                                                            $arrayElemAt: [
+                                                                "$combined",
+                                                                2,
+                                                            ],
+                                                        },
+                                                        {
+                                                            $arrayElemAt: [
+                                                                "$combined",
+                                                                3,
+                                                            ],
+                                                        },
+                                                    ],
+                                                },
+                                                100,
+                                            ],
+                                        },
+                                    ],
+                                },
+                                {
+                                    $divide: [
+                                        {
+                                            $multiply: [
+                                                {
+                                                    $subtract: [
+                                                        {
+                                                            $arrayElemAt: [
+                                                                "$combined",
+                                                                2,
+                                                            ],
+                                                        },
+                                                        {
+                                                            $divide: [
+                                                                {
+                                                                    $multiply: [
+                                                                        {
+                                                                            $arrayElemAt:
+                                                                                [
+                                                                                    "$combined",
+                                                                                    2,
+                                                                                ],
+                                                                        },
+                                                                        {
+                                                                            $arrayElemAt:
+                                                                                [
+                                                                                    "$combined",
+                                                                                    3,
+                                                                                ],
+                                                                        },
+                                                                    ],
+                                                                },
+                                                                100,
+                                                            ],
+                                                        },
+                                                    ],
+                                                },
+                                                {
+                                                    $arrayElemAt: [
+                                                        "$combined",
+                                                        4,
+                                                    ],
+                                                },
+                                            ],
+                                        },
+                                        100,
+                                    ],
+                                },
+                            ],
+                        },
+                        { $arrayElemAt: ["$combined", 1] },
+                    ],
+                },
+            },
+        },
+    },
+    {
+        $sort: { totalQty: -1 }, // Add this stage to sort by totalQty in descending order
+    },
+])
+return orderLines
+}
+ 
 
 
 
@@ -550,4 +680,5 @@ module.exports = {
     getTotalAmount,
     getTotalAmountFromSession,
     getProductsFromSession,
+    getOrderLines,
 }

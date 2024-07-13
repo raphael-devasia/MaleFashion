@@ -301,7 +301,7 @@ $(document).ready(function () {
 
 })(jQuery);
 
- function addToCart(productId,variationId) {
+ function addToCart(productId,variationId,productName) {
      // Get the selected quantity
      console.log(productId, variationId)
      const quantity = document.getElementById("quantity-input").value
@@ -311,7 +311,9 @@ $(document).ready(function () {
          productId
      )}&quantity=${encodeURIComponent(
          quantity
-     )}&product_image=${encodeURIComponent(variationId)}`
+     )}&product_image=${encodeURIComponent(
+         variationId
+     )}&name=${encodeURIComponent(productName)}`
 
      // Make an AJAX request
      $.ajax({
@@ -321,17 +323,22 @@ $(document).ready(function () {
              // Handle success response here (if needed)
              console.log(
                  "Product added to cart successfully!",
-                 response.cartLength
+                 response
              )
              $("#cart-count").text(response.cartLength)
-             // Optionally, you can redirect the user to the cart page or update UI
-             // window.location.href = '/cart'; // Example redirect to cart page
+             
          },
          error: function (xhr, status, error) {
-            const response = JSON.parse(xhr.responseText)
-            const errorMessage = response.error
-            document.getElementById("stockError").textContent = errorMessage
-             console.error("Error adding product to cart:", error)
+             if (xhr.status === 401) {
+        
+        window.location.href = '/login';}
+        else{
+ const response = JSON.parse(xhr.responseText)
+ const errorMessage = response.error
+ document.getElementById("stockError").textContent = errorMessage
+ console.error("Error adding product to cart:", error)
+        }
+           
          },
      })
  }

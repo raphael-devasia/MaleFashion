@@ -35,7 +35,7 @@ router.get("/home", getHome)
 router.get("/products", getProducts)
 router.get("/products/:id",singleProduct)
 
-router.get("/addtocart",isAuthenticatedUser,getAddToCart)
+router.get("/addtocart", [reDirectioAuth, isAuthenticatedUser], getAddToCart)
 router.get("/cart", [reDirectioAuth,isAuthenticatedUser], getCart)
 router.get("/deleteproduct",isAuthenticatedUser,deleteCart)
 router.get("/checkout",isAuthenticatedUser,getCheckout)

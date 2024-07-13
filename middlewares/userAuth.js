@@ -12,9 +12,23 @@ res. redirect('/login')
 
 // authMiddleware.js
 const reDirectioAuth = (req, res, next) => {
+   
+    const name = req.query.name
     if (!req.session || !req.session.user) {
-        req.session.redirectTo = req.originalUrl
-        return res.redirect("/login")
+         if (req.originalUrl.startsWith("/addtocart")) {
+             req.session.redirectTo = `/products/${name}` // Redirect to products page after login
+         } else {
+             req.session.redirectTo = req.originalUrl
+         }
+       
+
+
+        if (req.xhr) {
+            // If the request is AJAX
+            return res.status(401).json({ message: "Unauthorized" })
+        } else {
+            return res.redirect("/login")
+        }
     }
     next()
 }

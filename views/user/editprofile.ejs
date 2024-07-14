@@ -1,6 +1,6 @@
 <%- include('navigationbar') %>
     <!-- Header Section End -->
-<link rel="stylesheet" href="css/adress-book.css" type="text/css">
+    <link rel="stylesheet" href="css/adress-book.css" type="text/css">
     <!-- Breadcrumb Section Begin -->
     <section class="breadcrumb-option">
         <div class="container">
@@ -22,16 +22,15 @@
         <section class="section-parent">
             <div class="profile-details">
                 <div class="profile-inner">
-    
                     <div class="account-management">
                         <div class="container mb-4 main-container">
                             <div class="row">
                                 <div class="col-lg-4 pb-5">
                                     <!-- Account Sidebar-->
-                                   <%- include('profilesidebar') %>
+                                    <%- include('profilesidebar') %>
                                 </div>
                                 <!-- Orders Table-->
-                                <form id="profile-form" class="edit-profile" method="POST" action="updateprofile">
+                                <form id="profile-form" class="edit-profile">
                                     <div class="edit-your-profile">Edit Your Profile</div>
                                     <div class="profile-form">
                                         <div class="name-fields-parent">
@@ -40,25 +39,26 @@
                                                     <div class="first-name">First Name</div>
                                                     <div class="placebox-info">
                                                         <div class="place-to-info-box"></div>
-                                                        <input class="md" type="text" value="<%= user.firstName %>" name="firstName">
+                                                        <input class="md" type="text" value="<%= user.firstName %>"
+                                                            name="firstName">
                                                     </div>
                                                 </div>
                                                 <div class="name-containers1">
                                                     <a class="email">Email</a>
                                                     <div class="placebox-info1">
                                                         <div class="place-to-info-box1"></div>
-                                                        <input class="md1" placeholder="<%= user.email %>" type="text" readonly
-                                                            value="<%= user.email %>" name="email">
+                                                        <input class="md1" placeholder="<%= user.email %>" type="text"
+                                                            readonly value="<%= user.email %>" name="email">
                                                     </div>
                                                 </div>
-                                                <div class="password-changes">Password Changes</div>
                                             </div>
                                             <div class="address-fields-parent">
                                                 <div class="address-fields">
                                                     <div class="last-name">Last Name</div>
                                                     <div class="placebox-info2">
                                                         <div class="place-to-info-box2"></div>
-                                                        <input class="md2" value="<%= user.lastName %>" name="lastName" type="text" required>
+                                                        <input class="md2" value="<%= user.lastName %>" name="lastName"
+                                                            type="text" required>
                                                     </div>
                                                 </div>
                                                 <div class="address-fields1">
@@ -66,78 +66,78 @@
                                                     <div class="placebox-info3">
                                                         <div class="place-to-info-box3"></div>
                                                         <% if (billingAddress) { %>
-                                                        <input class="md3"
-                                                            value="<%= billingAddress.Address_id.House_number %> <%= billingAddress.Address_id.Address_line_1 %> <%= billingAddress.Address_id.Postal_code %> "
-                                                            type="text" readonly>
-                                                        <% } %>
-                                                       
+                                                            <input class="md3"
+                                                                value="<%= billingAddress.Address_id.House_number %> <%= billingAddress.Address_id.Address_line_1 %> <%= billingAddress.Address_id.Postal_code %> "
+                                                                type="text" readonly>
+                                                            <% } %>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="placebox-info-parent">
                                             <div class="placebox-info4">
-                                                <input id="currentPassword" class="md4 form-control" placeholder="Current Password" type="password"
-                                                    required>
+                                                <input id="currentPassword" class="md4 form-control"
+                                                    placeholder="Current Password" type="password" required>
                                                 <div class="invalid-feedback" id="currentPasswordError"></div>
-                                            </div>
-                                            <div class="placebox-info5">
-                                                <input id="newPassword" class="md5 form-control" placeholder="New Password" type="password"
-                                                    name="password">
-                                                <div class="invalid-feedback" id="newPasswordError"></div>
-                                
-                                            </div>
-                                
-                                            <div class="placebox-info6">
-                                                <input id="confirmPassword" class="md6 form-control" placeholder="Confirm New Password" type="password">
-                                                <div class="invalid-feedback" id="confirmPasswordError"></div>
-                                            </div>
-                                        </div>
-                                        <div class="form-text text-muted">
-                                            <div>
-                                                <p id="passwordCriteria">
-                                                    Password must be at least 8 characters long and contain:
-                                                    <br>
-                                                    <span class="password-criteria">* At least one uppercase letter</span>
-                                                    <br>
-                                                    <span class="password-criteria">* At least one lowercase letter</span>
-                                                    <br>
-                                                    <span class="password-criteria">* At least one number or special character</span>
-                                                </p>
                                             </div>
                                         </div>
                                         <div class="form-group m-0">
-                                
                                         </div>
                                     </div>
                                     <div id="error-message" class="m-auto" style="color: red;"></div>
+                                    <div id="userSuccessMessage" class="m-auto" style="color: green;"></div>
                                     <div class="form-buttons">
                                         <div class="button-container" id="buttonContainer">
-                                            <!-- <div class="cancel-button">
-                                                <a class="cancel">Cancel</a>
-                                            </div> -->
                                             <div class="form-buttons">
-                                                <button type="submit" class="button1" id="saveChangesButton">Save Changes</button>
-                                
+                                                <button type="submit" class="button1" id="saveChangesButton">Save
+                                                    Changes</button>
                                             </div>
-                                
                                         </div>
                                     </div>
                                 </form>
-    
+                                <!-- Password Change Form -->
+                                <form id="password-change-form" class="edit-password" style="display: none;">
+                                    <div class="edit-your-password">Change Your Password</div>
+                                    <div class="password-form">
+                                        <div class="form-group">
+                                            <label for="currentPasswordChange">Current Password</label>
+                                            <input id="currentPasswordChange" class="form-control" placeholder="Current Password" type="password"
+                                                name="currentPasswordChange" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="newPassword">New Password</label>
+                                            <input id="newPassword" class="form-control" placeholder="New Password" type="password" name="newPassword"
+                                                required>
+                                            <div id="passwordCriteria" class="mt-2"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="repeatPassword">Repeat Password</label>
+                                            <input id="repeatPassword" class="form-control" placeholder="Repeat Password" type="password"
+                                                name="repeatPassword" required>
+                                        </div>
+                                        <div class="form-group m-0"></div>
+                                        <div id="passwordChangeError" style="color: red; display: none;"></div>
+                                        <div id="passwordChangeSuccess" style="color: green; display: none;"></div>
+                                        <div class="form-buttons">
+                                            <div class="button-container">
+                                                <button type="submit" class="button1" id="changePasswordButton">Change Password</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-    
                         <div id="passwordCriteria" class="mt-2"></div>
                         <div class="alert alert-success" id="userSuccessMessage" style="display: none;"></div>
+                        
                     </div>
                 </div>
             </div>
         </section>
     </main>
-   
-      <!-- Footer Section Begin -->
-       
+
+    <!-- Footer Section Begin -->
+
     <footer class="footer">
         <div class="container">
             <div class="row">
@@ -167,14 +167,14 @@
                         <ul>
                             <li><a href="#">Contact Us</a></li>
                             <li><a href="#">Payment Methods</a></li>
-                            <li><a href="#">Delivary</a></li>
+                            <li><a href="#">Delivery</a></li>
                             <li><a href="#">Return & Exchanges</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
                     <div class="footer__widget">
-                        <h6>NewLetter</h6>
+                        <h6>Newsletter</h6>
                         <div class="footer__newslatter">
                             <p>Be the first to know about new arrivals, look books, sales & promos!</p>
                             <form action="#">
@@ -194,7 +194,7 @@
                                 document.write(new Date().getFullYear());
                             </script>2020
                             All rights reserved | This template is made with <i class="fa fa-heart-o"
-                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                                aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
                         </p>
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </div>
@@ -226,57 +226,69 @@
     <script src="js/mixitup.min.js"></script>
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/main.js"></script>
-</body>
-
-</html>
-    </div>
-
     <script>
-    const saveChangesButton = document.getElementById('saveChangesButton');
-    const errorMessageDiv = document.getElementById('error-message');
+        $(document).ready(function () {
+            $('#profile-form').on('submit', function (e) {
+                e.preventDefault(); // Prevent default form submission behavior
 
-    saveChangesButton.addEventListener('click', (e) => {
-        e.preventDefault(); // Prevent default form submission behavior
+                const currentPassword = $('#currentPassword').val();
+                const errorMessageDiv = $('#error-message');
+                 const successMessageDiv = $('#userSuccessMessage');
 
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const currentPassword = document.getElementById('currentPassword').value
+                // Validate current password
+                if (currentPassword.length < 8 || !/[A-Z]/.test(currentPassword) || !/[a-z]/.test(currentPassword) || !/[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(currentPassword)) {
+                    errorMessageDiv.text('Please enter a valid current password');
+                     setTimeout(function () {
+                        errorMessageDiv.fadeOut();
+                    }, 2000);
+                    return;
+                }
 
-        if (currentPassword.length < 8 || !/[A-Z]/.test(currentPassword) || !/[a-z]/.test(currentPassword) || !/[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(currentPassword)) {
-            errorMessageDiv.textContent = 'Please Enter a Valid Current Password';
-            return;
-        }
-        // Check if current password matches with user's password
-        if (currentPassword !== '<%= user.password %>') {
-            errorMessageDiv.textContent = 'Current password is incorrect';
-            return;
-        }
+                // Check if current password matches with user's password
+                if (currentPassword !== '<%= user.password %>') {
+                    errorMessageDiv.text('Current password is incorrect');
+                     setTimeout(function () {
+                        errorMessageDiv.fadeOut();
+                    }, 2000);
+                    return;
+                }
 
-        // Validate password criteria here
-        if (newPassword.length < 8 || !/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPassword)) {
-            errorMessageDiv.textContent = 'Password does not meet the criteria';
-            return;
-        }
+                // If validation passes, submit the form via AJAX
+                $.ajax({
+                    url: 'updateprofile',
+                    method: 'POST',
+                    data: $('#profile-form').serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            successMessageDiv.text('Profile updated successfully!').show();
+                             setTimeout(function () {
+                                successMessageDiv.fadeOut();
+                            }, 2000);
+                        } else {
+                            errorMessageDiv.text(response.message);
+                            setTimeout(function () {
+                                errorMessageDiv.fadeOut();
+                            }, 2000);
+                        }
+                    },
+                    error: function () {
+                        errorMessageDiv.text('An error occurred while updating the profile.');
+                         setTimeout(function () {
+                            errorMessageDiv.fadeOut();
+                        }, 2000);
+                    }
+                });
+            });
 
+            $('#addressBookText').on('click', function () {
+                window.location.href = '/user/address';
+            });
 
-        if (newPassword !== confirmPassword) {
-            errorMessageDiv.textContent = 'Passwords do not match';
-            return;
-        }
+            $('#orderdetails').on('click', function () {
+                window.location.href = '/user/orders';
+            });
+        });
+    </script>
+    </body>
 
-        // If validation passes, submit the form
-        document.getElementById('profile-form').submit();
-    });
-</script>
-<script>
-  document.getElementById('addressBookText').addEventListener('click', function() {
-    window.location.href = '/user/address';
-  });
-
-  document.getElementById('orderdetails').addEventListener('click', function() {
-    window.location.href = '/user/orders';
-  });
-</script>
-
-  </body>
-</html>
+    </html>

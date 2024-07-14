@@ -737,6 +737,7 @@ const getCart = async (req, res) => {
         
         let userdetails
         let newTotalAmount = 0
+        let totalCartAmount=0
         let discountAmount = 0
         let couponCode = ""
        if (stockUnavailability) {
@@ -841,19 +842,23 @@ console.log(userCart)
                     newTotalAmount = totalCartAmount
                 }
             }
+            
         } else {
             // If user is not logged in, retrieve cart from cookies
             let cart = req.cookies.cart ? JSON.parse(req.cookies.cart) : []
             cartProduct = await getProductsFromSession(cart)
             totalCartAmount = await getTotalAmountFromSession(cart)
 
-            return res.render("user/shopping-cart", {
-                cartProduct,
-                totalCartAmount: totalCartAmount.toFixed(2),
-                discountAmount: discountAmount.toFixed(2),
-                newTotalAmount: totalCartAmount.toFixed(2),
-                user: false,
-            })
+            if (!totalCartAmount){
+                totalCartAmount=0
+            }
+                return res.render("user/shopping-cart", {
+                    cartProduct,
+                    totalCartAmount: totalCartAmount.toFixed(2),
+                    discountAmount: discountAmount.toFixed(2),
+                    newTotalAmount: totalCartAmount.toFixed(2),
+                    user: false,
+                })
         }
         const name = userdetails.firstName
          const wishListlength = await getWishlistLength(req.session.user)

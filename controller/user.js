@@ -772,25 +772,35 @@ const userDetails = async (req, res) => {
 }
 //========>>>>>> ###### POST : http://localhost:5050/userupdate ######
 const userUpdate = async (req, res) => {
-    const userData = req.session.user
-    const { firstName, lastName, email, password } = req.body
-    const isAdmin = false
+    try {
+        const userData = req.session.user
+        const { firstName, lastName, email, password } = req.body
+        const isAdmin = false
 
-    // if (req.session.user) {
-    const userdetails = await findUserByEmail(userData)
-    const updatedUser = await collection.findByIdAndUpdate(
-        userdetails._id,
-        {
-            firstName,
-            lastName,
+        // if (req.session.user) {
+        const userdetails = await findUserByEmail(userData)
+        const updatedUser = await collection.findByIdAndUpdate(
+            userdetails._id,
+            {
+                firstName,
+                lastName,
 
-            password,
-        },
-        { new: true }
-    )
+                password,
+            },
+            { new: true }
+        )
 
-    req.flash("info", "User Profile Updated Successfully!")
-    return res.redirect("/user")
+        res.status(200).json({
+            success: "User Details Updated successfully",
+            user: updatedUser,
+        })
+    } catch (error) {
+       console.error("Error updating user:", error)
+       res.status(500).json({
+           message: "An error occurred while updating the profile",
+       }) 
+    }
+    
 }
 
 // }

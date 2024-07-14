@@ -554,7 +554,8 @@ filteredProduct = filteredProduct.map((product) => {
     }
 })
 
-  
+ 
+   const wishListlength = await getWishlistLength(req.session.user)
 
         res.render("user/shopDetails", {
             getSingleProduct,
@@ -567,6 +568,7 @@ filteredProduct = filteredProduct.map((product) => {
             name,
             cartLength,
             totalCartAmount,
+            wishListlength,
         })
     } catch (error) {
         console.log(error)
@@ -574,7 +576,7 @@ filteredProduct = filteredProduct.map((product) => {
 }
 //  ========>>>> POST (Add To Cart)  http://localhost:5050/addtocart
 const getAddToCart = async (req, res) => {
-     console.log("STEP 1 JUST BEFORE THE USER")  
+     
     const {
         
         product_id: Product_item_id,
@@ -629,10 +631,11 @@ if (wishlist) {
                     })
               // const cartLength = await (await Shopping_cart_item.find()).length
                     const cartLength = userCart.length
-
+ const wishListlength = await getWishlistLength(req.session.user)
                     return res.status(200).json({
                         message: "Item added to cart successfully",
                         cartLength,
+                        wishListlength,
                     })
                 } else {
                     console.log(typeof stockAvailable)
@@ -669,10 +672,12 @@ if (wishlist) {
             // const cartLength = await (await Shopping_cart_item.find()).length
             const cartLength = userCart.length
             const Cart_id = cartItem._id
+            const wishListlength = await getWishlistLength(req.session.user)
 
             res.status(200).json({
                 message: "Item added to cart successfully",
                 cartLength,
+                wishListlength
             })
         } else {
             console.log("user not logged in testing ok");
@@ -816,7 +821,7 @@ console.log(userCart)
                         total + product.discountAmount * product.Qty,
                     0
                 )
-                console.log(totalOfferDiscount)
+               
                 ////testing ends
 
                 couponCode = userdetails.coupon
@@ -851,11 +856,11 @@ console.log(userCart)
             })
         }
         const name = userdetails.firstName
-        console.log("CART PRODUCT NEW : ", cartProduct)
+         const wishListlength = await getWishlistLength(req.session.user)
         res.render("user/shopping-cart", {
             totalOfferDiscount: totalOfferDiscount,
             cartProduct,
-            totalCartAmount: totalCartAmount.toFixed(2),
+            totalCartAmount: totalCartAmount,
             discountAmount: discountAmount.toFixed(2),
             newTotalAmount: newTotalAmount.toFixed(2),
             couponCode,
@@ -864,6 +869,7 @@ console.log(userCart)
             category,
             name,
             cartLength,
+            wishListlength,
         })
     } catch (error) {
         console.error("Error fetching cart:", error)
@@ -1054,7 +1060,11 @@ const getCheckout = async (req, res) => {
                     (e) => e.Is_Billing_default
                 )
 
-                console.log("USER WALLET",userWallet)
+                  const wishListlength = await getWishlistLength(req.session.user)
+                  const { cartLength } = await getCartDetails(
+                      req.session.user
+                  )
+                  console.log(user.firstName);
                 res.render("user/checkout", {
                     user,
                     totalOfferDiscount,
@@ -1070,7 +1080,10 @@ const getCheckout = async (req, res) => {
                     newTotalAmount: newTotalAmount.toFixed(2),
                     session: false,
                     couponCode,
+                    wishListlength,
                     userWallet,
+                    cartLength,
+                    name: user.firstName,
                 })
             } else {
                 // User has no active cart items
@@ -1698,10 +1711,21 @@ const getWishlist = async (req, res) => {
             User_id: userdetails._id,
         })
 
+        const { cartLength, totalCartAmount } = await getCartDetails(
+            req.session.user
+        )
+        const wishListlength = await getWishlistLength(req.session.user)
+
+        const name = userdetails.firstName
+
         if (existingWishList.length < 1) {
             return res.render("user/wishlist", {
                 category,
                 wishListItems: existingWishList,
+                cartLength,
+                totalCartAmount,
+                wishListlength,
+                name,
             })
         }
 
@@ -1713,9 +1737,8 @@ const getWishlist = async (req, res) => {
         )
 
         // Filter out products from getNew that are already in the existingWishList
-        const filteredGetNew = getNew.filter(
-            (product) =>
-                wishListProductImageIds.includes(product._id.toString())
+        const filteredGetNew = getNew.filter((product) =>
+            wishListProductImageIds.includes(product._id.toString())
         )
 
         // Merge existing wishlist with filtered products
@@ -1730,12 +1753,68 @@ const getWishlist = async (req, res) => {
                 productDetails,
             }
         })
-
         console.log("WISH LIST IS", wishListItems)
-        
+        const today = new Date()
 
-        // Pass the merged wishlist items to the view
-        res.render("user/wishlist", { category, wishListItems })
+        const wishlistProducts = wishListItems.map((item) => {
+            const product = item.productDetails
+            let discountPercentage = 0
+            let isProductActive = product.Is_active
+
+            // Check if product offers are valid
+            const productOfferValid =
+                product.Product_Offers &&
+                new Date(product.Product_Offers.start_date) <= today &&
+                new Date(product.Product_Offers.end_date) >= today
+
+            // Check if category offers are valid
+            const categoryOfferValid =
+                product.Product_Category_offers &&
+                new Date(product.Product_Category_offers.start_date) <= today &&
+                new Date(product.Product_Category_offers.end_date) >= today
+
+            // Determine the discount percentage
+            if (isProductActive) {
+                if (productOfferValid && categoryOfferValid) {
+                    discountPercentage = Math.max(
+                        product.Product_Offers.offer_percentage,
+                        product.Product_Category_offers.offer_percentage
+                    )
+                } else if (productOfferValid) {
+                    discountPercentage = product.Product_Offers.offer_percentage
+                } else if (categoryOfferValid) {
+                    discountPercentage =
+                        product.Product_Category_offers.offer_percentage
+                }
+            }
+
+            // Calculate discount amount and effective price
+            const originalPrice = product.Product_item.Original_price
+            const discountAmount = (originalPrice * discountPercentage) / 100
+            const effectivePrice = originalPrice - discountAmount
+
+            return {
+                ...item,
+                discountAmount,
+                effectivePrice: discountPercentage
+                    ? effectivePrice
+                    : originalPrice,
+                discountPercentage,
+            }
+        })
+
+      
+
+       
+        res.render("user/wishlist", {
+            category,
+            wishListItems,
+            wishListlength,
+            totalCartAmount,
+            cartLength,
+            wishlistProducts,
+            name,
+        })
     } catch (error) {
         console.error("Error getting wishlist:", error)
         res.status(500).json({ message: "Internal server error" })
@@ -1823,7 +1902,8 @@ const removeWishlistItem = async (req, res) => {
 
     try {
         await Wishlist.findOneAndDelete({ Product_image_id: product_id })
-        res.status(200).json({ msg: "success" })
+        const wishListlength = await getWishlistLength(req.session.user)
+        res.status(200).json({ msg: "success", wishListlength })
     } catch (error) {
         res.status(500).json({ msg: "Error removing item from wishlist" })
     }
@@ -1903,11 +1983,17 @@ const aboutUs = async(req,res)=>{
 
      const { cartLength, totalCartAmount } = await getCartDetails(req.session.user)
       const wishListlength = await getWishlistLength(req.session.user)
+      const user = await collection.findOne({email:req.session.user})
+      let name
+      if(user){
+        name = user.firstName
+      }
     res.render("user/about", {
         cartLength,
         totalCartAmount,
         active: "about",
         wishListlength,
+        name,
     })
 }
 

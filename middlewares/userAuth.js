@@ -17,6 +17,8 @@ const reDirectioAuth = (req, res, next) => {
     if (!req.session || !req.session.user) {
          if (req.originalUrl.startsWith("/addtocart")) {
              req.session.redirectTo = `/products/${name}` // Redirect to products page after login
+         } else if (req.originalUrl.startsWith("/addtowishlist")) {
+             req.session.redirectTo = `/products/${name}` // Redirect to products page after login
          } else {
              req.session.redirectTo = req.originalUrl
          }

@@ -88,6 +88,25 @@ app.get('/google/callback',
     }
 );
 
+//page not found
+// 400 for user routes
+app.use((req, res, next) => {
+    if (req.originalUrl.startsWith('/admin')) {
+        next(); // Skip this middleware for admin routes
+    } else {
+        res.status(400).render('user/error_400');
+    }
+});
+
+// 404 for admin routes
+app.use('/admin', (req, res) => {
+    res.status(400).render("error_400")
+});
+
+
+
+
+
 const port = process.env.PORT || 5050
 const MONGOURL = process.env.MONGO_URI
 //connect to mongo db

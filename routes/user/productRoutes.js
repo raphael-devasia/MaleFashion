@@ -43,7 +43,11 @@ router.post("/checkout",addCheckout)
 router.post("/updateCart",isAuthenticatedUser,updateCart)
 router.post('/verify-payment',verifyPayment)
 router.get("/category/:id",isAuthenticatedUser, getCatogoryProducts)
-router.get("/addtowishlist",isAuthenticatedUser,addToWishlist)
+router.get(
+    "/addtowishlist",
+    [reDirectioAuth, isAuthenticatedUser],
+    addToWishlist
+)
 router.get("/wishlist", [reDirectioAuth,isAuthenticatedUser], getWishlist)
 router.post("/verify-coupon",isAuthenticatedUser,verifyCoupon)
 router.get("/wishlist/remove-item",isAuthenticatedUser, removeWishlistItem)

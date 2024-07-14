@@ -28,6 +28,7 @@ const {
     calculateTotalCartAmount,
     getCartLength,
     getCartDetails,
+    getWishlistLength
 } = require("../utils/userProductsFunctions")
 //////
 const {
@@ -749,15 +750,21 @@ const userDetails = async (req, res) => {
     const billingAddress = userdetails.address_id.find(
         (a) => a.Is_Billing_default
     )
-
+  const { cartLength, totalCartAmount } = await getCartDetails(req.session.user)
+  const wishListlength = await getWishlistLength(userData)
     return res.render("user/editprofile", {
         isAdmin,
         access: "USER",
         category,
         user: userdetails,
+        userdetails,
         msg: msg[0],
         billingAddress,
         userWallet,
+        cartLength,
+        totalCartAmount,
+        wishListlength,
+        name: user.firstName
     })
     // }
 
@@ -807,7 +814,7 @@ const getAddress = async (req, res) => {
      const { cartLength, totalCartAmount } = await getCartDetails(
          req.session.user
      )
-   
+   const wishListlength = await getWishlistLength(user)
     res.render("user/adressbook", {
         category,
         address,
@@ -818,6 +825,8 @@ const getAddress = async (req, res) => {
         totalCartAmount,
         cartLength,
         userWallet,
+        wishListlength,
+        name: userdetails.firstName
     })
 }
 //========>>>>>> ###### GET : http://localhost:5050/user/address/addnew ######
@@ -831,14 +840,21 @@ const newAddress = async (req, res) => {
 
     // if (req.session.user) {
     const userdetails = await findUserByEmail(user)
-    console.log(userdetails)
+ const wishListlength = await getWishlistLength(user)
+ const { cartLength, totalCartAmount } = await getCartDetails(req.session.user)
     return res.render("user/addAddress", {
         isAdmin,
         access: "USER",
         category,
         user: userdetails,
+        userdetails,
         msg: msg[0],
         userWallet,
+        wishListlength,
+        cartLength,
+        totalCartAmount,
+        name: userdetails.firstName,
+
     })
 }
 //========>>>>>> ###### POST : http://localhost:5050/user/addnewaddress ######
@@ -946,13 +962,22 @@ const editAddress = async (req, res) => {
         // Fetch categories (assuming this function is defined elsewhere)
         const category = await fetchCategories()
 
-        // Render the edit address page with the address and other data
+        const wishListlength = await getWishlistLength(userData)
+        const { cartLength, totalCartAmount } = await getCartDetails(
+            req.session.user
+        )
+
         res.render("user/editaddress", {
             category,
             address,
             access: "USER",
             user: userdetails,
+            userdetails,
             userWallet,
+            name: user.firstName,
+            wishListlength,
+            cartLength,
+            totalCartAmount,
         })
     } catch (error) {
         // Handle errors
@@ -1148,14 +1173,23 @@ const setBilling = async (req, res) => {
 
          // Calculate totalPages for pagination
          const totalPages = Math.ceil(totalOrders / limit)
+          const wishListlength = await getWishlistLength(user)
+           const { cartLength, totalCartAmount } = await getCartDetails(
+               req.session.user
+           )
 
          res.render("user/orders", {
              category,
              user: userdetails,
+             userdetails,
              orderDetails,
              userWallet,
+             wishListlength,
+             name: userdata.firstName,
              currentPage: parseInt(page), // 5. Pass current page number to the template
-             totalPages, // 6. Pass total number of pages to the template
+             totalPages,
+             cartLength,
+             totalCartAmount,
          })
      } else {
          res.redirect("/home")
@@ -1198,14 +1232,19 @@ const getOrderDetails = async (req, res) => {
             }
             productArray.push(data)
         }
-
-        console.log("PRODUCT ARYYA:", orderDetails)
+const wishListlength = await getWishlistLength(user)
+const { cartLength, totalCartAmount } = await getCartDetails(req.session.user)
+       
         res.render("user/orderDetails", {
             category,
             userdetails,
             orderDetails,
             productArray,
             userWallet,
+            wishListlength,
+            cartLength,
+            totalCartAmount,
+            name: userdetails.firstName
         })
     } else {
         res.redirect("/home")
@@ -1343,12 +1382,19 @@ const getWallet = async (req, res) => {
        const transactions = transaction.sort(
            (a, b) => b.createdAt - a.createdAt
        )
-
+ const wishListlength = await getWishlistLength(user)
+ const { cartLength, totalCartAmount } = await getCartDetails(req.session.user)
         res.render("user/wallet", {
             category,
             userWallet,
             transactions,
             userDetails,
+            userdetails: userDetails,
+            wishListlength,
+            cartLength,
+            totalCartAmount,
+            name: userDetails.firstName,
+            currentRoute: "/user/wallet",
         })
     } else {
         res.redirect("/")

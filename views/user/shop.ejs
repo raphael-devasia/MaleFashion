@@ -221,13 +221,13 @@
                                             <%= row._id %>
                                         </h6>
 
-                                        <div class="rating">
+                                        <!-- <div class="rating">
                                             <i class="fa fa-star-o"></i>
                                             <i class="fa fa-star-o"></i>
                                             <i class="fa fa-star-o"></i>
                                             <i class="fa fa-star-o"></i>
                                             <i class="fa fa-star-o"></i>
-                                        </div>
+                                        </div> -->
                                         <% if (row.discountPercentage> 0) { %>
                                             <h6><s>
                                                     <%= row.Original_price %>
@@ -468,13 +468,7 @@
                                 <div class="product__item__text">
                                     <h6>${row._id}</h6>
                                    
-                                    <div class="rating">
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                    </div>
+                                  
                                     ${row.discountPercentage > 0 ?
                                 `<h6><s>${row.Original_price}</s>$</h6>
                                         <h5>$${row.effectivePrice}</h5>` :

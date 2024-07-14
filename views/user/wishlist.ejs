@@ -1,184 +1,11 @@
-<html lang="zxx">
-
-<head>
-    <meta charset="UTF-8" />
-    <meta name="description" content="Male_Fashion Template" />
-    <meta name="keywords" content="Male_Fashion, unica, creative, html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Male-Fashion | Template</title>
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
-        rel="stylesheet" />
-
-    <!-- Css Styles -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css" />
-    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css" />
-    <link rel="stylesheet" href="css/nice-select.css" type="text/css" />
-    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css" />
-    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css" />
-    <link rel="stylesheet" href="css/style.css" type="text/css" />
-    <link rel="stylesheet" href="css/adress-book.css" type="text/css" />
-    <style>body{
+<%- include('navigationbar') %>
+    <!-- Header Section End -->
+     <style>
+         body{
     margin-top:20px;
     background-color: #f1f3f7;
 }
-
-.avatar-lg {
-    height: 5rem;
-    width: 5rem;
-}
-
-.font-size-18 {
-    font-size: 18px!important;
-}
-
-.text-truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-a {
-    text-decoration: none!important;
-}
-
-.w-xl {
-    min-width: 160px;
-}
-
-.card {
-    margin-bottom: 24px;
-    -webkit-box-shadow: 0 2px 3px #e4e8f0;
-    box-shadow: 0 2px 3px #e4e8f0;
-}
-
-.card {
-    position: relative;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
-    background-color: #fff;
-    background-clip: border-box;
-    border: 1px solid #eff0f2;
-    border-radius: 1rem;
-}</style>
-</head>
-
-<body>
-    <!-- Page Preloder -->
-    <!-- <div id="preloder">
-        <div class="loader"></div>
-    </div> -->
-    <!-- Offcanvas Menu Begin -->
-    <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-        <div class="offcanvas__option">
-            <div class="offcanvas__links">
-                <a href="#">Sign in</a>
-                <a href="#">FAQs</a>
-            </div>
-            <div class="offcanvas__top__hover">
-                <span>Usd <i class="arrow_carrot-down"></i></span>
-                <ul>
-                    <li>USD</li>
-                    <li>EUR</li>
-                    <li>USD</li>
-                </ul>
-            </div>
-        </div>
-        <div class="offcanvas__nav__option">
-            <a href="#" class="search-switch"><img src="img/icon/search.png" alt="" /></a>
-            <a href="#"><img src="img/icon/heart.png" alt="" /></a>
-            <a href="#"><img src="img/icon/cart.png" alt="" /> <span>0</span></a>
-            <div class="price">$0.00</div>
-        </div>
-        <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__text">
-            <p>Free shipping, 30-day return or refund guarantee.</p>
-        </div>
-    </div>
-    <!-- Offcanvas Menu End -->
-
-    <!-- Header Section Begin -->
-    <header class="header">
-        <div class="header__top">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6 col-md-7">
-                        <div class="header__top__left">
-                            <p>
-                                Free shipping, 30-day return or refund
-                                guarantee.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-5">
-                        <div class="header__top__right">
-                            <div class="header__top__links">
-                                <a href="#">Sign in</a>
-                                <a href="#">FAQs</a>
-                            </div>
-                            <div class="header__top__hover">
-                                <span>Usd <i class="arrow_carrot-down"></i></span>
-                                <ul>
-                                    <li>USD</li>
-                                    <li>EUR</li>
-                                    <li>USD</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-3">
-                    <div class="header__logo">
-                        <a href="./"><img src="img/logo.png" alt="" /></a>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <nav class="header__menu mobile-menu">
-                        <ul>
-                            <li><a href="./">Home</a></li>
-                            <li class="active">
-                                <a href="products">Shop</a>
-                            </li>
-                            <% category.forEach((row, index)=> { %>
-                                <li>
-                                    <a href="./products/<%= row._id %>">
-                                        <%= row.category_name %>
-                                    </a>
-                                </li>
-                                <% }) %>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="col-lg-3 col-md-3">
-                    <div class="header__nav__option">
-                        <a href="#" class="search-switch"><img src="img/icon/search.png" alt="" /></a>
-                        <a href="#"><img src="img/icon/heart.png" alt="" /></a>
-                        <a href="#"><img src="img/icon/cart.png" alt="" />
-                            <span>0</span></a>
-                        <div class="price">$0.00</div>
-                    </div>
-                </div>
-            </div>
-            <div class="canvas__open"><i class="fa fa-bars"></i></div>
-        </div>
-    </header>
-    <!-- Header Section End -->
+     </style>
 
     <!-- Breadcrumb Section Begin -->
     <section class="breadcrumb-option">
@@ -189,7 +16,7 @@ a {
                         <h4>Shop</h4>
                         <div class="breadcrumb__links">
                             <a href="./index.html">Home</a>
-                            <span>User</span>
+                            <span>Wishlist</span>
                         </div>
                     </div>
                 </div>
@@ -203,7 +30,7 @@ a {
             <% if (wishListItems.length===0) { %>
                 <h4>No products in your wishlist</h4>
                 <% } else { %>
-                    <% wishListItems.forEach((element, index)=> { %>
+                    <% wishlistProducts.forEach((element, index)=> { %>
                         <div class="card border shadow-none mb-3" id="wishlist-item-<%= element._id %>">
                             <div class="card-body">
                                 <div class="d-flex align-items-start border-bottom pb-3">
@@ -245,6 +72,7 @@ a {
 
                                 <div>
                                     <div class="row">
+                                        <% if (element.discountPercentage>0) { %>
                                         <div class="col-md-4">
                                             <div class="mt-3">
                                                 <p class="text-muted mb-2">Price</p>
@@ -253,10 +81,28 @@ a {
                                                         <del class="font-size-16 fw-normal">
                                                             <%= element.productDetails.Product_item.Original_price %>
                                                         </del>
+
+                                                    </span>
+                                                    <span>
+                                                        <%= (element.effectivePrice ).toFixed(2) %>
                                                     </span>
                                                 </h5>
                                             </div>
                                         </div>
+                                        <% } else { %>
+                                        <div class="col-md-4">
+                                            <div class="mt-3">
+                                                <p class="text-muted mb-2">Price</p>
+                                                <h5 class="mb-0 mt-2">
+                                                    <span class="text-muted me-2">
+                                                        
+                                                            <%= element.productDetails.Product_item.Original_price %>
+                                                       
+                                                    </span>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <% } %>
                                         <div class="col-md-5">
                                             <div class="mt-3">
                                                 <p class="text-muted mb-2">Colour</p>
@@ -280,15 +126,26 @@ a {
                                         <div class="col-md-3">
                                             <div class="mt-3">
                                                 <button type="button" class="btn btn-danger btn-block"
-                                                    onclick="deleteWish('<%= element.productDetails._id %>')">Delete
+                                                    onclick="deleteWish('<%= element.productDetails._id %>','<%= element._id %>')">Delete
                                                     from
                                                     Wishlist</button>
+                                                    <% if (element.productDetails.Product_variation.Qty_in_stock<1) { %>
+
+<div class="mt-3">
+    <button type="button" class="btn btn-primary btn-block disabled"
+       >Out Of Stock</button>
+    <p id="stockError"></p>
+</div>
+
+                                                     
+                                                    <% } else { %>
                                                 <div class="mt-3">
                                                     <button type="button" class="btn btn-primary btn-block"
                                                         onclick="wishTocart('<%= element.productDetails._id %>','<%= element.productDetails.Product_variation._id %>','<%= element._id %>')">Add
                                                         to Cart</button>
                                                     <p id="stockError"></p>
                                                 </div>
+                                                <% } %>
                                             </div>
                                         </div>
                                     </div>

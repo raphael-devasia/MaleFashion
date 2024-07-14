@@ -525,13 +525,15 @@ $(document).ready(function () {
 
 
 
-function addToWishlist(productId) {
+function addToWishlist(productId,productName) {
     // Get the selected quantity
   
 
     // Create the URL with product ID and quantity as query parameters
     const url = `/addtowishlist?product_id=${encodeURIComponent(
         productId
+    )}&name=${encodeURIComponent(
+        productName
     )}`
 
     // Make an AJAX request
@@ -549,10 +551,15 @@ function addToWishlist(productId) {
             // window.location.href = '/cart'; // Example redirect to cart page
         },
         error: function (xhr, status, error) {
-            const response = JSON.parse(xhr.responseText)
-            const errorMessage = response.error
-            document.getElementById("stockError").textContent = errorMessage
-            console.error("Error adding product to wishlist:", error)
+              if (xhr.status === 401) {
+                  window.location.href = "/login"
+              }else{
+   const response = JSON.parse(xhr.responseText)
+   const errorMessage = response.error
+   document.getElementById("stockError").textContent = errorMessage
+   console.error("Error adding product to wishlist:", error)
+              }
+         
         },
     })
 }
@@ -581,6 +588,7 @@ function addToWishlist(productId) {
                  response.cartLength
              )
              $("#cart-count").text(response.cartLength)
+              $("#wish-count").text(response.wishListlength)
              $(`#wishlist-item-${wishListId}`).remove()
              // Optionally, you can redirect the user to the cart page or update UI
              // window.location.href = '/cart'; // Example redirect to cart page
@@ -596,10 +604,8 @@ function addToWishlist(productId) {
  }
 
 
-  function deleteWish(productId) {
+  function deleteWish(productId, wishListId) {
       // Get the selected quantity
-      
-     
 
       // Create the URL with product ID and quantity as query parameters
       const url = `/wishlist/remove-item?product_id=${encodeURIComponent(
@@ -616,7 +622,8 @@ function addToWishlist(productId) {
                   "Product added to cart successfully!",
                   response.cartLength
               )
-              $("#cart-count").text(response.cartLength)
+              $("#wish-count").text(response.wishListlength)
+              $(`#wishlist-item-${wishListId}`).remove()
               // Optionally, you can redirect the user to the cart page or update UI
               // window.location.href = '/cart'; // Example redirect to cart page
           },

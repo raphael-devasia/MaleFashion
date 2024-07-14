@@ -1,0 +1,69 @@
+<!-- Account Sidebar-->
+<div class="author-card pb-3">
+    <div class="author-card-cover"
+        style="background-image: url(https://bootdey.com/img/Content/flores-amarillas-wallpaper.jpeg);">
+        <a class="btn btn-style-1 btn-white btn-sm" href="#" data-toggle="tooltip" title=""
+            data-original-title="You currently have 290 Reward points to spend">
+            <i class="fa fa-award text-md"></i>&nbsp;Wallet Balance: <%= userWallet.Wallet_amount.toFixed(2) %>
+        </a>
+    </div>
+    <div class="author-card-profile">
+        <div class="author-card-avatar">
+            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Daniel Adams">
+        </div>
+        <div class="author-card-details">
+            <h5 class="author-card-name text-lg">
+                <%= userdetails.firstName %>
+                    <%= userdetails.lastName %>
+            </h5>
+        </div>
+    </div>
+</div>
+<div class="wizard">
+    <nav class="list-group list-group-flush">
+        <a id="orders-link" class="list-group-item" href="/user/orders">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><i class="fa fa-shopping-bag mr-1 text-muted"></i>
+                    <div class="d-inline-block font-weight-medium text-uppercase">Orders List</div>
+                </div>
+            </div>
+        </a>
+        <a id="profile-link" class="list-group-item" href="/user"><i class="fa fa-user text-muted"></i>Profile
+            Settings</a>
+        <a id="addresses-link" class="list-group-item" href="/user/address"><i
+                class="fa fa-map-marker text-muted"></i>Addresses</a>
+        <a id="wishlist-link" class="list-group-item" href="/wishlist">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><i class="fa fa-heart mr-1 text-muted"></i>
+                    <div class="d-inline-block font-weight-medium text-uppercase">My Wishlist</div>
+                </div>
+            </div>
+        </a>
+        <a id="wallet-link" class="list-group-item" href="/user/wallet">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><i class="fa fa-tag mr-1 text-muted"></i>
+                    <div class="d-inline-block font-weight-medium text-uppercase">My Wallet</div>
+                </div>
+            </div>
+        </a>
+    </nav>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var path = window.location.pathname;
+        if (path === '/user/orders') {
+            document.getElementById('orders-link').classList.add('active');
+        } else if (path === '/user/') {
+            document.getElementById('profile-link').classList.add('active');
+        } else if (path === '/user/address') {
+            document.getElementById('addresses-link').classList.add('active');
+        } else if (path === '/wishlist') {
+            document.getElementById('wishlist-link').classList.add('active');
+        } else if (path === '/user/wallet') {
+            document.getElementById('wallet-link').classList.add('active');
+        } else {
+            document.getElementById('addresses-link').classList.add('active'); // Default to addresses
+        }
+    });
+</script>

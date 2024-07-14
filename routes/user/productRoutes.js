@@ -27,6 +27,7 @@ const {
     paymentFailed,
     paymentRetry,
     aboutUs,
+    deleteCoupon,
 } = require("../../controller/products")
 
 router.use(checkUserStatus)
@@ -50,6 +51,7 @@ router.get(
 )
 router.get("/wishlist", [reDirectioAuth,isAuthenticatedUser], getWishlist)
 router.post("/verify-coupon",isAuthenticatedUser,verifyCoupon)
+router.get("/delete-coupon", isAuthenticatedUser,deleteCoupon)
 router.get("/wishlist/remove-item",isAuthenticatedUser, removeWishlistItem)
 router.get("/filtered-category",getProductsFiltered)
 router.get("/delete-all-wishlist",deleteAllWishlist)

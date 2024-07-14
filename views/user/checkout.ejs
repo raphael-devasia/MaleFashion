@@ -113,8 +113,11 @@
                         <input type="text" id="coupon-code" placeholder="Coupon code" value="<%= couponCode %>">
                         <button type="submit">Apply</button>
                     </form>
+                    <button id="close-coupon-form"
+                        style="background: none; border: none; cursor: pointer; font-size: 24px; color: #333;">&times;</button>
                     <div id="coupon-message"></div>
                 </div>
+
                 <form id="checkoutForm" action="/checkout" method="post">
                     <div class="row">
                         <div class="col-lg-8 col-md-6">
@@ -192,12 +195,12 @@
                             <div class="checkout__input__checkbox">
                                 <h6 class="checkout__title" data-toggle="collapse" data-target="#shippingDetails" aria-expanded="true"
                                     aria-controls="shippingDetails">Shipping Details</h6>
-                                <!-- <label for="add">
-                                    Ship to different Address
+                                <label for="add">
+                                    Ship to Same Address
                                     <input type="checkbox" id="add" name="shipToDifferentAddress"
                                         onchange="toggleShippingAddressFields()">
                                     <span class="checkmark"></span>
-                                </label> -->
+                                </label>
                             <div id="shippingDetails" class="collapse hide">
                                 <div id="shippingFields">
                                     <div class="row">
@@ -853,8 +856,78 @@
                 });
 
             </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get elements
+        const shipToSameAddressCheckbox = document.getElementById('add');
+        const billingFields = {
+            firstName: document.getElementById('billingFirstName'),
+            lastName: document.getElementById('billingLastName'),
+            country: document.getElementById('billingCountry'),
+            houseNumber: document.getElementById('billingHouseNumber'),
+            addressLine1: document.getElementById('billingAddressLine1'),
+            state: document.getElementById('billingState'),
+            postalCode: document.getElementById('billingPostalCode')
+        };
+        const shippingFields = {
+            firstName: document.getElementById('shippingFirstName'),
+            lastName: document.getElementById('shippingLastName'),
+            country: document.getElementById('shippingCountry'),
+            houseNumber: document.getElementById('shippingHouseNumber'),
+            addressLine1: document.getElementById('shippingAddressLine1'),
+            state: document.getElementById('shippingState'),
+            postalCode: document.getElementById('shippingPostalCode')
+        };
 
+        // Toggle shipping address fields
+        function toggleShippingAddressFields() {
+            const isChecked = shipToSameAddressCheckbox.checked;
+            const shippingDetailsContainer = document.getElementById('shippingDetails');
+            shippingDetailsContainer.style.display = isChecked ? 'none' : 'block';
 
+            if (isChecked) {
+                // Copy values from billing address to shipping address
+                shippingFields.firstName.value = billingFields.firstName.value;
+                shippingFields.lastName.value = billingFields.lastName.value;
+                shippingFields.country.value = billingFields.country.value;
+                shippingFields.houseNumber.value = billingFields.houseNumber.value;
+                shippingFields.addressLine1.value = billingFields.addressLine1.value;
+                shippingFields.state.value = billingFields.state.value;
+                shippingFields.postalCode.value = billingFields.postalCode.value;
+            } else {
+                // Clear shipping address fields if not shipping to the same address
+                for (const key in shippingFields) {
+                    shippingFields[key].value = '';
+                }
+            }
+        }
+
+        // Add event listener
+        shipToSameAddressCheckbox.addEventListener('change', toggleShippingAddressFields);
+    });
+</script>
+
+<script>
+     // Handle the close coupon form button click
+        $('#close-coupon-form').click(function () {
+            console.log("button clicked");
+            $.ajax({
+                url: '/delete-coupon',
+                method: 'GET',
+                success: function () {
+                    $('#coupon-form-container').hide();
+                    $('#coupon-message').text('Coupon removed successfully!').css('color', 'green');
+                     $('#coupon-code').val('');  // Clear the coupon input field
+                    $('#coupon-discount').text('0.00');
+                    $('#total-amount').text(`$ <%= (totalCartAmount-totalOfferDiscount).toFixed(2) %>`);  // Reset to the original total amount
+                },
+                error: function (xhr) {
+                    $('#coupon-message').text('An error occurred. Please try again.').css('color', 'red');
+                }
+            });
+        });
+
+</script>
 
 
 

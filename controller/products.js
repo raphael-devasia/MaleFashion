@@ -1882,7 +1882,7 @@ const verifyCoupon = async (req,res)=>{
             },
             { new: true }
         )
-        console.log("total cart Amount Test 1 ", user)
+        
 
         res.json({
             valid: true,
@@ -1897,6 +1897,55 @@ const verifyCoupon = async (req,res)=>{
         res.status(500).json({ valid: false, message: "Server error" })
     }
 }
+const deleteCoupon = async (req, res) => {
+    try {
+        const user = req.session.user
+
+        // Fetch the user data based on the email from the session
+        const userData = await collection.findOne({ email: user })
+
+        if (!userData) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        // Clear the coupon code for the user
+        await collection.findOneAndUpdate(
+            { email: user },
+            { $set: { coupon: "" } },
+            { new: true }
+        )
+
+        // Get the total amount of the cart
+        const totalCartAmount = await getTotalAmount(userData._id)
+
+        // Calculate the new total amount after removing the coupon discount
+        // If the coupon exists, get the coupon percentage
+        const coupon = await Coupon.findOne({ coupon_code: userData.coupon })
+
+        let couponPercentage = 0
+        if (coupon) {
+            couponPercentage = coupon.offer_percentage / 100
+        }
+
+        // Recalculate the total amount without the coupon
+        const discountAmount = totalCartAmount * couponPercentage
+        const newTotalAmount = (totalCartAmount - discountAmount).toFixed(2)
+
+        // Send response back to the client
+        res.status(200).json({
+            message: "Coupon deleted",
+            totalCartAmount,
+            newTotalAmount,
+            couponPercentage: couponPercentage * 100, // Return percentage as a whole number
+        })
+    } catch (error) {
+        console.error("Error deleting coupon:", error)
+        res.status(500).json({
+            message: "An error occurred while deleting the coupon",
+        })
+    }
+}
+
 const removeWishlistItem = async (req, res) => {
     const product_id = req.query.product_id
 
@@ -2017,7 +2066,6 @@ module.exports = {
     deleteAllWishlist,
     paymentFailed,
     paymentRetry,
-    aboutUs
-
-   
+    aboutUs,
+    deleteCoupon,
 }

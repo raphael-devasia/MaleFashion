@@ -539,7 +539,30 @@ const getProductsFromSession = async (sessionData) => {
 // For the admin Dashboard
 
 const getOrderLines = async()=>{
+   
 const orderLines = await Order_line.aggregate([
+    {
+        $lookup: {
+            from: "shop_orders", // The collection name for Order
+            localField: "Order_id",
+            foreignField: "_id",
+            as: "orderDetails",
+        },
+    },
+    {
+        $unwind: "$orderDetails",
+    },
+    {
+        $lookup: {
+            from: "order_statuses", // The collection name for Order_status
+            localField: "orderDetails.Order_status",
+            foreignField: "_id",
+            as: "orderStatusDetails",
+        },
+    },
+    {
+        $unwind: "$orderStatusDetails",
+    },
     {
         $addFields: {
             combined: {
@@ -570,6 +593,7 @@ const orderLines = await Order_line.aggregate([
                 $first: { $arrayElemAt: ["$combined", 6] },
             },
             totalQty: { $sum: { $arrayElemAt: ["$combined", 1] } },
+
             totalPrice: {
                 $sum: {
                     $multiply: [
@@ -657,6 +681,7 @@ const orderLines = await Order_line.aggregate([
                     ],
                 },
             },
+            orderStatusDetails: { $first: "$orderStatusDetails" }, // Add this line
         },
     },
     {

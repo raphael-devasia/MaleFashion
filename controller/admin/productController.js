@@ -1666,7 +1666,7 @@ const getHome = async (req, res) => {
     const isAdmin = true
     if (req.session.admin) {
         const orderLines= await getOrderLines()
-     
+     console.log("ORDER LINES:", orderLines)
         const populatedOrderLines = await ProductImage.populate(orderLines, {
             path: "Product_item_id",
 
@@ -1776,7 +1776,327 @@ const deleteCategoryOffer = async (req, res) => {
         })
     }
 }
+// getting data for the chart 
 
+function padZero(num) {
+    return (num < 10 ? '0' : '') + num
+}
+
+const getChartData = async (req, res) => {
+    try {
+        const orderLines = await Order_line.aggregate([
+            {
+                $lookup: {
+                    from: "shop_orders", // The collection name for Order
+                    localField: "Order_id",
+                    foreignField: "_id",
+                    as: "orderDetails",
+                },
+            },
+            {
+                $unwind: "$orderDetails",
+            },
+            {
+                $lookup: {
+                    from: "order_statuses", // The collection name for Order_status
+                    localField: "orderDetails.Order_status",
+                    foreignField: "_id",
+                    as: "orderStatusDetails",
+                },
+            },
+            {
+                $unwind: "$orderStatusDetails",
+            },
+            {
+                $addFields: {
+                    combined: {
+                        $zip: {
+                            inputs: [
+                                "$Qty",
+                                "$Price",
+                                "$Offer_percentage",
+                                "$Coupon_percentage",
+                                "$Status",
+                            ],
+                        },
+                    },
+                },
+            },
+            {
+                $unwind: "$combined",
+            },
+            {
+                $match: { "combined.4": "Delivered" },
+            },
+            {
+                $addFields: {
+                    finalPrice: {
+                        $subtract: [
+                            {
+                                $subtract: [
+                                    { $arrayElemAt: ["$combined", 1] },
+                                    {
+                                        $divide: [
+                                            {
+                                                $multiply: [
+                                                    {
+                                                        $arrayElemAt: [
+                                                            "$combined",
+                                                            1,
+                                                        ],
+                                                    },
+                                                    {
+                                                        $arrayElemAt: [
+                                                            "$combined",
+                                                            2,
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            100,
+                                        ],
+                                    },
+                                ],
+                            },
+                            {
+                                $divide: [
+                                    {
+                                        $multiply: [
+                                            {
+                                                $subtract: [
+                                                    {
+                                                        $arrayElemAt: [
+                                                            "$combined",
+                                                            1,
+                                                        ],
+                                                    },
+                                                    {
+                                                        $divide: [
+                                                            {
+                                                                $multiply: [
+                                                                    {
+                                                                        $arrayElemAt:
+                                                                            [
+                                                                                "$combined",
+                                                                                1,
+                                                                            ],
+                                                                    },
+                                                                    {
+                                                                        $arrayElemAt:
+                                                                            [
+                                                                                "$combined",
+                                                                                2,
+                                                                            ],
+                                                                    },
+                                                                ],
+                                                            },
+                                                            100,
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            { $arrayElemAt: ["$combined", 3] },
+                                        ],
+                                    },
+                                    100,
+                                ],
+                            },
+                        ],
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: {
+                            format: "%Y-%m-%d",
+                            date: "$orderStatusDetails.createdAt",
+                        },
+                    },
+                    total_orders: { $sum: 1 },
+                    total_sales: {
+                        $sum: {
+                            $multiply: [
+                                "$finalPrice",
+                                { $arrayElemAt: ["$combined", 0] },
+                            ],
+                        },
+                    },
+                },
+            },
+            {
+                $sort: { _id: 1 }, // Sort by date in ascending order
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: "$_id",
+                    total_orders: 1,
+                    total_sales: 1,
+                },
+            },
+        ])
+
+        const query = req.query.query
+        let dates = []
+        let totalOrders = []
+        let totalSales = []
+
+        if (query === "daily") {
+            // Get today's date
+            const today = new Date()
+            for (let i = 0; i < 10; i++) {
+                const date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000)
+                dates.push(
+                    `${date.getFullYear()}-${padZero(
+                        date.getMonth() + 1
+                    )}-${padZero(date.getDate())}`
+                )
+            }
+
+            // Filter the results to get the last 10 days
+            dates.forEach((date) => {
+                const found = orderLines.find((entry) => entry.date === date)
+                if (found) {
+                    totalOrders.push(found.total_orders)
+                    totalSales.push(found.total_sales)
+                } else {
+                    totalOrders.push(0)
+                    totalSales.push(0)
+                }
+            })
+        } else if (query === "weekly") {
+            // Get today's date
+            const today = new Date()
+            for (let i = 0; i < 10; i++) {
+                const startDate = new Date(
+                    today.getTime() - i * 7 * 24 * 60 * 60 * 1000
+                )
+                const endDate = new Date(
+                    startDate.getTime() + 6 * 24 * 60 * 60 * 1000
+                )
+                dates.push(
+                    `Week ${
+                        10 - i
+                    }: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`
+                )
+            }
+
+            // Filter the results to
+            // Filter the results to get the last 10 weeks
+            dates.forEach((date, index) => {
+                const startDate = new Date(
+                    today.getTime() - (9 - index) * 7 * 24 * 60 * 60 * 1000
+                )
+                const endDate = new Date(
+                    startDate.getTime() + 6 * 24 * 60 * 60 * 1000
+                )
+                const found = orderLines.filter((entry) => {
+                    const entryDate = new Date(entry.date)
+                    return entryDate >= startDate && entryDate <= endDate
+                })
+                if (found.length > 0) {
+                    totalOrders.push(
+                        found.reduce(
+                            (acc, current) => acc + current.total_orders,
+                            0
+                        )
+                    )
+                    totalSales.push(
+                        found.reduce(
+                            (acc, current) => acc + current.total_sales,
+                            0
+                        )
+                    )
+                } else {
+                    totalOrders.push(0)
+                    totalSales.push(0)
+                }
+            })
+        } else if (query === "monthly") {
+            // Get today's date
+            const today = new Date()
+            for (let i = 0; i < 12; i++) {
+                const month = today.getMonth() - i
+                const year = today.getFullYear()
+                if (month < 0) {
+                    month += 12
+                    year -= 1
+                }
+                dates.push(`${year}-${padZero(month + 1)}`)
+            }
+
+            // Filter the results to get the last 12 months
+            dates.forEach((date) => {
+                const [year, month] = date.split("-")
+                const startDate = new Date(year, month - 1, 1)
+                const endDate = new Date(year, month, 0)
+                const found = orderLines.filter((entry) => {
+                    const entryDate = new Date(entry.date)
+                    return entryDate >= startDate && entryDate <= endDate
+                })
+                if (found.length > 0) {
+                    totalOrders.push(
+                        found.reduce(
+                            (acc, current) => acc + current.total_orders,
+                            0
+                        )
+                    )
+                    totalSales.push(
+                        found.reduce(
+                            (acc, current) => acc + current.total_sales,
+                            0
+                        )
+                    )
+                } else {
+                    totalOrders.push(0)
+                    totalSales.push(0)
+                }
+            })
+        } else if (query === "yearly") {
+            // Get today's date
+            const today = new Date()
+            for (let i = 0; i < 10; i++) {
+                const year = today.getFullYear() - i
+                dates.push(`${year}`)
+            }
+
+            // Filter the results to get the last 10 years
+            dates.forEach((date) => {
+                const startDate = new Date(date, 0, 1)
+                const endDate = new Date(date, 11, 31)
+                const found = orderLines.filter((entry) => {
+                    const entryDate = new Date(entry.date)
+                    return entryDate >= startDate && entryDate <= endDate
+                })
+                if (found.length > 0) {
+                    totalOrders.push(
+                        found.reduce(
+                            (acc, current) => acc + current.total_orders,
+                            0
+                        )
+                    )
+                    totalSales.push(
+                        found.reduce(
+                            (acc, current) => acc + current.total_sales,
+                            0
+                        )
+                    )
+                } else {
+                    totalOrders.push(0)
+                    totalSales.push(0)
+                }
+            })
+        }
+
+        // Return the filtered results
+        console.log(dates, totalOrders, totalSales)
+        res.json({ dates, totalOrders, totalSales })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: "Internal Server Error" })
+    }
+}
      module.exports = {
          getProducts,
          addProduct,
@@ -1815,4 +2135,5 @@ const deleteCategoryOffer = async (req, res) => {
          getHome,
          deleteCoupon,
          deleteCategoryOffer,
+         getChartData
      }

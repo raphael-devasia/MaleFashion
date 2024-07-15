@@ -43,6 +43,7 @@ const {
     getHome,
     deleteCoupon,
     deleteCategoryOffer,
+    getChartData,
 } = require("../../controller/admin/productController")
 
 
@@ -136,5 +137,6 @@ router.get("/sales/cancelItem/:id", cancelItem)
 router.get("/sales/refund/:id",refundItem)
 router.get("/sales/shipItem/:id", shipItem)
 router.get("/home", getHome)
+router.get("/chart-data", getChartData)
 
 module.exports = router

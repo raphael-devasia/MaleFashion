@@ -5,6 +5,7 @@ const express = require("express")
 const router = express.Router()
 const authentication = require("../../controller/authentication")
 const { body, validationResult } = require("express-validator")
+const { isAuthenticatedAdmin } = require("../../middlewares/userAuth")
 const {
     getProducts,
     addProduct,
@@ -48,31 +49,31 @@ const {
 
 
 
-router.get("/products", getProducts)
+router.get("/products",isAuthenticatedAdmin,  getProducts)
 
-router.get("/addproduct", addProduct)
-router.get("/product/:id", getSingleProduct)    
-router.get("/editproduct/:id", editProduct)
-router.post("/editproduct/delete-image", deleteImage)
-router.get("/categories", getCategories)
-router.get("/editcategory/:id", editCategory)
-router.get("/addcategory", addCategory)
-router.get("/brands", getBrands)
-router.get("/editbrand", editBrand)
-router.get("/addbrand", addBrand)
-router.post("/addcategory", addNewCategory)
-router.post("/editcategory/:id", updateCategory)
-router.delete("/deletecategory/:id", deleteCategory)
-router.delete("/deleteproduct/:id",deleteProduct)
-router.post("/addproduct", createNewProduct)
-router.post('/editproduct',updateProduct)
-router.get('/sales',getSales)
-router.get('/sales/saledetails/:id',getSaleDetails)
-router.get("/orders/delete/:id", deleteOrder)
-router.get("/sales/update", updateOrder)
-router.get('/add-coupon',getAddCoupon)
-router.delete("/deletecoupon/:id", deleteCoupon)
-router.delete("/delete-category-offer/:id", deleteCategoryOffer)
+router.get("/addproduct",isAuthenticatedAdmin,  addProduct)
+router.get("/product/:id",isAuthenticatedAdmin,  getSingleProduct)    
+router.get("/editproduct/:id",isAuthenticatedAdmin,  editProduct)
+router.post("/editproduct/delete-image",isAuthenticatedAdmin,  deleteImage)
+router.get("/categories",isAuthenticatedAdmin,  getCategories)
+router.get("/editcategory/:id",isAuthenticatedAdmin,  editCategory)
+router.get("/addcategory",isAuthenticatedAdmin,  addCategory)
+router.get("/brands",isAuthenticatedAdmin,  getBrands)
+router.get("/editbrand",isAuthenticatedAdmin,  editBrand)
+router.get("/addbrand",isAuthenticatedAdmin,  addBrand)
+router.post("/addcategory",isAuthenticatedAdmin,  addNewCategory)
+router.post("/editcategory/:id",isAuthenticatedAdmin,  updateCategory)
+router.delete("/deletecategory/:id",isAuthenticatedAdmin,  deleteCategory)
+router.delete("/deleteproduct/:id",isAuthenticatedAdmin, deleteProduct)
+router.post("/addproduct",isAuthenticatedAdmin,  createNewProduct)
+router.post('/editproduct',isAuthenticatedAdmin, updateProduct)
+router.get('/sales',isAuthenticatedAdmin, getSales)
+router.get('/sales/saledetails/:id',isAuthenticatedAdmin, getSaleDetails)
+router.get("/orders/delete/:id",isAuthenticatedAdmin,  deleteOrder)
+router.get("/sales/update",isAuthenticatedAdmin,  updateOrder)
+router.get('/add-coupon',isAuthenticatedAdmin, getAddCoupon)
+router.delete("/deletecoupon/:id",isAuthenticatedAdmin,  deleteCoupon)
+router.delete("/delete-category-offer/:id",isAuthenticatedAdmin,  deleteCategoryOffer)
 router.post(
     "/add-coupon",
     [
@@ -93,11 +94,11 @@ router.post(
     ],
     postAddCoupon
 )
-router.get('/coupons',getAllCoupons)
-router.get('/addproduct-discount',getProductDiscount)
-router.get("/addcategory-discount", getCategoryDiscount)
-router.get("/addproduct-discount-list", getProductDiscountList)
-router.get("/addcategory-discount-list", getCategoryDiscountList)
+router.get('/coupons',isAuthenticatedAdmin, getAllCoupons)
+router.get('/addproduct-discount',isAuthenticatedAdmin, getProductDiscount)
+router.get("/addcategory-discount",isAuthenticatedAdmin,  getCategoryDiscount)
+router.get("/addproduct-discount-list",isAuthenticatedAdmin,  getProductDiscountList)
+router.get("/addcategory-discount-list", isAuthenticatedAdmin, getCategoryDiscountList)
 router.post(
     "/addproduct-discount",
     [ 
@@ -132,11 +133,11 @@ router.post(
     ],
     addCategoryDiscount
 )
-router.get("/salesreport",getSalesReport)
-router.get("/sales/cancelItem/:id", cancelItem)
-router.get("/sales/refund/:id",refundItem)
-router.get("/sales/shipItem/:id", shipItem)
-router.get("/home", getHome)
-router.get("/chart-data", getChartData)
+router.get("/salesreport",isAuthenticatedAdmin, getSalesReport)
+router.get("/sales/cancelItem/:id",isAuthenticatedAdmin,  cancelItem)
+router.get("/sales/refund/:id",isAuthenticatedAdmin, refundItem)
+router.get("/sales/shipItem/:id", isAuthenticatedAdmin, shipItem)
+router.get("/home",isAuthenticatedAdmin,  getHome)
+router.get("/chart-data",isAuthenticatedAdmin,  getChartData)
 
 module.exports = router

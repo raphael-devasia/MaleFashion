@@ -3,6 +3,7 @@ const express = require("express")
 // const userCollection = require("../../controller/schema")
 const router = express.Router()
 const authentication = require("../../controller/authentication")
+const {isAuthenticatedAdmin}= require("../../middlewares/userAuth")
 const {
     getUsers,
     editUser,
@@ -14,9 +15,9 @@ const {
 
 
 
-router.get("/users", getUsers)
-router.get("/newuser", addUser)
-router.get("/edituser", editUser)
-router.put("/updateUserStatus/:userId",updateUserStatus)
+router.get("/users",isAuthenticatedAdmin, getUsers)
+router.get("/newuser",isAuthenticatedAdmin, addUser)
+router.get("/edituser",isAuthenticatedAdmin, editUser)
+router.put("/updateUserStatus/:userId", isAuthenticatedAdmin,updateUserStatus)
 
 module.exports = router

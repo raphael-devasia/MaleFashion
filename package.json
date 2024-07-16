@@ -27,6 +27,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
     "mailgen": "^2.0.28",
+    "mongodb": "^6.8.0",
     "mongoose": "^8.3.4",
     "morgan": "^1.10.0",
     "nocache": "^4.0.0",

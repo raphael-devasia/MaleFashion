@@ -9,6 +9,13 @@ res. redirect('/login')
 }
 }
 
+const isAuthenticatedAdmin = (req, res, next) => {
+    if (req.session && req.session.admin) {
+        next()
+    } else {
+        res.redirect("/admin/login")
+    }
+}
 
 // authMiddleware.js
 const reDirectioAuth = (req, res, next) => {
@@ -63,4 +70,9 @@ const checkUserStatus = async (req, res, next) => {
     }
 }
 
-module.exports = { checkUserStatus, isAuthenticatedUser, reDirectioAuth }
+module.exports = {
+    checkUserStatus,
+    isAuthenticatedUser,
+    reDirectioAuth,
+    isAuthenticatedAdmin,
+}

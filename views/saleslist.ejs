@@ -23,17 +23,17 @@
 <div class="table-top">
 <div class="search-set">
 <div class="search-path">
-<a class="btn btn-filter" id="filter_search">
+<!-- <a class="btn btn-filter" id="filter_search">
 <img src="/assets/img/icons/filter.svg" alt="img">
 <span><img src="/assets/img/icons/closes.svg" alt="img"></span>
-</a>
+</a> -->
 </div>
-<div class="search-input">
+<!-- <div class="search-input">
 <a class="btn btn-searchset"><img src="/assets/img/icons/search-white.svg" alt="img"></a>
-</div>
+</div> -->
 </div>
 <div class="wordset">
-<ul>
+<!-- <ul>
 <li>
 <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/assets/img/icons/pdf.svg" alt="img"></a>
 </li>
@@ -43,7 +43,7 @@
 <li>
 <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/assets/img/icons/printer.svg" alt="img"></a>
 </li>
-</ul>
+</ul> -->
 </div>
 </div>
 
@@ -116,7 +116,7 @@
 <td><%= element.User_details.firstName %> <%= element.User_details.lastName %></td>
 
 <td><%= element.Shop_orders.Order_number %></td>
-<td>
+<!-- <td>
     <span class="badges 
         <% if (element.order_statuses.Status === "Cancelled") { %>
             bg-danger text-white
@@ -135,7 +135,47 @@
         <% } %>">
         <%= element.order_statuses.Status %>
     </span>
-</td>
+</td> -->
+<td><span class="badges m-0">
+        <% function determineOverallStatus(statusArray) { if (statusArray.every(status=> status === 'Cancelled')) {
+            return 'Cancelled';
+            } else if (statusArray.every(status => status ===
+            'Shipped')) {
+            return 'Shipped';
+            } else if (statusArray.every(status => status ===
+            'Delivered')) {
+            return 'Delivered';
+            } else if (statusArray.every(status => status ===
+            'Pending')) {
+            return 'Pending';
+            } else if (statusArray.every(status => status ===
+            'Returned')) {
+            return 'Returned';
+            } else if (statusArray.every(status => status ===
+            'Refunded')) {
+            return 'Refunded';
+            }else {
+            return 'Processing';
+            }
+            }
+            const overallStatus =
+            determineOverallStatus(element.Status);
+            %>
+            <p class="card-text 
+                                                            <% if (overallStatus === 'Cancelled' || overallStatus === 'Refunded') { %>
+                                                                bg-danger text-white
+                                                            <% } else if (overallStatus === 'Processing' || overallStatus === 'Shipped') { %>
+                                                                bg-success text-white
+                                                            <% } else if (overallStatus === 'Delivered') { %>
+                                                                bg-success text-white
+                                                            <% } else if (overallStatus === 'Pending') { %>
+                                                                text-danger p-1
+                                                            <% } else if (overallStatus === 'Returned') { %>
+                                                                text-muted p-1
+                                                            <% } %>">
+                <%= overallStatus %>
+            </p>
+    </span></td>
 
 <!-- <td><span class="badges bg-lightgreen"></span></td> -->
 <td >$ <%= Math.abs((element.Shop_orders.Order_total).toFixed(2)) %></td>

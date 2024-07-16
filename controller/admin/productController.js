@@ -860,6 +860,7 @@ const getSales = async (req, res) => {
     const OrderDetails = orders.sort(
         (a, b) => b.order_statuses.createdAt - a.order_statuses.createdAt
     )
+    console.log(OrderDetails)
     res.render("saleslist", { OrderDetails })
 }
 const getSaleDetails = async (req, res) => {

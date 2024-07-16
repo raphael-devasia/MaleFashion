@@ -64,7 +64,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <h5>Average Order Value</h5>
-                                                <h6 id="average-order-value">$<%= averageOrderValue %>
+                                                <h6 id="average-order-value">$<%= (averageOrderValue).toFixed(2) %>
                                                 </h6>
                                             </div>
                                         </div>
@@ -79,10 +79,10 @@
                                                 <span><img src="../assets/img/icons/closes.svg" alt="img"></span>
                                             </a>
                                         </div>
-                                        <div class="search-input">
+                                        <!-- <div class="search-input">
                                                 <a class="btn btn-searchset"><img
                                                         src="../assets/img/icons/search-white.svg" alt="img"></a>
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="wordset">
                                         <ul>
@@ -190,13 +190,11 @@
                                                         <% element.Product_name.forEach((product, index)=> { %>
                                                         <tr>
 
-                                                            <td>
-                                                                <script>
-                                                                    document.write(moment("<%= element.status.updatedAt %>").format('MMMM Do YYYY, h:mm:ss a'));
-                                                                </script>
+                                                            <td><%= (element.status.updatedAt).toLocaleDateString() %>
+                                                               
                                                             </td>
                                                             <td>
-                                                                <%= element._id %>
+                                                                <%= element.Shop_Orders.Order_number %>
                                                             </td>
                                                             <td>
                                                                 <%= element.User.firstName %>

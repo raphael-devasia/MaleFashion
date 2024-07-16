@@ -250,7 +250,7 @@ const searchData = async (req, res) => {
 }
 const getLogout = (req, res) => {
     const isAdmin = true
-    req.session.destroy()
+    req.session.admin= null
 
     res.redirect("/admin/login")
 }

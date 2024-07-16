@@ -1726,11 +1726,200 @@ const totalPrice = orderLines.reduce(
     (acc, current) => acc + current.totalPrice,
     0
 )
+//FOR THE CHART 
+ const orderLine = await Order_line.aggregate([
+     {
+         $lookup: {
+             from: "shop_orders", // The collection name for Order
+             localField: "Order_id",
+             foreignField: "_id",
+             as: "orderDetails",
+         },
+     },
+     {
+         $unwind: "$orderDetails",
+     },
+     {
+         $lookup: {
+             from: "order_statuses", // The collection name for Order_status
+             localField: "orderDetails.Order_status",
+             foreignField: "_id",
+             as: "orderStatusDetails",
+         },
+     },
+     {
+         $unwind: "$orderStatusDetails",
+     },
+     {
+         $addFields: {
+             combined: {
+                 $zip: {
+                     inputs: [
+                         "$Qty",
+                         "$Price",
+                         "$Offer_percentage",
+                         "$Coupon_percentage",
+                         "$Status",
+                     ],
+                 },
+             },
+         },
+     },
+     {
+         $unwind: "$combined",
+     },
+     {
+         $match: { "combined.4": "Delivered" },
+     },
+     {
+         $addFields: {
+             finalPrice: {
+                 $subtract: [
+                     {
+                         $subtract: [
+                             { $arrayElemAt: ["$combined", 1] },
+                             {
+                                 $divide: [
+                                     {
+                                         $multiply: [
+                                             {
+                                                 $arrayElemAt: ["$combined", 1],
+                                             },
+                                             {
+                                                 $arrayElemAt: ["$combined", 2],
+                                             },
+                                         ],
+                                     },
+                                     100,
+                                 ],
+                             },
+                         ],
+                     },
+                     {
+                         $divide: [
+                             {
+                                 $multiply: [
+                                     {
+                                         $subtract: [
+                                             {
+                                                 $arrayElemAt: ["$combined", 1],
+                                             },
+                                             {
+                                                 $divide: [
+                                                     {
+                                                         $multiply: [
+                                                             {
+                                                                 $arrayElemAt: [
+                                                                     "$combined",
+                                                                     1,
+                                                                 ],
+                                                             },
+                                                             {
+                                                                 $arrayElemAt: [
+                                                                     "$combined",
+                                                                     2,
+                                                                 ],
+                                                             },
+                                                         ],
+                                                     },
+                                                     100,
+                                                 ],
+                                             },
+                                         ],
+                                     },
+                                     { $arrayElemAt: ["$combined", 3] },
+                                 ],
+                             },
+                             100,
+                         ],
+                     },
+                 ],
+             },
+         },
+     },
+     {
+         $group: {
+             _id: {
+                 $dateToString: {
+                     format: "%Y-%m-%d",
+                     date: "$orderStatusDetails.createdAt",
+                 },
+             },
+             total_orders: { $sum: 1 },
+             total_sales: {
+                 $sum: {
+                     $multiply: [
+                         "$finalPrice",
+                         { $arrayElemAt: ["$combined", 0] },
+                     ],
+                 },
+             },
+         },
+     },
+     {
+         $sort: { _id: -1 }, // Sort by date in ascending order
+     },
+     {
+         $project: {
+             _id: 0,
+             date: "$_id",
+             total_orders: 1,
+             total_sales: 1,
+         },
+     },
+ ])
+
+ const query = "daily"
+ let dates = []
+ let totalOrders = []
+ let totalSales = []
+
+ // Helper function to add leading zeroes
+ const padZero = (num) => (num < 10 ? "0" + num : num)
+
+ // Helper function to get the date string in YYYY-MM-DD format
+ const formatDate = (date) =>
+     `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(
+         date.getDate()
+     )}`
+
+ if (query === "daily") {
+     // Get today's date
+     const today = new Date()
+     // Populate the dates array with the last 10 days (including today)
+     for (let i = 0; i < 10; i++) {
+         const date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000)
+         dates.unshift(formatDate(date)) // Add the date to the beginning of the array
+     }
+
+     // Filter the results to get the last 10 days
+     dates.forEach((date) => {
+         const found = orderLine.find((entry) => entry.date === date)
+         if (found) {
+             totalOrders.push(found.total_orders)
+             totalSales.push(found.total_sales)
+         } else {
+             totalOrders.push(0)
+             totalSales.push(0)
+         }
+     })
+ }
+
+
+
+
+const chartData = {dates, totalOrders, totalSales}
+console.log(chartData)
    
         return res.render("index", {
             bestProducts: populatedOrderLines,
             sortedCategoryStats,
-            totalQty,totalPrice
+            totalQty,
+            totalPrice,
+            dates,
+            totalOrders,
+            totalSales
+
         })
     }
    
@@ -1783,6 +1972,9 @@ function padZero(num) {
 }
 
 const getChartData = async (req, res) => {
+    console.log("entered");
+     const  query  = req.query.interval
+     console.log(query)
     try {
         const orderLines = await Order_line.aggregate([
             {
@@ -1937,7 +2129,7 @@ const getChartData = async (req, res) => {
             },
         ])
 
-        const query = req.query.query
+       
         let dates = []
         let totalOrders = []
         let totalSales = []
@@ -1958,8 +2150,8 @@ const getChartData = async (req, res) => {
             dates.forEach((date) => {
                 const found = orderLines.find((entry) => entry.date === date)
                 if (found) {
-                    totalOrders.push(found.total_orders)
-                    totalSales.push(found.total_sales)
+                   totalOrders.push(parseInt(found.total_orders))
+                   totalSales.push(parseFloat(found.total_sales.toFixed(2)))
                 } else {
                     totalOrders.push(0)
                     totalSales.push(0)
@@ -1992,33 +2184,37 @@ const getChartData = async (req, res) => {
                     startDate.getTime() + 6 * 24 * 60 * 60 * 1000
                 )
                 const found = orderLines.filter((entry) => {
+                   
                     const entryDate = new Date(entry.date)
                     return entryDate >= startDate && entryDate <= endDate
                 })
                 if (found.length > 0) {
                     totalOrders.push(
-                        found.reduce(
+                        parseInt(found.reduce(
                             (acc, current) => acc + current.total_orders,
                             0
-                        )
+                        ))
                     )
                     totalSales.push(
-                        found.reduce(
+                       parseFloat( found.reduce(
                             (acc, current) => acc + current.total_sales,
                             0
-                        )
+                        ).toFixed(2))
                     )
+                    
+                   
                 } else {
                     totalOrders.push(0)
                     totalSales.push(0)
-                }
+                }   
+              
             })
         } else if (query === "monthly") {
             // Get today's date
             const today = new Date()
             for (let i = 0; i < 12; i++) {
-                const month = today.getMonth() - i
-                const year = today.getFullYear()
+                let month = today.getMonth() - i
+                let year = today.getFullYear()
                 if (month < 0) {
                     month += 12
                     year -= 1
@@ -2056,7 +2252,7 @@ const getChartData = async (req, res) => {
         } else if (query === "yearly") {
             // Get today's date
             const today = new Date()
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 4; i++) {
                 const year = today.getFullYear() - i
                 dates.push(`${year}`)
             }
@@ -2090,7 +2286,7 @@ const getChartData = async (req, res) => {
         }
 
         // Return the filtered results
-        console.log(dates, totalOrders, totalSales)
+       
         res.json({ dates, totalOrders, totalSales })
     } catch (error) {
         console.error(error)

@@ -34,7 +34,7 @@
 </div>
 </div>
 </div>
-<div class="col-lg-3 col-sm-6 col-12">
+<!-- <div class="col-lg-3 col-sm-6 col-12">
 <div class="dash-widget dash2">
 <div class="dash-widgetimg">
 <span><img src="../assets/img/icons/dash3.svg" alt="img"></span>
@@ -44,8 +44,8 @@
 <h6>Sales</h6>
 </div>
 </div>
-</div>
-<div class="col-lg-3 col-sm-6 col-12">
+</div> -->
+<!-- <div class="col-lg-3 col-sm-6 col-12">
 <div class="dash-widget dash3">
 <div class="dash-widgetimg">
 <span><img src="../assets/img/icons/dash4.svg" alt="img"></span>
@@ -55,7 +55,7 @@
 <h6>Total Revenue</h6>
 </div>
 </div>
-</div>
+</div> -->
 <!-- <div class="col-lg-3 col-sm-6 col-12 d-flex">
 <div class="dash-count">
 <div class="dash-counts">
@@ -110,7 +110,7 @@
                 <h5 class="card-title">Sales Chart</h5>
                 <select id="timeInterval" class="form-select w-auto">
                     <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
+                    <!-- <option value="weekly">Weekly</option> -->
                     <option value="monthly">Monthly</option>
                     <option value="yearly">Yearly</option>
                 </select>
@@ -163,7 +163,7 @@
                                     <td>
                                         <%= element.totalQty %>
                                     </td>
-                                    <td>$ <%= element.totalPrice %>
+                                    <td>$ <%= (element.totalPrice).toFixed(2) %>
                                     </td>
                                 </tr>
                                 <% }) %>
@@ -191,7 +191,7 @@
 
 <th>Product Name</th>
 
-<th>Category Name</th>
+<!-- <th>Category Name</th> -->
 <th>Original Price</th>
 <th>Avg Sale Price</th>
 <th>Unit Sold</th>
@@ -211,13 +211,13 @@
                 <%= element._id %>
             </a>
         </td>
-       <td></td>
+     
         
     
-        <td><%= element.Product_item_id.Product_variation_id.Product_item_id.Original_price %></td>
-        <td><%= element.totalPrice/element.totalQty%></td>
+        <td><%= (element.Product_item_id.Product_variation_id.Product_item_id.Original_price).toFixed(2) %></td>
+        <td><%= (element.totalPrice/element.totalQty).toFixed(2) %></td>
         <td><%= element.totalQty %></td>
-        <td><%= element.totalPrice %></td>
+        <td><%= (element.totalPrice).toFixed(2) %></td>
     </tr>
     <% }) %>
 
@@ -244,9 +244,287 @@
 <script src="../assets/js/bootstrap.bundle.min.js"></script>
 
 <script src="../assets/plugins/apexchart/apexcharts.min.js"></script>
-<script src="../assets/plugins/apexchart/chart-data.js"></script>
+<!-- <script src="../assets/plugins/apexchart/chart-data.js"></script> -->
 
 <script src="../assets/js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Chart data passed from the server
+            const totalOrders = <%= JSON.stringify(totalOrders) %>;
+            const totalSales = <%= JSON.stringify(totalSales) %>;
+
+            // Debugging: Check if the JSON data is correctly received
+            console.log(totalSales);
+
+
+            function generateDateRanges() {
+                const today = new Date()
+                const days = []
+                const weeks = []
+                const months = []
+                const years = []
+
+                // Generate last 10 days
+                for (let i = 9; i >= 0; i--) {
+                    const date = new Date(today)
+                    date.setDate(today.getDate() - i)
+                    days.push(date.toLocaleDateString())
+                }
+
+                // Generate last 10 weeks
+                for (let i = 0; i < 10; i++) {
+                    const startDate = new Date(today.getTime() - i * 7 * 24 * 60 * 60 * 1000);
+                    const endDate = new Date(startDate.getTime() + 6 * 24 * 60 * 60 * 1000);
+                    weeks.push(`Week ${10 - i}: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`);
+                }
+                weeks.reverse();
+
+
+                // Generate last 10 months
+                for (let i = 11; i >= 0; i--) {
+                    const date = new Date(today)
+                    date.setMonth(today.getMonth() - i)
+                    months.push(date.toLocaleString("default", { month: "short" }))
+                }
+
+                // Generate last 4 years
+                for (let i = 3; i >= 0; i--) {
+                    const date = new Date(today)
+                    date.setFullYear(today.getFullYear() - i)
+                    years.push(date.getFullYear().toString())
+                }
+
+                return { days, weeks, months, years }
+            }
+
+            if ($("#s-line").length > 0) {
+                const dateRanges = generateDateRanges()
+
+
+
+                var sline = {
+                    chart: {
+                        height: 350,
+                        type: "line",
+                        zoom: { enabled: false },
+                        toolbar: { show: false },
+                    },
+                    dataLabels: { enabled: false },
+                    stroke: { curve: "straight" },
+                    series: [
+                        {
+                            name: "Total Orders",
+                            data: totalOrders,
+                        },
+                        {
+                            name: "Total Sales Amount",
+                            data: totalSales,
+                        },
+                    ],
+                    title: { text: "Revenue", align: "left" },
+                    grid: { row: { colors: ["#f1f2f3", "transparent"], opacity: 0.5 } },
+                    xaxis: {
+                        categories: dateRanges.days,
+                    },
+                }
+
+                var chart = new ApexCharts(document.querySelector("#s-line"), sline)
+                chart.render()
+
+                const data = {
+                    // daily: {
+                    //     categories: dateRanges.days,
+                    //     series: [
+                    //         {
+                    //             name: "Total Orders",
+                    //             data: [10, 20, 15, 30, 25, 40, 35, 50, 45, 60],
+                    //         },
+                    //         {
+                    //             name: "Total Sales Amount",
+                    //             data: [
+                    //                 80, 100, 50, 75, 40, 200, 400, 100, 50,
+                    //                 10,
+                    //             ],
+                    //         },
+                    //     ],
+                    // },
+                    // weekly: {
+                    //     categories: dateRanges.weeks,
+                    //     series: [
+                    //         {
+                    //             name: "Total Orders",
+                    //             data: [70, 60, 80, 70, 90, 85, 95, 100, 110, 105],
+                    //         },
+                    //         {
+                    //             name: "Total Sales Amount",
+                    //             data: [
+                    //                 7000, 6000, 8000, 7000, 9000, 8500, 9500, 10000,
+                    //                 11000, 10500,
+                    //             ],
+                    //         },
+                    //     ],
+                    // },
+                    // monthly: {
+                    //     categories: dateRanges.months,
+                    //     series: [
+                    //         {
+                    //             name: "Total Orders",
+                    //             data: [200, 250, 300, 350, 400, 450, 500, 550, 600, 650],
+                    //         },
+                    //         {
+                    //             name: "Total Sales Amount",
+                    //             data: [
+                    //                 20000, 25000, 30000, 35000, 40000, 45000, 50000,
+                    //                 55000, 60000, 65000,
+                    //             ],
+                    //         },
+                    //     ],
+                    // },
+                    // yearly: {
+                    //     categories: dateRanges.years,
+                    //     series: [
+                    //         {
+                    //             name: "Total Orders",
+                    //             data: [
+                    //                 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000,
+                    //                 2100,
+                    //             ],
+                    //         },
+                    //         {
+                    //             name: "Total Sales Amount",
+                    //             data: [
+                    //                 120000, 130000, 140000, 150000, 160000, 170000,
+                    //                 180000, 190000, 200000, 210000,
+                    //             ],
+                    //         },
+                    //     ],
+                    // },
+                }
+                document
+                    .getElementById("timeInterval")
+                    .addEventListener("change", function () {
+                        const selectedInterval = this.value;
+
+                        if (selectedInterval === "weekly") {
+                            // AJAX request to get the weekly data
+                            fetch('/admin/chart-data?interval=weekly')
+                                .then(response => response.json())
+                                .then(data => {
+                                    // Assuming data has the structure { totalOrders: [], totalSales: [] }
+                                    chart.updateOptions({
+                                        xaxis: {
+                                            categories: dateRanges.weeks,
+                                        },
+                                        series: [
+                                            {
+                                                name: "Total Orders",
+                                                data: data.totalOrders,
+                                            },
+                                            {
+                                                name: "Total Sales Amount",
+                                                data: data.totalSales,
+                                            },
+                                        ],
+                                    });
+                                })
+                                .catch(error => console.error('Error fetching data:', error));
+                        } else if (selectedInterval === "monthly") {
+                            // AJAX request to get the weekly data
+                            fetch('/admin/chart-data?interval=monthly')
+                                .then(response => response.json())
+                                .then(data => {
+                                    // Format the data to 2 decimal places
+                                    const formattedTotalOrders = data.totalOrders.map(value => value.toFixed(2));
+                                    const formattedTotalSales = data.totalSales.map(value => value.toFixed(2));
+
+                                    // Assuming data has the structure { totalOrders: [], totalSales: [] }
+                                    chart.updateOptions({
+                                        xaxis: {
+                                            categories: dateRanges.months,
+                                        },
+                                        series: [
+                                            {
+                                                name: "Total Orders",
+                                                data: (formattedTotalOrders).reverse(),
+                                            },
+                                            {
+                                                name: "Total Sales Amount",
+                                                data: (formattedTotalSales).reverse(),
+                                            },
+                                        ],
+                                    });
+                                })
+                                .catch(error => console.error('Error fetching data:', error));
+                        } else if (selectedInterval === "yearly") {
+                            // AJAX request to get the weekly data
+                            fetch('/admin/chart-data?interval=yearly')
+                                .then(response => response.json())
+                                .then(data => {
+                                    // Format the data to 2 decimal places
+                                    const formattedTotalOrders = data.totalOrders.map(value => value.toFixed(2));
+                                    const formattedTotalSales = data.totalSales.map(value => value.toFixed(2));
+
+                                    
+
+                                    // Assuming data has the structure { totalOrders: [], totalSales: [] }
+                                    chart.updateOptions({
+                                        xaxis: {
+                                            categories: dateRanges.years,
+                                        },
+                                        series: [
+                                            {
+                                                name: "Total Orders",
+                                                data: (formattedTotalOrders).reverse(),
+                                            },
+                                            {
+                                                name: "Total Sales Amount",
+                                                data: (formattedTotalSales).reverse(),
+                                            },
+                                        ],
+                                    });
+                                })
+                                .catch(error => console.error('Error fetching data:', error));
+                        } else if (selectedInterval === "daily") {
+                            // AJAX request to get the weekly data
+                            fetch('/admin/chart-data?interval=daily')
+                                .then(response => response.json())
+                                .then(data => {
+                                     const formattedTotalOrders = data.totalOrders.map(value => value.toFixed(1));
+                                    const formattedTotalSales = data.totalSales.map(value => value.toFixed(2));
+
+                                    
+                                    // Assuming data has the structure { totalOrders: [], totalSales: [] }
+                                    chart.updateOptions({
+                                        xaxis: {
+                                            categories: dateRanges.days,
+                                        },
+                                        series: [
+                                            {
+                                                name: "Total Orders",
+                                                data: (formattedTotalOrders).reverse(),
+                                            },
+                                            {
+                                                name: "Total Sales Amount",
+                                                data: (formattedTotalSales).reverse(),
+                                            },
+                                        ],
+                                    });
+                                })
+                                .catch(error => console.error('Error fetching data:', error));
+                        } else {
+                            // Update chart options for daily, monthly, and yearly
+                            chart.updateOptions({
+                                xaxis: {
+                                    categories: data[selectedInterval].categories,
+                                },
+                                series: data[selectedInterval].series,
+                            });
+                        }
+                    });
+            }
+        })
+
+    </script>
 
 
 </body>

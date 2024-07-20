@@ -10,7 +10,7 @@ const Product_imageSchema = new Schema({
     },
     Image_filename: [{ type: String, required: true }],
     Is_active: { type: Boolean, required: true, default: true },
-})
+},{timestamps:true})
 
 const Product_image = mongoose.model("Product_image", Product_imageSchema)
 

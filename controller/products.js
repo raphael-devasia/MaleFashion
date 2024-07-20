@@ -70,6 +70,20 @@ const getHome = async (req, res) => {
 // FINDING THE BEST PRODUCTS//
 
  const orderLines = await getOrderLines()
+  const allProducts = await fetchAllProducts()
+
+  
+  const productsWithCreatedAt = allProducts.filter(
+      (product) => product.createdAt
+  )
+
+  // Sort products by 'createdAt' field in descending order
+  const sortedProducts = productsWithCreatedAt.sort(
+      (a, b) => b.createdAt - a.createdAt
+  )
+
+  // Limit the results to 10 products
+  const newArrivals = sortedProducts.slice(0, 10)
 
  const populatedOrderLines = await ProductImage.populate(orderLines, {
      path: "Product_item_id",
@@ -95,7 +109,7 @@ const getHome = async (req, res) => {
 
 
 
-console.log("populatedOrderLines", populatedOrderLines[0])
+
 
 
         let category = await Product_category.find()
@@ -144,10 +158,11 @@ console.log("populatedOrderLines", populatedOrderLines[0])
                 category,
                 products: productVariation,
                 name: null, // Assuming name is not available when there's no session user
-                cartLength:0,
-                totalCartAmount:0,
+                cartLength: 0,
+                totalCartAmount: 0,
                 wishListlength,
-                bestProducts:populatedOrderLines
+                bestProducts: populatedOrderLines,
+                newArrivals,
             })
         }
 
@@ -173,6 +188,7 @@ console.log("populatedOrderLines", populatedOrderLines[0])
             totalCartAmount,
             wishListlength,
             bestProducts: populatedOrderLines,
+            newArrivals,
         })
     } catch (error) {
         console.log(error)

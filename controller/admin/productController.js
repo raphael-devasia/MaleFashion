@@ -1002,6 +1002,7 @@ const postAddCoupon = async (req,res)=>{
         start_date,
         end_date,
         coupon_description,
+        coupon_min,coupon_max
     } = req.body
     // Validate the request body
     const errors = validationResult(req)
@@ -1038,6 +1039,7 @@ const postAddCoupon = async (req,res)=>{
             start_date,
             end_date,
             coupon_description,
+            coupon_min,coupon_max
         })
 
         await newOffer.save()

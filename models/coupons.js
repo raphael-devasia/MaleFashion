@@ -37,7 +37,12 @@ const Coupon_Schema = new mongoose.Schema({
         type: String,
         required: true,
     },
-   
+    coupon_min: {
+        type: Number,
+    },
+    coupon_max: {
+        type: Number,
+    },
 })
 
 const Coupon = mongoose.model("Coupon", Coupon_Schema)

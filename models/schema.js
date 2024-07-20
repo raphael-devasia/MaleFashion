@@ -14,7 +14,7 @@ const loginSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
-    coupon: { type: String },
+    coupon: [{ type: String }],
     address_id: [
         {
             type: Schema.Types.ObjectId,

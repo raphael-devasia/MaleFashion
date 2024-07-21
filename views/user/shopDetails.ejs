@@ -1,5 +1,44 @@
 <%- include('navigationbar') %>
     <!-- Header Section End -->
+     <style>
+       /* Basic lightbox styles */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8); /* Add a background to better see the image */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.lightboxOverlay {
+    opacity: 0;
+}
+.lightbox img {
+    width: 200%;  /* Scale the image to be twice as wide */
+    height: 200%; /* Scale the image to be twice as tall */
+    scale: 3;
+}
+
+.lightbox .lightbox-caption {
+    color: #fff;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.lightbox .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+     </style>
 
     <!-- Shop Details Section Begin -->
  <section class="shop-details">
@@ -14,13 +53,15 @@
                     </div>
                 </div>
             </div>
+       
+
             <div class="row">
                 <div class="col-lg-3 col-md-3">
                     <ul class="nav nav-tabs" role="tablist">
                         <% filteredProduct[0].Image_filename.forEach((row, index) => { %>
                             <li class="nav-item">
-                                <a class="nav-link <%= index === 0 ? 'active' : '' %>" data-toggle="tab" href="#tabs-<%= index %>" role="tab">
-                                    <div class="product__thumb__pic set-bg" data-setbg="<%= row %>">
+                                <a class="nav-link <%= index === 0 ? 'active' : '' %>" data-toggle="tab" href="<%= row %>" role="tab" data-lightbox="roadtrip">
+                                    <div class="product__thumb__pic set-bg" data-setbg="<%= row %>" >
                                     </div>
                                 </a>
                             </li>
@@ -30,10 +71,14 @@
                 <div class="col-lg-6 col-md-9">
                     <div class="tab-content">
                         <% filteredProduct[0].Image_filename.forEach((row, index) => { %>
+                            
                             <div class="tab-pane <%= index === 0 ? 'active' : '' %>" id="tabs-<%= index %>" role="tabpanel">
-                                <div class="product__details__pic__item">
-                                    <img src="<%= row %>" alt="">
-                                </div>
+                                <a href="<%= row %>" data-lightbox="image-<%= index %>" >
+<div class="product__details__pic__item">
+    <img src="<%= row %>" alt="">
+</div>
+                                </a>
+                               
                             </div>
                         <% }) %>
                     </div>
@@ -419,7 +464,15 @@ function sendSizeRequest() {
 
 <!--  -->
 
+<script>
+    lightbox.option({
+        'resizeDuration': 500,
+        'wrapAround': true,
+        'fadeDuration': 100,
+        'alwaysShowNavOnTouchDevices':true
 
+    })
+</script>
 </body>
 
 </html>

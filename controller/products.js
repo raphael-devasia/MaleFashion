@@ -785,7 +785,7 @@ const getCart = async (req, res) => {
                 ///////Testin
 
                 const today = new Date()
-console.log(userCart)
+
                 cartProduct = userCart.map((product) => {
                     let discountPercentage = 0
                     let isProductActive = product.Product_variation.Is_active
@@ -959,7 +959,9 @@ const getCheckout = async (req, res) => {
     let totalCartAmount = 0
     let discountAmount = 0
     let couponDiscountPercentage=0
-     let couponCode = ""
+     let couponCode =[]
+    let bestCouponCode =''
+    let coupon 
     let newTotalAmount = 0
     const userSession = req.session.user
     const Payment_types = await Payment_type.find()
@@ -1053,10 +1055,58 @@ const getCheckout = async (req, res) => {
                 )
 
                 couponCode = user.coupon
-                if (couponCode) {
-                    const coupon = await Coupon.findOne({
-                        coupon_code: couponCode,
+                if (couponCode && couponCode.length>0) {
+                    
+
+                    // Fetch all coupons the user has applied
+                    let appliedCoupons = await Coupon.find({
+                        coupon_code: { $in: couponCode },
                     })
+                    // Filter out coupons that do not meet the criteria
+                    const validCoupons = appliedCoupons.filter(
+                        (coupon) =>
+                            coupon.coupon_min <=
+                           ( totalCartAmount - totalOfferDiscount)
+                    )
+                    
+
+                    // Extract the valid coupon codes
+                    const validCouponCodes = validCoupons.map(
+                        (coupon) => coupon.coupon_code
+                    )
+
+                    // Update the user document with the valid coupons
+                  let couponUpdate = await collection.updateOne(
+                        { email: userSession },
+                        { $set: { coupon: validCouponCodes }},{new:true} 
+                    )
+                    couponUpdate = await collection.findOne({ email: userSession })
+                  
+                   couponCode = couponUpdate.coupon
+
+                   if (couponCode && couponCode.length>0){
+
+ appliedCoupons = await Coupon.find({
+     coupon_code: { $in: couponCode },
+ })
+
+
+ // Find the coupon with the highest offer percentage
+                     coupon = appliedCoupons.reduce(
+                        (maxCoupon, currentCoupon) => {
+                            return currentCoupon.offer_percentage >
+                                maxCoupon.offer_percentage
+                                ? currentCoupon
+                                : maxCoupon
+                        }
+                    )
+                      bestCouponCode = coupon.coupon_code
+                   }
+                       
+                      
+                    
+                  
+
                     if (coupon) {
                         const today = new Date()
                         const isValidCoupon =
@@ -1067,8 +1117,14 @@ const getCheckout = async (req, res) => {
 
                             discountAmount =
                                 (coupon.offer_percentage / 100) *
-                                totalCartAmount
-                            newTotalAmount = newTotalAmount - discountAmount
+                                (totalCartAmount - totalOfferDiscount)
+                                if (discountAmount > coupon.coupon_max){
+                                  discountAmount = coupon.coupon_max
+                                  couponDiscountPercentage =
+                                      (coupon.coupon_max / newTotalAmount)*100
+                                }
+                                    newTotalAmount =
+                                        newTotalAmount - discountAmount
                         }
                     }
                 }
@@ -1085,7 +1141,11 @@ const getCheckout = async (req, res) => {
                   const { cartLength } = await getCartDetails(
                       req.session.user
                   )
-                  console.log(user.firstName);
+                  const updatedUser = await collection.findOne({
+                      email:userSession,
+                  })
+                  const coupons = updatedUser.coupon
+                  
                 res.render("user/checkout", {
                     user,
                     totalOfferDiscount,
@@ -1096,7 +1156,7 @@ const getCheckout = async (req, res) => {
                     address,
                     Payment_types,
                     couponDiscountPercentage:
-                        couponDiscountPercentage.toFixed(2),
+                        couponDiscountPercentage,
                     discountAmount: discountAmount.toFixed(2),
                     newTotalAmount: newTotalAmount.toFixed(2),
                     session: false,
@@ -1105,6 +1165,8 @@ const getCheckout = async (req, res) => {
                     userWallet,
                     cartLength,
                     name: user.firstName,
+                    coupons,
+                    bestCouponCode,
                 })
             } else {
                 // User has no active cart items
@@ -1123,6 +1185,8 @@ const getCheckout = async (req, res) => {
                     couponDiscountPercentage:
                         couponDiscountPercentage.toFixed(2),
                     userWallet,
+                    coupons,
+                    bestCouponCode,
                 })
             }
         } else {
@@ -1153,6 +1217,7 @@ const addCheckout = async (req, res) => {
             total,
             subtotal,
             couponDiscountPercentage,
+            coupon_code,
 
             billingFirstName,
             billingLastName,
@@ -1173,7 +1238,8 @@ const addCheckout = async (req, res) => {
             shippingPostalCode,
         } = req.body
 
-        console.log("Step 1 Payment Method", payment_method)
+        
+        console.log("couponDiscountPercentage", couponDiscountPercentage)
         const userSession = req.session.user
 
         if (!userSession) {
@@ -1188,7 +1254,7 @@ const addCheckout = async (req, res) => {
         const paymentDetails = await Payment_type.findOne({
             Value: payment_method,
         })
-        console.log("Step 2 Payment Method", paymentDetails)
+        
 
         const totalCartAmount = await getTotalAmount(userdetails._id)
 
@@ -1200,8 +1266,7 @@ const addCheckout = async (req, res) => {
             (e) => e.Is_Billing_default
         )
 
-        console.log("SHIPPING:", shippingAddress)
-        console.log("BILLING:", billingAddress)
+       
 
         const usercartTemp = await cartProducts()
         const cartProduct = usercartTemp.filter(
@@ -1211,7 +1276,8 @@ const addCheckout = async (req, res) => {
             (e) => e.Product_variation.Is_active
         )
 
-        const couponCode = userdetails.coupon
+        const couponCode = coupon_code
+        
 
         // Check for existing addresses
         const existingBillingAddress = await Address.findOne({
@@ -1368,7 +1434,7 @@ const addCheckout = async (req, res) => {
                         : 0,
                     Qty: e.Qty,
                     Status: "Processing",
-                    Coupon_percentage: couponDiscountPercentage,
+                    Coupon_percentage: couponDiscountPercentage*100,
                 },
             }
 
@@ -1378,6 +1444,12 @@ const addCheckout = async (req, res) => {
 
             const updatedOrderLine = await Order_line.findById(orderLine._id)
             console.log(updatedOrderLine)
+// delete the coupon from the user collection
+await collection.findOneAndUpdate(
+    { email: userSession },
+    { $unset: { coupon: "" } },
+    { returnOriginal: false }
+)
 
             // Reduce the item from the stock
             const qtyToReduceNum = Number(e.Qty)
@@ -1396,11 +1468,9 @@ const addCheckout = async (req, res) => {
                     $inc: { Qty_in_stock: -qtyToReduceNum },
                 })
 
-                console.log("Product quantity reduced successfully.")
-                console.log("USER CART: ", e)
+              
                 const cartId = e.Cart_id
-                console.log("CART ID: ", cartId)
-                console.log("CART ITEM ID", e._id)
+               
                 await Shopping_cart_item.findByIdAndDelete(e._id)
                 await Shopping_cart.findByIdAndDelete(cartId)
             } else {
@@ -1867,11 +1937,16 @@ const deleteAllWishlist = async (req, res) => {
 
 
 const verifyCoupon = async (req,res)=>{
-    const { couponCode, userId } = req.body
+    const { couponCode, userId,storeDiscount, subTotal } = req.body
+    const storeTotal = subTotal-storeDiscount
+    console.log("storeTotal:",storeTotal)
     try {
         const coupon = await Coupon.findOne({ coupon_code: couponCode })
         if (!coupon) {
             return res.json({ valid: false, message: "Invalid coupon code" })
+        }
+        if(coupon.coupon_min>=storeTotal){
+             return res.json({ valid: false, message: `Cart should have a minimum of ${coupon.coupon_min}` })
         }
 
         const currentDate = new Date()
@@ -1883,45 +1958,72 @@ const verifyCoupon = async (req,res)=>{
         }
 
         const cart = await Shopping_cart.find({ User_id: userId })
-        if (!cart.length>0) {
+        if (!cart.length > 0) {
             return res
                 .status(400)
                 .json({ valid: false, message: "Invalid cart" })
         }
         const finduser = await collection.findById(userId)
-       const totalCartAmount = await getTotalAmount(finduser._id)
+        const existingCoupons = finduser.coupon || []
 
-        const discountAmount = (coupon.offer_percentage / 100) * totalCartAmount
-        const newTotalAmount = totalCartAmount - discountAmount
-        const couponPercenetge = coupon.offer_percentage/100
+        // Check if the coupon code already exists in the user's array
+        if (existingCoupons.includes(couponCode)) {
+            return res.json({ valid: false, message: "Coupon already applied" })
+        }
 
-        // Update the user's coupon field
+
+        // Add the new coupon to the user's list
         const user = await collection.findByIdAndUpdate(
             userId,
-            {
-                $set: { coupon: couponCode },
-            },
+            { $addToSet: { coupon: couponCode } },
             { new: true }
         )
-        
 
+        
+         // Fetch all coupons the user has applied
+        const appliedCoupons = await Coupon.find({ coupon_code: { $in: user.coupon } });
+
+        // Find the coupon with the highest offer percentage
+        const bestCoupon = appliedCoupons.reduce((maxCoupon, currentCoupon) => {
+            return (currentCoupon.offer_percentage > maxCoupon.offer_percentage) ? currentCoupon : maxCoupon;
+        }, coupon);
+
+        // Calculate the discount amount using the best coupon
+        // const totalCartAmount = await getTotalAmount(finduser._id);
+        let discountAmount = (bestCoupon.offer_percentage / 100) * storeTotal;
+       let couponPercenetge = bestCoupon.offer_percentage / 100
+
+if (discountAmount > bestCoupon.coupon_max) {
+    discountAmount = bestCoupon.coupon_max
+    couponPercenetge = discountAmount / storeTotal
+}
+ let newTotalAmount = storeTotal - discountAmount
+ 
+ const bestCouponCode = bestCoupon.coupon_code
+
+console.log("totalCartAmount:", newTotalAmount)
         res.json({
             valid: true,
             discountAmount,
             newTotalAmount,
-            user,
             couponPercenetge,
+            coupons: user.coupon,
+            bestCouponCode
         })
-       
     } catch (error) {
         console.error(error)
         res.status(500).json({ valid: false, message: "Server error" })
     }
 }
+
 const deleteCoupon = async (req, res) => {
     try {
         const user = req.session.user
+        const couponCode = req.query.couponCode
+       const  {subTotal ,storeDiscount } = req.query
+       let newTotalAmount = subTotal-storeDiscount
 
+console.log("newTotalAmount", newTotalAmount)
         // Fetch the user data based on the email from the session
         const userData = await collection.findOne({ email: user })
 
@@ -1929,35 +2031,71 @@ const deleteCoupon = async (req, res) => {
             return res.status(404).json({ message: "User not found" })
         }
 
-        // Clear the coupon code for the user
-        await collection.findOneAndUpdate(
-            { email: user },
-            { $set: { coupon: "" } },
-            { new: true }
-        )
+        // Remove the specific coupon from the user's coupon array
+        const updatedUser = await collection
+            .findOneAndUpdate(
+                { email: user },
+                { $pull: { coupon: couponCode } },
+                { new: true }
+            )
+            .populate("coupon") // Populate to get coupon details
 
         // Get the total amount of the cart
         const totalCartAmount = await getTotalAmount(userData._id)
 
-        // Calculate the new total amount after removing the coupon discount
-        // If the coupon exists, get the coupon percentage
-        const coupon = await Coupon.findOne({ coupon_code: userData.coupon })
+        // Find the best remaining coupon (highest offer_percentage)
+        let bestCoupon = null
+       
+         const appliedCoupons = await Coupon.find({
+             coupon_code: { $in: updatedUser.coupon },
+         })
 
-        let couponPercentage = 0
-        if (coupon) {
-            couponPercentage = coupon.offer_percentage / 100
+          console.log("bestCoupon:", appliedCoupons)
+
+        if (updatedUser.coupon && updatedUser.coupon.length > 0) {
+            bestCoupon = appliedCoupons.reduce(
+                (max, c) =>
+                    c.offer_percentage > max.offer_percentage ? c : max,
+                { offer_percentage: 0 }
+            )
         }
 
-        // Recalculate the total amount without the coupon
-        const discountAmount = totalCartAmount * couponPercentage
-        const newTotalAmount = (totalCartAmount - discountAmount).toFixed(2)
+        // Calculate the new total amount with the best coupon (if any)
+        
+        let couponPercentage = 0
+        let discountAmount =0
+        let bestCouponCode =''
+        
+        if (bestCoupon) {
 
+            
+
+             discountAmount =
+                 (bestCoupon.offer_percentage / 100) * newTotalAmount
+
+                 console.log("line2071discountAmount: ",discountAmount);
+
+                 couponPercentage = bestCoupon.offer_percentage / 100
+if(discountAmount>bestCoupon.coupon_max){
+    couponPercentage = (bestCoupon.coupon_max/newTotalAmount)
+}
+
+
+            newTotalAmount = (totalCartAmount * (1 - couponPercentage)).toFixed(
+                2
+            )
+            
+            bestCouponCode = bestCoupon.coupon_code
+        }
+ 
         // Send response back to the client
         res.status(200).json({
             message: "Coupon deleted",
             totalCartAmount,
             newTotalAmount,
-            couponPercentage: couponPercentage * 100, // Return percentage as a whole number
+            discountAmount,
+             couponPercentage , // Return percentage as a whole number
+             bestCouponCode
         })
     } catch (error) {
         console.error("Error deleting coupon:", error)

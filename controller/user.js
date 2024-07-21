@@ -1437,15 +1437,18 @@ const cancelItem = async (req, res) => {
                     order.Price[index] *
                    (order.Offer_percentage[index] /
                 100))
+            // const couponDiscount =
+            //     (order.Qty[index] *
+            //         order.Price[index] *
+            //         (order.Coupon_percentage[index] /
+            //     100))
             const couponDiscount =
-                (order.Qty[index] *
-                    order.Price[index] *
-                    (order.Coupon_percentage[index] /
-                100))
+                ((order.Qty[index] * order.Price[index] )- storeDiscount) *
+                (order.Coupon_percentage[index] / 100)
             const productActualCost = order.Qty[index] * order.Price[index]
             const productCost =
                 productActualCost - couponDiscount - storeDiscount
-
+console.log("couponDiscount", couponDiscount)
             // Update the document to set the quantity to zero
             const updateResult = await Order_line.updateOne(
                 { _id: orderId },

@@ -1395,7 +1395,7 @@ const getSalesReport = async (req, res) => {
                 }
             })
             .filter((order) => order.Status.length > 0) 
-        console.log(productDetails)
+        console.log("line 1398",productDetails)
 
         let totalRevenue = 0
         let totalDiscount = 0
@@ -1410,7 +1410,11 @@ const getSalesReport = async (req, res) => {
         })
 
         const averageOrderValue = totalOrders ? totalRevenue / totalOrders : 0
-        
+        console.log("totalRevenue", totalRevenue)
+        console.log("totalDiscount", totalDiscount)
+        console.log("couponDiscount", couponDiscount)
+        console.log("averageOrderValue", averageOrderValue)
+
         res.render("salesreport", {
             productDetails,
             totalRevenue,

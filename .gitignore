@@ -1,3 +1,4 @@
+dump/
 .env
 # middlewares/auth.js
 node_modules/

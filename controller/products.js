@@ -1434,7 +1434,7 @@ const addCheckout = async (req, res) => {
                         : 0,
                     Qty: e.Qty,
                     Status: "Processing",
-                    Coupon_percentage: couponDiscountPercentage*100,
+                    Coupon_percentage: couponDiscountPercentage,
                 },
             }
 
@@ -1945,7 +1945,8 @@ const verifyCoupon = async (req,res)=>{
         if (!coupon) {
             return res.json({ valid: false, message: "Invalid coupon code" })
         }
-        if(coupon.coupon_min>=storeTotal){
+        console.log("line 1948",storeTotal);
+        if(coupon.coupon_min > storeTotal){
              return res.json({ valid: false, message: `Cart should have a minimum of ${coupon.coupon_min}` })
         }
 
@@ -1991,17 +1992,17 @@ const verifyCoupon = async (req,res)=>{
         // Calculate the discount amount using the best coupon
         // const totalCartAmount = await getTotalAmount(finduser._id);
         let discountAmount = (bestCoupon.offer_percentage / 100) * storeTotal;
-       let couponPercenetge = bestCoupon.offer_percentage / 100
+       let couponPercenetge = bestCoupon.offer_percentage 
 
 if (discountAmount > bestCoupon.coupon_max) {
     discountAmount = bestCoupon.coupon_max
-    couponPercenetge = discountAmount / storeTotal
+    couponPercenetge = (discountAmount / storeTotal)*100
 }
  let newTotalAmount = storeTotal - discountAmount
  
  const bestCouponCode = bestCoupon.coupon_code
 
-console.log("totalCartAmount:", newTotalAmount)
+console.log("totalCartAmount:", couponPercenetge)
         res.json({
             valid: true,
             discountAmount,
@@ -2075,9 +2076,9 @@ console.log("newTotalAmount", newTotalAmount)
 
                  console.log("line2071discountAmount: ",discountAmount);
 
-                 couponPercentage = bestCoupon.offer_percentage / 100
+                 couponPercentage = bestCoupon.offer_percentage 
 if(discountAmount>bestCoupon.coupon_max){
-    couponPercentage = (bestCoupon.coupon_max/newTotalAmount)
+    couponPercentage = (bestCoupon.coupon_max/newTotalAmount)*100
 }
 
 

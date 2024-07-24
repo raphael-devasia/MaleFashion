@@ -1442,6 +1442,7 @@ const cancelItem = async (req, res) => {
             //         order.Price[index] *
             //         (order.Coupon_percentage[index] /
             //     100))
+            console.log("line1445 storeDiscount", storeDiscount)
             const couponDiscount =
                 ((order.Qty[index] * order.Price[index] )- storeDiscount) *
                 (order.Coupon_percentage[index] / 100)

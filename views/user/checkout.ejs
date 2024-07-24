@@ -875,10 +875,11 @@
                                 data: { couponCode, userId, storeDiscount, subTotal },
                                 success: function (response) {
                                     if (response.valid) {
+                                        console.log("response.couponPercentage is :", response.couponPercenetge);
                                         appliedCoupons.push(response); // 6. Add the valid coupon to the appliedCoupons array
-                                        $('#coupon-discount').text(`$ ${((subTotal - storeDiscount) * response.couponPercenetge).toFixed(2)}`);
-                                        $('#total-amount').text(`$ ${(subTotal - storeDiscount - ((subTotal - storeDiscount) * response.couponPercenetge)).toFixed(2)}`)
-                                         $('input[name="total"]').val((subTotal - storeDiscount - ((subTotal - storeDiscount) * response.couponPercenetge)).toFixed(2));
+                                        $('#coupon-discount').text(`$ ${((subTotal - storeDiscount) * (response.couponPercenetge)/100).toFixed(2)}`);
+                                        $('#total-amount').text(`$ ${(subTotal - storeDiscount - ((subTotal - storeDiscount) * (response.couponPercenetge)/100)).toFixed(2)}`)
+                                         $('input[name="total"]').val((subTotal - storeDiscount - ((subTotal - storeDiscount) * (response.couponPercenetge)/100)).toFixed(2));
 
                                       // 7. Create a coupon element with a close button
                                         const couponElement = $('<div>').addClass('coupon-item');
@@ -890,7 +891,7 @@
                                         // Update the hidden fields for coupon code
                                         $('input[name="coupon_code"]').val(response.bestCouponCode);
                                         $('input[name="couponDiscount"]').val(((subTotal - storeDiscount) * response.couponPercenetge).toFixed(2));
-                                        $('input[name="couponDiscountPercentage"]').val(response.couponPercentage);
+                                         $('input[name="couponDiscountPercentage"]').val(response.couponPercenetge);
                                         $('#applied-coupons').find('li:hidden').each(function () {
                                             if ($(this).find('input[name="coupon_code"]').val() === response.bestCouponCode) {
                                                 $(this).find('span').text(response.bestCouponCode);

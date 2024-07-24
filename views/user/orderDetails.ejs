@@ -456,7 +456,7 @@
                                   <td colspan="2">Discount (Code:<%=
                                                                             orderDetails.Order_id.Coupon_code%>)</td>
                                   <td class="text-danger text-end">-$<%=
-                                                                            (orderDetails.Order_id.Coupon_discount).toFixed(2)
+                                                                            (orderDetails.Order_id.Coupon_discount/100).toFixed(2)
                                                                             %>
                                   </td>
                                 </tr>

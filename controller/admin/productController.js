@@ -1946,9 +1946,10 @@ const deleteCoupon = async(req,res)=>{
      if (users.length > 0) {
          await userCollection.updateMany(
              { coupon: findCoupon.coupon_code },
-             { $set: { coupon: "" } }
+             { $pull: { coupon: findCoupon.coupon_code } }
          )
      }
+     
 
      res.status(200).json({ message: "Coupon deleted successfully" })
  } catch (error) {

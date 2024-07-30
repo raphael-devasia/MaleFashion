@@ -1,7 +1,8 @@
 const passport = require("passport")
 const GoogleStrategy = require("passport-google-oauth20").Strategy
 const dotenv = require("dotenv")
-const User = require("../models/googleUser")
+const User = require("../models/schema")
+const Wallet = require("../models/wallet")
 
 dotenv.config()
 
@@ -15,18 +16,26 @@ passport.use(
         async (accessToken, refreshToken, profile, done) => {
             console.log(profile)
             try {
-                let user = await User.findOne({ _id: profile.id })
+                let user = await User.findOne({
+                    email: profile.emails[0].value,
+                })
 
                 if (!user) {
                     user = new User({
-                        _id: profile.id,
+                        
                         firstName: profile.name.givenName,
                         lastName: profile.name.familyName,
                         email: profile.emails[0].value,
                     })
-                    await user.save()
+                   const registerData = await user.save()
+                   console.log("User created with id: ", registerData._id)
+                    await Wallet.create({
+                        user_id: registerData._id,
+                        Wallet_amount: 0,
+                    })
                     
                 }
+                 
 
                 return done(null, user)
             } catch (err) {

@@ -26,7 +26,7 @@ const userSchema = new Schema(
         address_id: {
             type: Schema.Types.ObjectId,
             ref: "User_address",
-            required: true,
+            
         },
     },
     { timestamps: true }

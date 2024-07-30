@@ -6,10 +6,10 @@ const loginSchema = new mongoose.Schema({
     lastName: { type: String, required: true },
     referral: { type: String },
 
-    phone: { type: String, required: true },
+    phone: { type: String},
     email: { type: String, required: true },
 
-    password: { type: String, required: true },
+    password: { type: String },
     is_active: {
         type: Boolean,
         default: true,

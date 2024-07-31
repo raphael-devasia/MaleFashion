@@ -90,6 +90,35 @@
     margin-left: 10px; /* Space between coupon text and remove button */
 }
 
+.available-coupons {
+    display: flex;
+    flex-wrap: wrap; /* Allows cards to wrap to the next line */
+    gap: 10px; /* Space between coupon cards */
+    padding: 10px; /* Padding inside the container */
+}
+
+.coupon-card {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer; /* Indicates that the card is clickable */
+    flex: 1 1 150px; /* Grow and shrink, with a minimum width */
+    transition: background-color 0.3s ease;
+}
+
+.coupon-card:hover {
+    background-color: #e9ecef; /* Change background on hover */
+}
+
+.coupon-code {
+    font-size: 16px;
+    font-weight: bold;
+}
      </style>
 
     <!-- Breadcrumb Section Begin -->
@@ -136,6 +165,17 @@
 </h6>
 
 <div class="cart__discount" id="coupon-form-container" style="display: none;">
+<!-- Display all available coupons as cards -->
+<div class="available-coupons d-flex">
+    <% allCoupons.forEach(function(coupon) { %>
+        <div class="coupon-card" data-code="<%= coupon.coupon_code %>">
+            <span class="coupon-code">
+                <%= coupon.coupon_code %>
+            </span>
+        </div>
+        <% }); %>
+</div>
+
     <form id="coupon-form">
         <input type="text" id="coupon-code" placeholder="Coupon code">
         <button type="submit">Apply</button>
@@ -845,6 +885,20 @@
                     });
                 });
             </script> -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                        const couponCards = document.querySelectorAll('.coupon-card');
+                        const couponInput = document.getElementById('coupon-code');
+
+                        couponCards.forEach(card => {
+                            card.addEventListener('click', function () {
+                                const couponCode = this.getAttribute('data-code');
+                                couponInput.value = couponCode;
+                            });
+                        });
+                    });
+
+            </script>
             <script>
                 document.addEventListener("DOMContentLoaded", () => {
                         const showCouponForm = document.getElementById("show-coupon-form");

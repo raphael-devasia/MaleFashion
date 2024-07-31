@@ -967,6 +967,7 @@ const getCheckout = async (req, res) => {
     const userSession = req.session.user
     const Payment_types = await Payment_type.find()
     const length = await getCartLength(userSession)
+    const allCoupons= await Coupon.find()
     if (!length || length<1){
         res.redirect('/home')
     }
@@ -1168,6 +1169,7 @@ const getCheckout = async (req, res) => {
                     name: user.firstName,
                     coupons,
                     bestCouponCode,
+                    allCoupons
                 })
             } else {
                 // User has no active cart items
@@ -1188,6 +1190,7 @@ const getCheckout = async (req, res) => {
                     userWallet,
                     coupons,
                     bestCouponCode,
+                    allCoupons
                 })
             }
         } else {
@@ -1203,6 +1206,7 @@ const getCheckout = async (req, res) => {
                 Payment_types,
                 discountAmount: discountAmount.toFixed(2),
                 newTotalAmount: newTotalAmount.toFixed(2),
+                allCoupons,
             })
         }
 }

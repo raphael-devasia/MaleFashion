@@ -22,6 +22,7 @@ const Coupon = require('../models/coupons')
 const Address = require("../models/addresses")
 const User_address = require("../models/userAddress")
 const Referral_items = require("../models/referralItems")
+const CC = require("currency-converter-lt")
 
 
 dotenv.config()
@@ -1482,10 +1483,24 @@ await collection.findOneAndUpdate(
             try {
                 const receipt = orderDetail._id.toString().replace(/\D/g, "")
                 console.log(receipt)
-                const amount = Math.round(total * 100)
+                // Amount in USD (assumed to be in dollars, not cents)
+                const amountInUSD = Number(total)
+
+
+                // Initialize currency converter
+                let currencyConverter = new CC({
+                    from: "USD",
+                    to: "INR",
+                    amount: amountInUSD,
+                })
+                const conversionResult = await currencyConverter.convert()
+                const amountInINR = conversionResult
+                const amountInPaise = Math.round(amountInINR * 100) // Convert INR to paise
+
+                console.log("Converted amount in paise:", amountInPaise)
 
                 const razorDetails = await instance.orders.create({
-                    amount: amount,
+                    amount: amountInPaise,
                     currency: "INR",
                     receipt: orderDetail._id,
                     notes: {
@@ -2158,13 +2173,26 @@ const {total,orderId}=req.body
 console.log(req.body)
 
      try {
-        const orderDetail = await Shop_order.findById(orderId)
+         const orderDetail = await Shop_order.findById(orderId)
          const receipt = orderDetail._id.toString().replace(/\D/g, "")
          console.log(receipt)
-         const amount = Math.round(total * 100)
+         // Amount in USD (assumed to be in dollars, not cents)
+         const amountInUSD = Number(total)
+
+         // Initialize currency converter
+         let currencyConverter = new CC({
+             from: "USD",
+             to: "INR",
+             amount: amountInUSD,
+         })
+         const conversionResult = await currencyConverter.convert()
+         const amountInINR = conversionResult
+         const amountInPaise = Math.round(amountInINR * 100) // Convert INR to paise
+
+         console.log("Converted amount in paise:", amountInPaise)
 
          const razorDetails = await instance.orders.create({
-             amount: amount,
+             amount: amountInPaise,
              currency: "INR",
              receipt: orderDetail._id,
              notes: {

@@ -22,7 +22,7 @@ const Coupon = require('../models/coupons')
 const Address = require("../models/addresses")
 const User_address = require("../models/userAddress")
 const Referral_items = require("../models/referralItems")
-const CC = require("currency-converter-lt")
+const axios = require("axios")
 
 
 dotenv.config()
@@ -1491,15 +1491,37 @@ await collection.findOneAndUpdate(
                 const amountInUSD = Number(total)
 
 
-                // Initialize currency converter
-                let currencyConverter = new CC({
-                    from: "USD",
-                    to: "INR",
-                    amount: amountInUSD,
-                })
-                const conversionResult = await currencyConverter.convert()
-                const amountInINR = conversionResult
-                const amountInPaise = Math.round(amountInINR * 100) // Convert INR to paise
+               // API configuration
+    const API_KEY = process.env.CONVERTER_API_KEY
+    const BASE_URL = 'https://v6.exchangerate-api.com/v6';
+
+                try {
+                    // Make API request
+                    const response = await axios.get(
+                        `${BASE_URL}/${API_KEY}/latest/USD`
+                    )
+
+                    const rates = response.data.conversion_rates
+                    if (!rates["INR"]) {
+                        throw new Error("INR rate not available")
+                    }
+
+                    // Conversion calculations
+                    const usdToInrRate = rates["INR"]
+                    const amountInINR = amountInUSD * usdToInrRate
+                    const amountInPaise = Math.round(amountInINR * 100) // Convert INR to paise
+
+                    console.log(`Original amount: $${amountInUSD} USD`)
+                    console.log(
+                        `Converted amount: ₹${amountInINR.toFixed(2)} INR`
+                    )
+                    console.log(`Converted amount in paise: ${amountInPaise}`)
+
+                   
+                } catch (error) {
+                    console.error("Currency conversion failed:", error.message)
+                    throw error
+                }
 
                 console.log("Converted amount in paise:", amountInPaise)
 

@@ -1489,6 +1489,7 @@ await collection.findOneAndUpdate(
                 console.log(receipt)
                 // Amount in USD (assumed to be in dollars, not cents)
                 const amountInUSD = Number(total)
+                let amountInPaise
 
 
                // API configuration
@@ -1509,7 +1510,7 @@ await collection.findOneAndUpdate(
                     // Conversion calculations
                     const usdToInrRate = rates["INR"]
                     const amountInINR = amountInUSD * usdToInrRate
-                    const amountInPaise = Math.round(amountInINR * 100) // Convert INR to paise
+                    amountInPaise = Math.round(amountInINR * 100) // Convert INR to paise
 
                     console.log(`Original amount: $${amountInUSD} USD`)
                     console.log(

@@ -88,7 +88,7 @@
                           <div class="mb-3 justify-content-between">
                             
                             <div>
-                            <span class="me-3">Order Placed On: <%= (orderDetails.Order_id.Order_status.createdAt ).toLocaleDateString() %></span>
+                            
                            
                               <!-- <span class="me-3">#16123222</span>
                                                       <span class="me-3"></span> -->
@@ -265,11 +265,11 @@
                                                             <%= orderDetails.Qty[i] %>
                                                         </div>
                                                         <div class="d-none d-sm-block col-2 text-95">
-                                                            $
+                                                            ₹
                                                             <%= productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price %>
                                                         </div>
                                                         <div class="col-2 text-secondary-d2">
-                                                            $
+                                                            ₹
                                                             <%= (productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price)*orderDetails.Qty[i] %>
                                                         </div>
                                                         </div>
@@ -290,7 +290,7 @@
                                                                             SubTotal
                                                                         </div>
                                                                         <div class="col-5">
-                                                                            <span class="text-120 text-secondary-d1">$
+                                                                            <span class="text-120 text-secondary-d1">₹
                                                                                 <%= (orderDetails.Order_id.Product_cost).toFixed(2)%>
                                                                             </span>
                                                                         </div>
@@ -302,7 +302,7 @@
                                                                             discount
                                                                         </div>
                                                                         <div class="col-5">
-                                                                            <span class="text-110 text-secondary-d1">$
+                                                                            <span class="text-110 text-secondary-d1">₹
                                                                                 <%= (orderDetails.Order_id.Coupon_discount).toFixed(2) %>
                                                                             </span>
                                                                         </div>
@@ -313,7 +313,7 @@
                                                                             discount
                                                                         </div>
                                                                         <div class="col-5">
-                                                                            <span class="text-110 text-secondary-d1">$
+                                                                            <span class="text-110 text-secondary-d1">₹
                                                                                 <%= (orderDetails.Order_id.Sales_discount).toFixed(2) %>
                                                                             </span>
                                                                         </div>
@@ -325,7 +325,7 @@
                                                                             Amount
                                                                         </div>
                                                                         <div class="col-5">
-                                                                            <span class="text-150 text-success-d3 opacity-2">$
+                                                                            <span class="text-150 text-success-d3 opacity-2">₹
                                                                                 <%= (orderDetails.Order_id.Order_total).toFixed(2) %>
                                                                             </span>
                                                                         </div>
@@ -398,7 +398,7 @@
                                   <td>
                                     <%= orderDetails.Qty[i] %>
                                   </td>
-                                  <td class="text-end">$ <%=
+                                  <td class="text-end">₹ <%=
                                                                                 productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price
                                                                                 %>
                                   </td>
@@ -444,32 +444,32 @@
                               <tfoot>
                                 <tr>
                                   <td colspan="2">Subtotal</td>
-                                  <td class="text-end">$ <%=
+                                  <td class="text-end">₹ <%=
                                                                             (orderDetails.Order_id.Product_cost).toFixed(2)%>
                                   </td>
                                 </tr>
                                 <tr>
                                   <td colspan="2">Shipping</td>
-                                  <td class="text-end">$00.00</td>
+                                  <td class="text-end">₹00.00</td>
                                 </tr>
                                 <tr>
                                   <td colspan="2">Discount (Code:<%=
                                                                             orderDetails.Order_id.Coupon_code%>)</td>
-                                  <td class="text-danger text-end">-$<%=
+                                  <td class="text-danger text-end">-₹<%=
                                                                             (orderDetails.Order_id.Coupon_discount/100).toFixed(2)
                                                                             %>
                                   </td>
                                 </tr>
                                 <tr>
                                   <td colspan="2">Sales Discount</td>
-                                  <td class="text-danger text-end">-$ <%=
+                                  <td class="text-danger text-end">-₹ <%=
                                                                             (orderDetails.Order_id.Sales_discount).toFixed(2)
                                                                             %>
                                   </td>
                                 </tr>
                                 <tr class="fw-bold">
                                   <td colspan="2">TOTAL</td>
-                                  <td class="text-end">$<%=
+                                  <td class="text-end">₹<%=
                                                                             (orderDetails.Order_id.Order_total).toFixed(2)
                                                                             %>
                                   </td>
@@ -492,7 +492,7 @@
 <form id="payment-form" method="POST" action="/payment-retry">
   <p>
     <br>
-    Total: $ <%= (orderDetails.Order_id.Order_total).toFixed(2) %>
+    Total: ₹ <%= (orderDetails.Order_id.Order_total).toFixed(2) %>
       <input type="hidden" name="total" value="<%= orderDetails.Order_id.Order_total %>">
       <input type="hidden" name="orderId" value="<%= orderDetails.Order_id._id %>">
       <button type="submit" class="btn btn-info btn-lg openmodal" id="rzp-button1">Pay Now</button>
@@ -504,7 +504,7 @@
       <p>
         <%= orderDetails.Order_id.Payment_method_id.Value %>
           <br>
-          Total: $ <%= (orderDetails.Order_id.Order_total).toFixed(2) %>
+          Total: ₹ <%= (orderDetails.Order_id.Order_total).toFixed(2) %>
             <span
               class="badge bg-<%= paymentStatus === 'PENDING' ? 'success' : paymentStatus === 'PAID' ? 'primary' : 'danger' %> rounded-pill">
               <%= paymentStatus %>

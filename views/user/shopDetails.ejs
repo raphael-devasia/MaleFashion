@@ -102,9 +102,9 @@
                             <span> - 5 Reviews</span>
                         </div>
                         <% if (filteredProduct[0].discountPercentage>0) { %>
-                        <h3>$<%= (filteredProduct[0].effectivePrice).toFixed(2) %><span><%= (filteredProduct[0].Product_item.Original_price).toFixed(2) %></span></h3>
+                        <h3>₹<%= (filteredProduct[0].effectivePrice).toFixed(2) %><span><%= (filteredProduct[0].Product_item.Original_price).toFixed(2) %></span></h3>
                         <% } else { %>
-                            <h3>$<%= (filteredProduct[0].Product_item.Original_price).toFixed(2) %>
+                            <h3>₹<%= (filteredProduct[0].Product_item.Original_price).toFixed(2) %>
                             </h3>
                             <% }  %>
                       

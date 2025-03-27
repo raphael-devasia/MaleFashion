@@ -76,9 +76,9 @@
             <div class="d-none d-sm-block col-2">
                 <%= orderDetails.Qty[i] %></div>
             <div class="d-none d-sm-block col-2 text-95">
-                $ <%= productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price %></div>
+                ₹ <%= productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price %></div>
             <div class="col-2 text-secondary-d2">
-                $ <%= (productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price)*orderDetails.Qty[i] %></div>
+                ₹ <%= (productArray[i].Product_item.Product_variation_id.Product_item_id.Original_price)*orderDetails.Qty[i] %></div>
         </div>
        
        <% } %>
@@ -97,7 +97,7 @@
                     SubTotal
                 </div>
                 <div class="col-5">
-                    <span class="text-120 text-secondary-d1">$<%= (orderDetails.Order_id.Product_cost).toFixed(2)%></span>
+                    <span class="text-120 text-secondary-d1">₹<%= (orderDetails.Order_id.Product_cost).toFixed(2)%></span>
                 </div>
             </div>
 
@@ -106,7 +106,7 @@
                     Coupon discount
                 </div>
                 <div class="col-5">
-                    <span class="text-110 text-secondary-d1">$<%= (orderDetails.Order_id.Coupon_discount).toFixed(2) %></span>
+                    <span class="text-110 text-secondary-d1">₹<%= (orderDetails.Order_id.Coupon_discount).toFixed(2) %></span>
                 </div>
             </div>
             <div class="row my-2">
@@ -114,7 +114,7 @@
                     Store discount
                 </div>
                 <div class="col-5">
-                    <span class="text-110 text-secondary-d1">$<%= (orderDetails.Order_id.Sales_discount).toFixed(2) %></span>
+                    <span class="text-110 text-secondary-d1">₹<%= (orderDetails.Order_id.Sales_discount).toFixed(2) %></span>
                 </div>
             </div>
 
@@ -124,7 +124,7 @@
                     Amount
                 </div>
                 <div class="col-5">
-                    <span class="text-150 text-success-d3 opacity-2">$<%= (orderDetails.Order_id.Order_total).toFixed(2) %></span>
+                    <span class="text-150 text-success-d3 opacity-2">₹<%= (orderDetails.Order_id.Order_total).toFixed(2) %></span>
                 </div>
             </div>
         </div>

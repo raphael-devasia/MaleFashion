@@ -79,13 +79,13 @@
      
 <% if (!element.Product_variation.Is_active) { %>
  <td class="cart__price" data-offer-discount="0"  data-price="<%= user ? element.Product.Original_price : element.product.Product_variation_id.Product_item_id.Original_price %>">
-        $<%= user 
+        ₹<%= user 
           ? (element.Product.Original_price * 0) 
           : (element.product.Product_variation_id.Product_item_id.Original_price * 0) %>
       </td>
 <% } else { %>
   <td class="cart__price" data-offer-discount="<%= element.discountPercentage %>" data-price="<%= user ? element.Product.Original_price : element.product.Product_variation_id.Product_item_id.Original_price %>"   >
-        $<%= user 
+        ₹<%= user 
           ? ((element.Product.Original_price * element.Qty).toFixed(2) )
           : ((element.product.Product_variation_id.Product_item_id.Original_price * element.Qty).toFixed(2)) %>
       </td>
@@ -136,13 +136,13 @@
                 <div class="cart__total">
                     <h6>Cart total</h6>
                     <ul>
-                        <li>Subtotal <span  id="sub-total">$ <%= (totalCartAmount).toFixed(2) %></span></li>
+                        <li>Subtotal <span  id="sub-total">₹ <%= (totalCartAmount).toFixed(2) %></span></li>
                         
 
                        
-                        <li>Offer Discount <span  id="offer-discount">$ <%= totalOfferDiscount ? (totalOfferDiscount ).toFixed(2):"0.00" %></span></li>
-                        <li>Shipping <span>$ 0</span></li>
-                        <li>Total <span id="total-amount">$ <%= (cartProduct.length <1) ?"0.00 " : (totalCartAmount - totalOfferDiscount).toFixed(2) %></span></li>
+                        <li>Offer Discount <span  id="offer-discount">₹ <%= totalOfferDiscount ? (totalOfferDiscount ).toFixed(2):"0.00" %></span></li>
+                        <li>Shipping <span>₹ 0</span></li>
+                        <li>Total <span id="total-amount">₹ <%= (cartProduct.length <1) ?"0.00 " : (totalCartAmount - totalOfferDiscount).toFixed(2) %></span></li>
                     </ul>
                     <% if (totalCartAmount <=0.00) { %>
                     <button  class="primary-btn" hidden>Proceed to checkout</button>
@@ -263,8 +263,8 @@
                         console.log(response.newTotalAmount);
                         if (response.valid) {
                             $('#coupon-message').text('Coupon applied successfully!').css('color', 'green');
-                            $('#coupon-discount').text(`$ ${response.discountAmount.toFixed(2)}`);
-                            $('#total-amount').text(`$ ${response.newTotalAmount.toFixed(2)}`);
+                            $('#coupon-discount').text(`₹ ${response.discountAmount.toFixed(2)}`);
+                            $('#total-amount').text(`₹ ${response.newTotalAmount.toFixed(2)}`);
                         } else {
                             $('#coupon-message').text(response.message).css('color', 'red');
                         }

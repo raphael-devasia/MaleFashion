@@ -52,6 +52,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 // Middleware for flashing messages
 app.use(flash())
+
+// Make flash messages available to all views
+app.use((req, res, next) => {
+    res.locals.messages = req.flash();
+    next();
+});
 // No-Cache middleware
 app.use(nocache())
 
@@ -111,7 +117,10 @@ const port = process.env.PORT || 5050
 const MONGOURL = process.env.MONGO_URI
 //connect to mongo db
 mongoose
-    .connect(MONGOURL)
+    .connect(MONGOURL, {
+        serverSelectionTimeoutMS: 60000, // Increase from default 30000
+        socketTimeoutMS: 45000,
+    })
     .then(() => {
         console.log("successfully connected to database")
         app.listen(port, () => {

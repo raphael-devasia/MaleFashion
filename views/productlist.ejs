@@ -27,10 +27,7 @@
 <div class="table-top">
 <div class="search-set">
 <div class="search-path">
-<!-- <a class="btn btn-filter" id="filter_search">
-<img src="../assets/img/icons/filter.svg" alt="img">
-<span><img src="../assets/img/icons/closes.svg" alt="img"></span>
-</a> -->
+
 </div>
 <!-- <div class="search-input">
 <a class="btn btn-searchset"><img src="../assets/img/icons/search-white.svg" alt="img"></a>
@@ -113,12 +110,7 @@
 <table class="table datanew">
             <thead>
                 <tr>
-                    <th>
-                        <label class="checkboxs">
-                            <input type="checkbox" id="select-all">
-                            <span class="checkmarks"></span>
-                        </label>
-                    </th>
+                    
                     <th>Product Name</th>
                     <th>SKU</th>
                     <th>Category</th>
@@ -133,12 +125,7 @@
                 <% if (Array.isArray(data) && data.length > 0) { %>
                     <% data.forEach(item => { %>
                         <tr>
-                            <td>
-                                <label class="checkboxs">
-                                    <input type="checkbox">
-                                    <span class="checkmarks"></span>
-                                </label>
-                            </td>
+                           
                             <td class="productimgname">
                                 <a href="javascript:void(0);" class="product-img">
                                     <img src="<%= item.Image_filename[0] %>" alt="product">
@@ -197,5 +184,32 @@
 <script src="../assets/plugins/sweetalert/sweetalerts.min.js"></script>
 
 <script src="../assets/js/script.js"></script>
+
+<script src="../assets/js/toast.js"></script>
+<script>
+   $(document).ready(function () {
+        // Ensure AppToast is defined
+       
+
+        // Log flash messages for debugging
+        console.log('Flash Messages:', <% - JSON.stringify(msg) %>);
+
+        // Display error message from flash
+        <% if (msg && msg.error && msg.error.length > 0) { %>
+            AppToast.fire({
+                icon: 'error',
+                title: '<%= msg.error[0] %>'
+            });
+        <% } %>
+
+        // Display success message from flash
+        <% if (msg && msg.success && msg.success.length > 0) { %>
+            AppToast.fire({
+                icon: 'success',
+                title: '<%= msg.success[0] %>'
+            });
+        <% } %>
+    });
+</script>
 </body>
 </html>

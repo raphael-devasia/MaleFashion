@@ -1218,10 +1218,7 @@ const getOrderDetails = async (req, res) => {
             path: "Order_id",
             model: "Shop_order",
             populate: [
-                {
-                    path: "Order_status",
-                    model: "Order_status",
-                },
+               
                 {
                     path: "Payment_method_id",
                     model: "Payment_type",
@@ -1383,21 +1380,36 @@ const getWallet = async (req, res) => {
     const user = req.session.user
 
     if (user) {
+        const { page = 1 } = req.query // Get page parameter from query, default to 1
+        const limit = 5 // Number of transactions per page
+        const skip = (page - 1) * limit // Calculate documents to skip
+
+
         const category = await Product_category.find()
         const userDetails = await findUserByEmail(user)
         const userWallet = await Wallet.findOne({ user_id: userDetails._id })
         const transaction = await Referral_items.find({
             Wallet_id: userWallet._id,
         })
-       const transactions = transaction.sort(
-           (a, b) => b.createdAt - a.createdAt
-       )
- const wishListlength = await getWishlistLength(user)
- const { cartLength, totalCartAmount } = await getCartDetails(req.session.user)
+        const transactions = transaction.sort(
+            (a, b) => b.createdAt - a.createdAt
+        )
+        const totalTransactions = transactions.length
+        const totalPages = Math.ceil(totalTransactions / limit)
+
+        // Get transactions for the current page
+        const paginatedTransactions = transactions.slice(skip, skip + limit)
+
+        
+        const wishListlength = await getWishlistLength(user)
+        const { cartLength, totalCartAmount } = await getCartDetails(
+            req.session.user
+        )
         res.render("user/wallet", {
             category,
             userWallet,
-            transactions,
+            transactions: paginatedTransactions,
+            
             userDetails,
             userdetails: userDetails,
             wishListlength,
@@ -1405,6 +1417,8 @@ const getWallet = async (req, res) => {
             totalCartAmount,
             name: userDetails.firstName,
             currentRoute: "/user/wallet",
+            currentPage: parseInt(page), // Pass current page
+            totalPages, // Pass total pages
         })
     } else {
         res.redirect("/")

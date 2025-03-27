@@ -119,6 +119,7 @@
     <script src="../assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
     <script src="../assets/plugins/sweetalert/sweetalerts.min.js"></script>
     <script src="../assets/js/script.js"></script>
+    <script src="/assets/js/toast.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -221,6 +222,22 @@
 
                 return false; // Prevent default form submission
             });
+
+       // For displaying error message from flash
+      <% if (messages && messages.error && messages.error.length > 0) { %>
+                AppToast.fire({
+                    icon: 'error',
+                    title: '<%= messages.error[0] %>'
+                });
+      <% } %>
+
+      // For displaying success message from flash
+      <% if (messages && messages.success && messages.success.length > 0) { %>
+                AppToast.fire({
+                    icon: 'success',
+                    title: '<%= messages.success[0] %>'
+                });
+      <% } %>
         });
     </script>
 </body>

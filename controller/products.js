@@ -57,6 +57,35 @@ var instance = new Razorpay({
 
 require("../middlewares/auth")
 const {getWishlistLength} = require("../utils/userProductsFunctions")
+// Utility to calculate max offer percentage
+const getMaxOfferPercentage = (product, today = new Date()) => {
+    console.log(product);
+    
+    const productOfferValid =
+        product.Product_Offers &&
+        new Date(product.Product_Offers.start_date) <= today &&
+        new Date(product.Product_Offers.end_date) >= today;
+
+    const categoryOfferValid =
+        product.Product_Category_offers &&
+        new Date(product.Product_Category_offers.start_date) <= today &&
+        new Date(product.Product_Category_offers.end_date) >= today;
+
+    let discountPercentage = 0;
+
+    if (productOfferValid && categoryOfferValid) {
+        discountPercentage = Math.max(
+            product.Product_Offers.offer_percentage || 0,
+            product.Product_Category_offers.offer_percentage || 0
+        );
+    } else if (productOfferValid) {
+        discountPercentage = product.Product_Offers.offer_percentage || 0;
+    } else if (categoryOfferValid) {
+        discountPercentage = product.Product_Category_offers.offer_percentage || 0;
+    }
+
+    return discountPercentage;
+};
 
 const getHome = async (req, res) => {
     
@@ -1427,16 +1456,14 @@ const addCheckout = async (req, res) => {
             Status: [],
             Coupon_percentage: [],
         })
-
+const today = new Date()
         for (const e of userCart) {
             const update = {
                 $push: {
                     Product_item_id: e.Product_item_id,
                     Product_name: e.SingleProduct.product_name,
                     Price: e.Product.Original_price,
-                    Offer_percentage: e.Product_Category_offers
-                        ? e.Product_Category_offers.offer_percentage
-                        : 0,
+                    Offer_percentage: getMaxOfferPercentage(e, today),
                     Qty: e.Qty,
                     Status: "Processing",
                     Coupon_percentage: couponDiscountPercentage,
@@ -1488,43 +1515,45 @@ await collection.findOneAndUpdate(
                 const receipt = orderDetail._id.toString().replace(/\D/g, "")
                 console.log(receipt)
                 // Amount in USD (assumed to be in dollars, not cents)
-                const amountInUSD = Number(total)
-                let amountInPaise
+                // const amountInUSD = Number(total)
+                // let amountInCents = amountInUSD*100
+                let amountInRupees = Number(total)
+                let amountInPaise = amountInRupees*100
 
 
                // API configuration
     const API_KEY = process.env.CONVERTER_API_KEY
     const BASE_URL = 'https://v6.exchangerate-api.com/v6';
 
-                try {
-                    // Make API request
-                    const response = await axios.get(
-                        `${BASE_URL}/${API_KEY}/latest/USD`
-                    )
+                // try {
+                //     // Make API request
+                //     const response = await axios.get(
+                //         `${BASE_URL}/${API_KEY}/latest/USD`
+                //     )
 
-                    const rates = response.data.conversion_rates
-                    if (!rates["INR"]) {
-                        throw new Error("INR rate not available")
-                    }
+                //     const rates = response.data.conversion_rates
+                //     if (!rates["INR"]) {
+                //         throw new Error("INR rate not available")
+                //     }
 
-                    // Conversion calculations
-                    const usdToInrRate = rates["INR"]
-                    const amountInINR = amountInUSD * usdToInrRate
-                    amountInPaise = Math.round(amountInINR * 100) // Convert INR to paise
+                //     // Conversion calculations
+                //     const usdToInrRate = rates["INR"]
+                //     const amountInINR = amountInUSD * usdToInrRate
+                //     amountInPaise = Math.round(amountInINR * 100) // Convert INR to paise
 
-                    console.log(`Original amount: $${amountInUSD} USD`)
-                    console.log(
-                        `Converted amount: ₹${amountInINR.toFixed(2)} INR`
-                    )
-                    console.log(`Converted amount in paise: ${amountInPaise}`)
+                //     console.log(`Original amount: $${amountInUSD} USD`)
+                //     console.log(
+                //         `Converted amount: ₹${amountInINR.toFixed(2)} INR`
+                //     )
+                //     console.log(`Converted amount in paise: ${amountInPaise}`)
 
                    
-                } catch (error) {
-                    console.error("Currency conversion failed:", error.message)
-                    throw error
-                }
+                // } catch (error) {
+                //     console.error("Currency conversion failed:", error.message)
+                //     throw error
+                // }
 
-                console.log("Converted amount in paise:", amountInPaise)
+              
 
                 const razorDetails = await instance.orders.create({
                     amount: amountInPaise,
@@ -1580,6 +1609,12 @@ await collection.findOneAndUpdate(
                 Status: "Shop Purchase",
                 Wallet_id: userWallet._id,
             })
+            const updateStatus = await Order_status.findByIdAndUpdate(
+                orderStatus._id,
+                { $set: { Status: "Paid" } },
+                { new: true }
+            )
+
 
             return res.status(200).json({
                 message: "Order placed successfully",

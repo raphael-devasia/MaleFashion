@@ -231,11 +231,11 @@
                                         <% if (row.discountPercentage> 0) { %>
                                             <h6><s>
                                                     <%= row.Original_price %>
-                                                </s>$</h6>
-                                            <h5>$<%= row.effectivePrice %>
+                                                </s>₹</h6>
+                                            <h5>₹<%= row.effectivePrice %>
                                             </h5>
                                             <% } else { %>
-                                                <h5>$<%= row.Original_price %>
+                                                <h5>₹<%= row.Original_price %>
                                                 </h5>
                                                 <% } %>
                                                     <div class="product__color__select">
@@ -470,9 +470,9 @@
                                    
                                   
                                     ${row.discountPercentage > 0 ?
-                                `<h6><s>${row.Original_price}</s>$</h6>
+                                `<h6><s>${row.Original_price}</s>₹</h6>
                                         <h5>$${row.effectivePrice}</h5>` :
-                                `<h5>$${row.Original_price}</h5>`
+                                `<h5>₹${row.Original_price}</h5>`
                             }
                                     <div class="product__color__select">
                                         ${row.colours.map((color, index) => `

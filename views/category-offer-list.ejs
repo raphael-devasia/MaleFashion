@@ -1,7 +1,5 @@
 <%- include('dashboardheader') %>
-    <!-- <div id="global-loader">
-        <div class="whirly-loader"> </div>
-    </div> -->
+    
 
     <div class="main-wrapper">
 
@@ -28,31 +26,12 @@
                                 <div class="table-top">
                                     <div class="search-set">
                                         <div class="search-path">
-                                            <a class="btn btn-filter" id="filter_search">
-                                                <img src="../assets/img/icons/filter.svg" alt="img">
-                                                <span><img src="../assets/img/icons/closes.svg" alt="img"></span>
-                                            </a>
+
                                         </div>
-                                        <div class="search-input">
-                                            <a class="btn btn-searchset"><img src="../assets/img/icons/search-white.svg"
-                                                    alt="img"></a>
-                                        </div>
+
                                     </div>
                                     <div class="wordset">
-                                        <ul>
-                                            <li>
-                                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                                                        src="../assets/img/icons/pdf.svg" alt="img"></a>
-                                            </li>
-                                            <li>
-                                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                                        src="../assets/img/icons/excel.svg" alt="img"></a>
-                                            </li>
-                                            <li>
-                                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                                                        src="../assets/img/icons/printer.svg" alt="img"></a>
-                                            </li>
-                                        </ul>
+
                                     </div>
                                 </div>
 
@@ -120,12 +99,7 @@
                                     <table class="table datanew">
                                         <thead>
                                             <tr>
-                                                <th>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox" id="select-all">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </th>
+
                                                 <th>Category Name</th>
 
                                                 <th>Discount %</th>
@@ -152,14 +126,10 @@
                                                         }
                                                         %>
                                                         <tr>
+
                                                             <td>
-                                                                <label class="checkboxs">
-                                                                    <input type="checkbox">
-                                                                    <span class="checkmarks"></span>
-                                                                </label>
-                                                            </td>
-                                                            <td>
-                                                                <%= item.category_id ? item.category_id.category_name : 'No Category' %>
+                                                                <%= item.category_id ? item.category_id.category_name
+                                                                    : 'No Category' %>
 
                                                             </td>
                                                             <td>
@@ -178,8 +148,9 @@
                                                                 <%= status %>
                                                             </td>
                                                             <td>
-                                                              
-                                                                <a class="confirm-category-offer" href="javascript:void(0);"
+
+                                                                <a class="confirm-category-offer"
+                                                                    href="javascript:void(0);"
                                                                     data-id="<%= item._id %>">
                                                                     <img src="../assets/img/icons/delete.svg" alt="img">
                                                                 </a>

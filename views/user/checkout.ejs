@@ -349,7 +349,7 @@
                                     <% cartProduct.forEach((element, index)=> { %>
                                         <% if (!session) { %>
                                             <% if (element.Product_variation.Is_active) { %>
-                                                <li>0<%= index + 1 %>. <%= element.SingleProduct.product_name %> <span>$
+                                                <li>0<%= index + 1 %>. <%= element.SingleProduct.product_name %> <span>₹
                                                                 <%= (element.Product.Original_price * element.Qty).toFixed(2) %>
                                                             </span></li>
                                                 <% } %>
@@ -357,7 +357,7 @@
                                                     <% } else { %>
                                                         <li>0<%= index + 1 %>. <%=
                                                                     element.product.Product_variation_id.Product_item_id.Product_id.product_name
-                                                                    %> <span>$ <%=
+                                                                    %> <span>₹ <%=
                                                                             (element.product.Product_variation_id.Product_item_id.Original_price
                                                                             * element.Qty).toFixed(2) %></span></li>
                                                         <% } %>
@@ -365,27 +365,27 @@
 
                                 </ul>
                                 <ul class="checkout__total__all">
-                                    <li>Subtotal <span id="total-cart">$<%= (totalCartAmount).toFixed(2) %></span>
+                                    <li>Subtotal <span id="total-cart">₹<%= (totalCartAmount).toFixed(2) %></span>
                                         <input type="hidden" name="subtotal" value="<%= (totalCartAmount).toFixed(2) %>">
                                     </li>
-                                    <li hidden>Subtotal <span >$<%= couponDiscountPercentage%></span>
+                                    <li hidden>Subtotal <span >₹<%= couponDiscountPercentage%></span>
                                         <input type="hidden" name="couponDiscountPercentage"
                                             value="<%= couponDiscountPercentage %>">
                                     </li>
-                                    <li hidden>Coupon Code <span>$<%= bestCouponCode%></span>
+                                    <li hidden>Coupon Code <span>₹<%= bestCouponCode%></span>
                                         <input type="hidden" name="coupon_code" value="<%= bestCouponCode %>">
                                     </li>
 
-                                    <li>Coupon Discount <span id="coupon-discount">$ <%= (((totalCartAmount-totalOfferDiscount)*couponDiscountPercentage/100).toFixed(2)) %> </span>
+                                    <li>Coupon Discount <span id="coupon-discount">₹ <%= (((totalCartAmount-totalOfferDiscount)*couponDiscountPercentage/100).toFixed(2)) %> </span>
                                         <input type="hidden" name="couponDiscount" value="<%= ((totalCartAmount-totalOfferDiscount)*couponDiscountPercentage/100).toFixed(2) %>">
                                     </li>
-                                    <li>Offer Discount <span id="store-discount">$ <%= (totalOfferDiscount).toFixed(2) %></span>
+                                    <li>Offer Discount <span id="store-discount">₹ <%= (totalOfferDiscount).toFixed(2) %></span>
                                         <input type="hidden" name="offerDiscount" value="<%= totalOfferDiscount %>">
                                     </li>
-                                    <li>Shipping <span>$ 0.00</span>
+                                    <li>Shipping <span>₹ 0.00</span>
                                         <input type="hidden" name="shipping" value="0.00">
                                     </li>
-                                    <li>Total <span id="total-amount">$<%=((totalCartAmount-totalOfferDiscount)-((totalCartAmount-totalOfferDiscount)*couponDiscountPercentage/100)).toFixed(2) %></span>
+                                    <li>Total <span id="total-amount">₹<%=((totalCartAmount-totalOfferDiscount)-((totalCartAmount-totalOfferDiscount)*couponDiscountPercentage/100)).toFixed(2) %></span>
                                         <input type="hidden" name="total" value="<%= ((totalCartAmount-totalOfferDiscount)-((totalCartAmount-totalOfferDiscount)*couponDiscountPercentage/100)).toFixed(2) %>">
                                     </li>
                                 </ul>
@@ -653,7 +653,7 @@
                 for (const fieldId of requiredFields) {
                     const field = document.getElementById(fieldId);
                     if (!field.value.trim()) {
-                        document.getElementById('paymentMessage').innerText = `Please fill out the ${fieldId.replace('billing', '').replace(/([A-Z])/g, ' $1').toLowerCase()} field.`;
+                        document.getElementById('paymentMessage').innerText = `Please fill out the ${fieldId.replace('billing', '').replace(/([A-Z])/g, ' ₹1').toLowerCase()} field.`;
                         document.getElementById('paymentMessage').style.display = 'block';
 
                         field.focus();
@@ -695,7 +695,7 @@
                 for (const fieldId of shippingFields) {
                     const field = document.getElementById(fieldId);
                     if (!field.value.trim()) {
-                        document.getElementById('paymentMessage').innerText = `Please fill out the ${fieldId.replace('shipping', '').replace(/([A-Z])/g, ' $1').toLowerCase()} field.`;
+                        document.getElementById('paymentMessage').innerText = `Please fill out the ${fieldId.replace('shipping', '').replace(/([A-Z])/g, ' ₹1').toLowerCase()} field.`;
                         document.getElementById('paymentMessage').style.display = 'block';
                         field.focus();
                         return false;
@@ -931,8 +931,8 @@
                                     if (response.valid) {
                                         console.log("response.couponPercentage is :", response.couponPercenetge);
                                         appliedCoupons.push(response); // 6. Add the valid coupon to the appliedCoupons array
-                                        $('#coupon-discount').text(`$ ${((subTotal - storeDiscount) * (response.couponPercenetge)/100).toFixed(2)}`);
-                                        $('#total-amount').text(`$ ${(subTotal - storeDiscount - ((subTotal - storeDiscount) * (response.couponPercenetge)/100)).toFixed(2)}`)
+                                        $('#coupon-discount').text(`₹ ${((subTotal - storeDiscount) * (response.couponPercenetge)/100).toFixed(2)}`);
+                                        $('#total-amount').text(`₹ ${(subTotal - storeDiscount - ((subTotal - storeDiscount) * (response.couponPercenetge)/100)).toFixed(2)}`)
                                          $('input[name="total"]').val((subTotal - storeDiscount - ((subTotal - storeDiscount) * (response.couponPercenetge)/100)).toFixed(2));
 
                                       // 7. Create a coupon element with a close button
@@ -1123,11 +1123,11 @@
                     console.log(discountAmount);
                      console.log(response.couponPercentage);
 
-                    $('#coupon-discount').text(`$ ${discountAmount}`);
+                    $('#coupon-discount').text(`₹ ${discountAmount}`);
                     $('input[name="couponDiscount"]').val(discountAmount);
                     $('input[name="couponDiscountPercentage"]').val(response.couponPercentage);
                     $('input[name="total"]').val(newTotalAmount);
-                    $('#total-amount').text(`$ ${newTotalAmount}`);
+                    $('#total-amount').text(`₹ ${newTotalAmount}`);
                     
 
                     if (response.bestCouponCode) {

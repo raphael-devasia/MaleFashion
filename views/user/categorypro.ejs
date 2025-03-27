@@ -49,7 +49,7 @@
             <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
             <a href="#"><img src="img/icon/heart.png" alt=""></a>
             <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-            <div class="price">$0.00</div>
+            <div class="price">₹0.00</div>
         </div>
         <div id="mobile-menu-wrap"></div>
         <div class="offcanvas__text">
@@ -117,7 +117,7 @@
                         <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
                         <a href="#"><img src="img/icon/heart.png" alt=""></a>
                         <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-                        <div class="price">$0.00</div>
+                        <div class="price">₹0.00</div>
                     </div>
                 </div>
             </div>
@@ -205,11 +205,11 @@
                                         <div class="card-body">
                                             <div class="shop__sidebar__price">
                                                 <ul>
-                                                    <li><a href="#">$0.00 - $50.00</a></li>
-                                                    <li><a href="#">$50.00 - $100.00</a></li>
-                                                    <li><a href="#">$100.00 - $150.00</a></li>
-                                                    <li><a href="#">$150.00 - $200.00</a></li>
-                                                    <li><a href="#">$200.00 - $250.00</a></li>
+                                                    <li><a href="#">₹0.00 - ₹50.00</a></li>
+                                                    <li><a href="#">₹50.00 - ₹100.00</a></li>
+                                                    <li><a href="#">₹100.00 - ₹150.00</a></li>
+                                                    <li><a href="#">₹150.00 - ₹200.00</a></li>
+                                                    <li><a href="#">₹200.00 - ₹250.00</a></li>
                                                     <li><a href="#">250.00+</a></li>
                                                 </ul>
                                             </div>
@@ -347,11 +347,11 @@
                                     <% if (row.discountPercentage> 0) { %>
                                         <h6><s>
                                                 <%= row.Original_price %>
-                                            </s>$</h6>
-                                        <h5>$<%= row.effectivePrice %>
+                                            </s>₹</h6>
+                                        <h5>₹<%= row.effectivePrice %>
                                         </h5>
                                         <% } else { %>
-                                            <h5>$<%= row.Original_price %>
+                                            <h5>₹<%= row.Original_price %>
                                             </h5>
                                             <% } %>
 
@@ -480,8 +480,8 @@
 
             products.sort((a, b) => {
 
-                const priceA = parseFloat(a.querySelector('h5').textContent.replace('$', ''));
-                const priceB = parseFloat(b.querySelector('h5').textContent.replace('$', ''));
+                const priceA = parseFloat(a.querySelector('h5').textContent.replace('₹', ''));
+                const priceB = parseFloat(b.querySelector('h5').textContent.replace('₹', ''));
                 const nameA = a.querySelector('h6').textContent.toLowerCase();
                 const nameB = b.querySelector('h6').textContent.toLowerCase();
 

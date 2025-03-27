@@ -366,5 +366,27 @@
 <script src="/assets/plugins/select2/js/select2.min.js"></script>
 
 <script src="/assets/js/script.js"></script>
+<script src="../assets/js/toast.js"></script>
+<script>
+      $(document).ready(function () {
+           
+
+        // Display error message from flash
+        <% if (msg && msg.error && msg.error.length > 0) { %>
+                  AppToast.fire({
+                        icon: 'error',
+                        title: '<%= msg.error[0] %>'
+                  });
+        <% } %>
+
+        // Display success message from flash
+        <% if (msg && msg.success && msg.success.length > 0) { %>
+                  AppToast.fire({
+                        icon: 'success',
+                        title: '<%= msg.success[0] %>'
+                  });
+        <% } %>
+    });
+</script>
 </body>
 </html>

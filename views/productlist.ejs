@@ -133,7 +133,7 @@
                                 <a href="javascript:void(0);"><%= item.Product_variation_id.Product_item_id.Product_id.product_name %></a>
                             </td>
                             <td><%= item.Product_variation_id.Product_item_id.Product_sku %></td>
-                            <td><%= item.Product_variation_id.Product_item_id.Product_id.product_category_id.category_name %></td>
+                            <td><%= item.Product_variation_id?.Product_item_id?.Product_id?.product_category_id?.category_name %></td>
                             <!-- <td>N/D</td> -->
                             <td><%= item.Product_variation_id.Product_item_id.Original_price %></td>
                             <td><%= item.Product_variation_id.Qty_in_stock %></td>
